@@ -1,0 +1,209 @@
+"""
+File: rpgame.py
+-------------------------
+This is a simple RPG program where a player can choose various actions and fight enemies
+
+Milestone:
+1. Prompt welcome message - done
+2. Input Name - done
+2. Finish introduction - done
+3. Create character - done
+4. Make character move, attack, defend
+5. Make an enemy
+6. Make enemy fight the character
+"""
+
+import random  # used for the dice
+import sys  # used for the text effect
+import time  # used to delay the texts for a few miliseconds
+
+BOSS_NAME = '⊑⟒⍀?'
+
+
+# -----------------------
+# Main Function
+# -----------------------
+
+
+def main():
+    user_name = welcome_message_and_introduction()
+    print(user_name)
+    #  first_chapter()
+
+
+# -----------------------
+# Functions From Main
+# -----------------------
+
+
+def welcome_message_and_introduction():
+    """
+    Welcome message for the user to see and asks the user whether to start the game or not
+    Return: user_name
+    """
+    type_print_effect("Welcome to the Journey.\n")
+    time.sleep(0.5)
+    type_print_effect('You are an adventurer that suddenly woke up without any recollection.\n')
+    time.sleep(0.5)
+    type_print_effect('Now you must understand what happened before you came to this place.\n')
+    time.sleep(0.5)
+
+    # Asks the user for an input and the input of the user is turned into a lowercase to clean data
+    user_enter_introduction = input('Type y to start or n to end the game ')
+    user_enter_introduction_lowercase = user_enter_introduction.lower()
+
+    # If argument with the user's choices, if n, it will exit the program, anything other than y or n will
+    # be taken as a sign to end the game, and y will prompt to start the introduction function
+    if user_enter_introduction_lowercase == 'y':
+        # we got the username from the introduction that is why we put introduction in a
+        # variable
+        inputted_user_name = introduction()
+    elif user_enter_introduction_lowercase == 'n':
+        sys.exit()
+    else:
+        print('Invalid input. I assume you will exit the game. Thank you for playing!')
+        sys.exit()
+
+    return inputted_user_name
+
+
+# -----------------------
+# Helper Functions
+# -----------------------
+
+
+def introduction():
+    """
+    Opening dialogue with Alicia, the first character that the player saw, she will guide the player to the dojo
+    Pre-condition: Player starts the game
+    Post-condition: Player has a name and is headed for the dojo
+    """
+    print('')  # For spacing from the start menu
+    type_print_effect("Hey, wake up! Are you okay? Who are you? And what are you doing near my home!\n")
+    time.sleep(0.5)
+    type_print_effect("Oh my, you have so many bruises! Let me tend your wounds and then let's talk.\n")
+    time.sleep(0.5)
+    type_print_effect("I'm Alicia by the way, its a good thing I found you here,\n")
+    time.sleep(0.5)
+    type_print_effect("there isn't any hospitals or clinic here for hundreds of kilometers.\n")
+    time.sleep(0.5)
+    type_print_effect("The best bet you have right now is me, good thing I have a first aid kit.\n")
+    time.sleep(0.5)
+
+    #  Ask the player for their name
+    inputted_user_name = input_print_effect("I forgot to even ask! What's your name? ")
+
+    time.sleep(0.5)
+    type_print_effect("That's a nice name, " + inputted_user_name + "\n")
+    time.sleep(0.5)
+    type_print_effect("There we go, I patched your wounds. The problem now is where would you go?\n")
+    time.sleep(0.5)
+    type_print_effect("And do you remember how you got here? Or who you are?\n")
+    time.sleep(0.5)
+    type_print_effect("Hey! What's that in your shoulder, I guess I missed a wound.\n")
+    time.sleep(0.5)
+    type_print_effect("...\n")
+    time.sleep(0.5)
+    type_print_effect("You're one of them!!! I can't believe it. How did you wind up here? In the middle of nowhere?\n")
+    time.sleep(0.5)
+    type_print_effect("You're here to defeat " + BOSS_NAME + "\n")
+    time.sleep(0.5)
+    type_print_effect("But you can't! You'll get yourself killed!\n")
+    time.sleep(0.5)
+    type_print_effect("But if you're one of them, I guess you're destined towards that goal? Destiny is so weird\n")
+    time.sleep(0.5)
+    type_print_effect("I mean, who gets to decide what you should do? Is it the player? I guess not...\n")
+    time.sleep(0.5)
+    type_print_effect("The player is only looking at the screen right now, just watching our whole conversation.\n")
+    time.sleep(0.5)
+    type_print_effect("Anyway, since I can see that you're one of them, I believe you can still remember how to "
+                      "fight?\n")
+    time.sleep(0.5)
+    type_print_effect("Or how to use your power? I want to see how you release your power!\n")
+    time.sleep(0.5)
+    type_print_effect("...\n")
+    time.sleep(0.5)
+    type_print_effect("Don't you rememeber anything? Come on, just one move!\n")
+    time.sleep(0.5)
+    type_print_effect("...\n")
+    time.sleep(0.5)
+    type_print_effect("Oh my, if that's the case, I think you should go to the nearby dojo. The sensei there would"
+                      " help you remember the once you've lost\n")
+    time.sleep(0.5)
+    type_print_effect("Before you go! I'll give you this to defend yourself. It's no longer safe ever since we've"
+                      " colonized this planet\n")
+    time.sleep(0.5)
+    type_print_effect("Goodluck out there " + inputted_user_name + "\n")
+
+    #  return the user_name to be used in the entirety of the program
+    return inputted_user_name
+
+
+# -----------------------
+# Sub-Helper Functions
+# -----------------------
+
+def type_print_effect(text):
+    """
+    This function takes print strings and change them to have a typing effect with the help of time
+    sleep so that it has a delay, much like when someone is typing
+
+    Parameter: text - the inputted text where it would be converted to a typing effect
+    """
+
+    for character in text:
+        print(character, end='')
+        sys.stdout.flush()
+        time.sleep(0.001)  # 0.05 normal speed
+
+
+def input_print_effect(text):
+    """
+    This function is the same with text_print_effect, the difference is that this is used
+    when a user inputs something and a message is prompted
+
+    :param: text - the message with the input from the user
+    :return: value - the answer that the user gave to be used by other functions
+    """
+    for character in text:
+        print(character, end='')
+        sys.stdout.flush()
+        time.sleep(0.001)  # 0.05 normal speed
+    value = input()
+    return value
+
+# -----------------------
+# Sub-Helper Functions
+# -----------------------
+
+
+class PlayerCharacter:
+    """
+    Class about the player and their actions
+    """
+    def __init__(self):
+        """
+        Stats of the player
+        """
+        self.health = 50
+        self.attack = 10
+
+        #  The chance for the player to hit a double damage attack to an enemy
+        self.double_damage_attack_chance = 0.05
+        self.defense = 5
+
+
+    def player_move(self):
+        """
+        Function when a player moves
+        """
+        number_of_moves = random.randint(1, 10)
+        print(user_name, "has moved", number_of_moves, "of times.")
+
+# -----------------------
+# No Need For Editing
+# -----------------------
+
+
+if __name__ == '__main__':
+    main()
