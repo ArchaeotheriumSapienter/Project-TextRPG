@@ -9,6 +9,10 @@ Milestone:
 2. Finish introduction - done
 3. Create character - done
 4. Make character move, attack, defend
+    a. make a set of moves that a player can do:
+        - move
+        - attack
+        -
 5. Make an enemy
 6. Make enemy fight the character
 """
@@ -26,9 +30,9 @@ BOSS_NAME = '⊑⟒⍀?'
 
 
 def main():
-    user_name = welcome_message_and_introduction()
-    print(user_name)
-    #  first_chapter()
+    # user_name = welcome_message_and_introduction()
+    # first_chapter()
+    player_commands()
 
 
 # -----------------------
@@ -67,11 +71,14 @@ def welcome_message_and_introduction():
     return inputted_user_name
 
 
+# def first_chapter():
+
+
 # -----------------------
 # Helper Functions
 # -----------------------
 
-
+#  kulang pa dito YUNG WEAPONS LAGYAN MO MAMAYA
 def introduction():
     """
     Opening dialogue with Alicia, the first character that the player saw, she will guide the player to the dojo
@@ -131,7 +138,7 @@ def introduction():
                       " help you remember the once you've lost\n")
     time.sleep(0.5)
     type_print_effect("Before you go! I'll give you this to defend yourself. It's no longer safe ever since we've"
-                      " colonized this planet\n")
+                      " left Earth.\n")
     time.sleep(0.5)
     type_print_effect("Goodluck out there " + inputted_user_name + "\n")
 
@@ -172,33 +179,125 @@ def input_print_effect(text):
     value = input()
     return value
 
+
 # -----------------------
-# Sub-Helper Functions
+# Player Commands
 # -----------------------
 
-
-class PlayerCharacter:
+def player_commands():
     """
-    Class about the player and their actions
+    All commands that the player can do
     """
-    def __init__(self):
-        """
-        Stats of the player
-        """
-        self.health = 50
-        self.attack = 10
+    print('What action do you want to do? We have the following')
 
-        #  The chance for the player to hit a double damage attack to an enemy
-        self.double_damage_attack_chance = 0.05
-        self.defense = 5
+    # list of commands that the player can do
+    #command = {
+        #'a': attack(),
+        #'b': move(),
+        #'c': 'status()',
+        #'d': help_game(),
+        #'e': quit_game()
+    #}
+
+    # asks player for the command that they want to do
+    player_actions = input("Please press the appropriate letter for the command that you want to do ")
+
+    # sanitizing the input by putting it in lowercase
+    player_actions_lowercase = player_actions.lower()
+
+    if player_actions_lowercase == 'a':
+        attack()
+    elif player_actions_lowercase == 'b':
+        move()
+    elif player_actions_lowercase == 'c':
+        print('status()')
+    elif player_actions_lowercase == 'd':
+        help_game()
+    elif player_actions_lowercase == 'e':
+        quit_game()
 
 
-    def player_move(self):
-        """
-        Function when a player moves
-        """
-        number_of_moves = random.randint(1, 10)
-        print(user_name, "has moved", number_of_moves, "of times.")
+def attack():
+    """
+    Player attack with random integer as its damage
+    """
+    attack_damage = random.randint(1, 10)
+    print("user has attacked enemy with", attack_damage, "damage!")
+
+
+def move():
+    """
+    Function when a player moves, uses random integer to determine the number of steps the player takes
+    """
+    number_of_moves = random.randint(1, 10)
+    print("user has moved", number_of_moves, "steps")
+
+
+def help_game():
+    """
+    Function about all the information that the player wants to know
+    """
+    #  Dictionary when the player chooses 'a' which is a help desk for commands
+    commands = {
+                   'a': 'attack()',
+                   'b': 'move()',
+                   'c': 'status()',
+                   'd': 'help_game()',
+                   'e': 'quit_game()'
+               },
+
+    print("What do you want to know about?")
+
+    #  Dictionary of information that the player can access
+    help_list = {
+        'a': "Commands",
+        'b': 'Enemies'}
+
+    # for the user to see
+    print(help_list)
+
+    # asks the user which topic do they need help with
+    player_chosen_help_command = input('What do you want to choose? ')
+
+    # lowercase for sanitation
+    player_chosen_help_command_lowercase = player_chosen_help_command.lower()
+
+    # if statement to implement what the player has chosen from
+    if player_chosen_help_command_lowercase == 'a':
+        print(commands)
+        #  subset for the user to be asked what specific command they want to know
+        player_chosen_help_specific_command = input('What command do you want to learn more? ')
+
+        # lowecase sanitation
+        player_chosen_help_specific_command_lowercase = player_chosen_help_specific_command.lower()
+
+        if player_chosen_help_specific_command_lowercase == 'a':
+            print('Command player attack')
+
+        print(commands)
+
+
+def quit_game():
+    """
+    Command that will quit the game when the player wants to
+    """
+    #  Asks the player if they want to quit for a second time to make sure it was not a mistake
+    ask_player_again = input("Are you sure you want to exit? (Type y for yes, n for no) ")
+
+    # Change their response to lowercase for cleaner code
+    ask_player_again_lowercase = ask_player_again.lower()
+
+    if ask_player_again_lowercase == 'y':
+        print('Thank you for playing my game! I hope you enjoyed my first ever Programming Project.')
+        sys.exit()
+    elif ask_player_again_lowercase == 'n':
+        player_commands()
+        print('')  # for spacing in the terminal
+    else:
+        print("Invalid input")
+        player_commands()
+        print('')  # for spacing in the terminal
+
 
 # -----------------------
 # No Need For Editing
