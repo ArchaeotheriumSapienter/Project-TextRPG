@@ -18,7 +18,7 @@ Milestone:
 6. Make enemy fight the character
 """
 
-import random  # used for the dice
+import random  # used for moving and random events in the game
 import sys  # used for the text effect
 import time  # used to delay the texts for a few miliseconds
 
