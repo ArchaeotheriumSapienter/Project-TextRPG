@@ -8,12 +8,13 @@ Milestone:
 2. Input Name - done
 2. Finish introduction - done
 3. Create character - done
-4. Make character move, attack, defend
+4. Make character move, attack, defend - done
     a. make a set of moves that a player can do:
         - move
         - attack
         -
-5. Make an enemy
+5. Make an enemy - done
+6. Random occurence of enemy when player is walking - done
 6. Make enemy fight the character
 """
 
