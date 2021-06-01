@@ -33,6 +33,7 @@ INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
 
 
 def main():
+    # values in the classes are (from left to right):
     # name, health, max_health, attack, double_damage, leeching, defense, shield_bubble,
     # ultimate_levelup_bar, ultimate_levelup_bar_per_attack, levelup_bar, levelup_per_defeated_enemy
 
@@ -317,9 +318,11 @@ class Character:
 # -----------------------
 # Classes of all kinds of enemies that the player will encounter
 
+# ENEMY COMMON CLASS
+
 class DeformedMutatedHuman(Character):
     """
-    Subclass of characters for the enemies
+    Subclass of characters, a common enemy
     """
 
     def __init__(self,
@@ -351,7 +354,7 @@ class DeformedMutatedHuman(Character):
 
 class MutatedHuman(Character):
     """
-    Subclass of characters for the enemies
+    Subclass of character, a common enemy
     """
 
     def __init__(self,
@@ -383,7 +386,7 @@ class MutatedHuman(Character):
 
 class LostWanderer(Character):
     """
-    Subclass of characters for the enemies
+    Subclass of character, a common enemy
     """
 
     def __init__(self,
@@ -421,8 +424,6 @@ class Player(Character):
     """
     Subclass of Character and it has all the commands that the player can do
     """
-    text_effect = type_print_effect
-    input_effect = input_print_effect
 
     def __init__(self,
                  health,
@@ -453,7 +454,6 @@ class Player(Character):
 
         # for the p.name instance to overwrite the values of the parent class
         self.name = ''
-        # stats for the enemies
 
         #  double damage converted to percentage for the user to see
         self.double_damage_percentage = "{0:.2%}".format(double_damage)
@@ -462,7 +462,8 @@ class Player(Character):
         """
         Function for random enemies to fight the player
         """
-
+        
+        # calling all of the common class enemy when the player walks with a one in third chance to encounter them
         deformed_mutated_human = DeformedMutatedHuman()
         mutated_human = MutatedHuman()
         lost_wanderer = LostWanderer()
@@ -473,16 +474,16 @@ class Player(Character):
             type_print_effect("A " + deformed_mutated_human.name + " has spotted you!\n")
             self.player_commands()
         elif random_enemy == 2:
-            type_print_effect("A " + mutated_human.name + " has suddenly sprinted towards you!\n")
+            type_print_effect("A " + mutated_human.name + " has suddenly sprinted towards your direction!\n")
             self.player_commands()
         elif random_enemy == 3:
             type_print_effect("The sound of a " + lost_wanderer.name + " echoed through the wind. And it has "
-                                                                       "caught your attention.\n")
+                                                                       "caught your attention!\n")
             self.player_commands()
 
     def attack(self):
         """
-        Player attack with random integer as its damage
+        Player attack using the .do_damage then if the player has leeching, call upon .leeching
         """
         pass
 
@@ -501,8 +502,9 @@ class Player(Character):
         # how many steps the player can take
         number_of_moves = random.randint(1, 10)
 
-        # enemy encounter
+        # if the player encounters an enemy
         if enemy_possibility == 1:
+            # call upon the random_enemy_encounter to see what enemy the player will face off
             self.random_enemy_encounter()
         else:
             type_print_effect(self.name + " has moved " + str(number_of_moves) + " steps\n")
@@ -625,7 +627,7 @@ class Player(Character):
 
             # for mutated human
             elif player_chosen_enemy_command == 'b':
-                print("Command for the player to move.")
+                print("A common enemy. Found at deserted land of the current planet")
                 print("There is a small percentage that the player will encounter an enemy while moving.")
                 print('')
 
