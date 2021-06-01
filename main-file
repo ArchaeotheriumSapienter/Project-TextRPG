@@ -22,6 +22,8 @@ import sys  # used for the text effect
 import time  # used to delay the texts for a few miliseconds
 
 BOSS_NAME = '⊑⟒⍀?'
+NEXT_TEXT_DURATION = 0.1
+INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
 
 
 # -----------------------
@@ -30,9 +32,26 @@ BOSS_NAME = '⊑⟒⍀?'
 
 
 def main():
-    # user_name = welcome_message_and_introduction()
+    # name, health, max_health, attack, double_damage, leeching, defense, shield_bubble,
+    # ultimate_levelup_bar, ultimate_levelup_bar_per_attack, levelup_bar, levelup_per_defeated_enemy
+
+    #  handler for the character parent class and the minimum value of each stats that a character can have
+    handler = Character('', 1, 1, 10, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    # initial stats of the player
+    p = Player(50, 50, 10, 0.05, 0, 5, 0, 20, 4, 30, 5)
+
+    # name input to get the name of the player
+    p.name = input_print_effect('Before we start, what is your name? ')
+
+    # welcome_message_and_introduction(p.name)
+    debug_attack = input('attack again? ')
+
+    while debug_attack == '':
+        p.player_commands()
+        debug_attack = input('attack again? ')
+
     # first_chapter()
-    player_commands()
 
 
 # -----------------------
@@ -40,35 +59,39 @@ def main():
 # -----------------------
 
 
-def welcome_message_and_introduction():
+def welcome_message_and_introduction(user_name):
     """
     Welcome message for the user to see and asks the user whether to start the game or not
     Return: user_name
     """
     type_print_effect("Welcome to the Journey.\n")
-    time.sleep(0.5)
-    type_print_effect('You are an adventurer that suddenly woke up without any recollection.\n')
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect('You are an individual that suddenly woke up without any recollection.\n')
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect('Now you must understand what happened before you came to this place.\n')
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
 
     # Asks the user for an input and the input of the user is turned into a lowercase to clean data
-    user_enter_introduction = input('Type y to start or n to end the game ')
-    user_enter_introduction_lowercase = user_enter_introduction.lower()
+    start_game = input_print_effect('Type y to start or n to end the game ').lower()
 
     # If argument with the user's choices, if n, it will exit the program, anything other than y or n will
     # be taken as a sign to end the game, and y will prompt to start the introduction function
-    if user_enter_introduction_lowercase == 'y':
-        # we got the username from the introduction that is why we put introduction in a
-        # variable
-        inputted_user_name = introduction()
-    elif user_enter_introduction_lowercase == 'n':
-        sys.exit()
-    else:
-        print('Invalid input. I assume you will exit the game. Thank you for playing!')
-        sys.exit()
+    while start_game != '':
+        if start_game == 'y':
+            introduction(user_name)
+            break
+        elif start_game == 'n':
+            print('')  # space for terminal
+            type_print_effect('Thank you for taking the time to check out my first Python Project.\n')
+            time.sleep(NEXT_TEXT_DURATION)
+            type_print_effect('This means a lot to me. Have a great day! :)')
+            sys.exit()
+        else:
+            print('')  # space for terminal
+            print('Invalid input. Please press the appropriate letter.')
 
-    return inputted_user_name
+            # Fencepost solution
+            start_game = input_print_effect('Type y to start or n to end the game ').lower()
 
 
 # def first_chapter():
@@ -79,7 +102,7 @@ def welcome_message_and_introduction():
 # -----------------------
 
 #  kulang pa dito YUNG WEAPONS LAGYAN MO MAMAYA
-def introduction():
+def introduction(user_name):
     """
     Opening dialogue with Alicia, the first character that the player saw, she will guide the player to the dojo
     Pre-condition: Player starts the game
@@ -87,63 +110,60 @@ def introduction():
     """
     print('')  # For spacing from the start menu
     type_print_effect("Hey, wake up! Are you okay? Who are you? And what are you doing near my home!\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("Oh my, you have so many bruises! Let me tend your wounds and then let's talk.\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("I'm Alicia by the way, its a good thing I found you here,\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("there isn't any hospitals or clinic here for hundreds of kilometers.\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("The best bet you have right now is me, good thing I have a first aid kit.\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect("I forgot to even ask! What's your name?\n")
 
-    #  Ask the player for their name
-    inputted_user_name = input_print_effect("I forgot to even ask! What's your name? ")
-
-    time.sleep(0.5)
-    type_print_effect("That's a nice name, " + inputted_user_name + "\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect("That's a nice name, " + user_name + "\n")
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("There we go, I patched your wounds. The problem now is where would you go?\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("And do you remember how you got here? Or who you are?\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("Hey! What's that in your shoulder, I guess I missed a wound.\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("...\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("You're one of them!!! I can't believe it. How did you wind up here? In the middle of nowhere?\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("You're here to defeat " + BOSS_NAME + "\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("But you can't! You'll get yourself killed!\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("But if you're one of them, I guess you're destined towards that goal? Destiny is so weird\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("I mean, who gets to decide what you should do? Is it the player? I guess not...\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("The player is only looking at the screen right now, just watching our whole conversation.\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("Anyway, since I can see that you're one of them, I believe you can still remember how to "
                       "fight?\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("Or how to use your power? I want to see how you release your power!\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("...\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("Don't you rememeber anything? Come on, just one move!\n")
-    time.sleep(0.5)
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("...\n")
-    time.sleep(0.5)
-    type_print_effect("Oh my, if that's the case, I think you should go to the nearby dojo. The sensei there would"
-                      " help you remember the once you've lost\n")
-    time.sleep(0.5)
-    type_print_effect("Before you go! I'll give you this to defend yourself. It's no longer safe ever since we've"
-                      " left Earth.\n")
-    time.sleep(0.5)
-    type_print_effect("Goodluck out there " + inputted_user_name + "\n")
-
-    #  return the user_name to be used in the entirety of the program
-    return inputted_user_name
+    time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect("Oh my, if that's the case, I think you should go to the nearby dojo.\n")
+    time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect("The sensei there would help you remember the once you've lost\n")
+    time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect("Before you go! I'll give you this to defend yourself.\n")
+    time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect("It's no longer safe ever since we've left Earth.\n")
+    time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect("Goodluck out there " + user_name + "\n")
 
 
 # -----------------------
@@ -161,7 +181,7 @@ def type_print_effect(text):
     for character in text:
         print(character, end='')
         sys.stdout.flush()
-        time.sleep(0.001)  # 0.05 normal speed
+        time.sleep(INPUT_AND_TEXT_EFFECT_DURATION)
 
 
 def input_print_effect(text):
@@ -175,128 +195,520 @@ def input_print_effect(text):
     for character in text:
         print(character, end='')
         sys.stdout.flush()
-        time.sleep(0.001)  # 0.05 normal speed
+        time.sleep(INPUT_AND_TEXT_EFFECT_DURATION)
     value = input()
     return value
 
 
 # -----------------------
-# Player Commands
+# Classes
 # -----------------------
 
-def player_commands():
+
+class Character:
     """
-    All commands that the player can do
+    Parent Class for all of the stats of each character, as well as the player.
+    This also has all the functions that each character can do
     """
-    print('What action do you want to do? We have the following')
 
-    # list of commands that the player can do
-    #command = {
-        #'a': attack(),
-        #'b': move(),
-        #'c': 'status()',
-        #'d': help_game(),
-        #'e': quit_game()
-    #}
+    def __init__(self, name, health, max_health, attack, double_damage, leeching, defense, shield_bubble,
+                 ultimate_levelup_bar, ultimate_levelup_bar_per_attack, levelup_bar, levelup_per_defeated_enemy):
+        self.name = name
+        self.health = health
+        self.max_health = max_health
+        self.attack = attack
+        self.double_damage = double_damage
+        self.leeching = leeching
+        self.defense = defense
+        self.shield_bubble = shield_bubble
 
-    # asks player for the command that they want to do
-    player_actions = input("Please press the appropriate letter for the command that you want to do ")
+        # stats for levelling up to gain your ultimate
+        self.ultimate_levelup_bar = ultimate_levelup_bar
+        self.ultimate_levelup_bar_per_attack = ultimate_levelup_bar_per_attack
 
-    # sanitizing the input by putting it in lowercase
-    player_actions_lowercase = player_actions.lower()
+        # stats for levelling up your character
+        self.levelup_bar = levelup_bar
+        self.levelup_per_defeated_enemy = levelup_per_defeated_enemy
 
-    if player_actions_lowercase == 'a':
-        attack()
-    elif player_actions_lowercase == 'b':
-        move()
-    elif player_actions_lowercase == 'c':
-        print('status()')
-    elif player_actions_lowercase == 'd':
-        help_game()
-    elif player_actions_lowercase == 'e':
-        quit_game()
+    def leeching(self, damage):
+        """
+        Function for the leeching power in which the damage given by the character is transformed into the
+        character's health
+        Return: self.health
+        """
 
+        # if the current health is less than max health
+        if self.health < self.max_health:
+            # if the leeching points is less than the damage given, give the value of the self.leeching as the
+            # additional health
+            if self.leeching <= damage:
+                self.health += self.leeching
 
-def attack():
-    """
-    Player attack with random integer as its damage
-    """
-    attack_damage = random.randint(1, 10)
-    print("user has attacked enemy with", attack_damage, "damage!")
+            # if the self.leeching points is higher than the damage, give the value of the damage as the health
+            # points
+            elif self.leeching > damage:
+                self.health += damage
 
+        # used when the self.health is higher than the maximum health due to leeching
+        if self.health > self.max_health:
+            surplus_health = self.health - self.max_health
+            self.health = self.health - surplus_health
 
-def move():
-    """
-    Function when a player moves, uses random integer to determine the number of steps the player takes
-    """
-    number_of_moves = random.randint(1, 10)
-    print("user has moved", number_of_moves, "steps")
+        return self.health
 
+    def do_damage(self, enemy):
+        """
+        Function for when a character attacks
+        :param enemy: To lower the health of the enemy
+        """
+        # damage of the character
+        damage = random.randint(0, self.attack)
 
-def help_game():
-    """
-    Function about all the information that the player wants to know
-    """
-    #  Dictionary when the player chooses 'a' which is a help desk for commands
-    commands = {
-                   'a': 'attack()',
-                   'b': 'move()',
-                   'c': 'status()',
-                   'd': 'help_game()',
-                   'e': 'quit_game()'
-               },
+        # for debugging only
+        # print('The damage is => ', damage)
 
-    print("What do you want to know about?")
+        # utilizing the defense, one in three chance that the defense will break
+        break_defense_chance = random.randint(1, 3)
 
-    #  Dictionary of information that the player can access
-    help_list = {
-        'a': "Commands",
-        'b': 'Enemies'}
+        # if the defenses break
+        if break_defense_chance == 1:
+            # when the damage is equals to zero
+            if damage == 0:
+                type_print_effect(enemy.name + " felt a scratch! " +
+                                  self.name + " dealt " + str(damage) + " damage!\n")
 
-    # for the user to see
-    print(help_list)
+            else:
+                # enemy losses health with no defense
+                enemy.health = enemy.health - damage
+                type_print_effect(enemy.name + "'s defense has broken! " +
+                                  self.name + " dealt " + str(damage) + " damage!\n")
+                type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
+        else:
+            # if the damage is lower than the defense of the enemy
+            if damage <= enemy.defense:
+                type_print_effect(enemy.name + " has defended all of your attack!\n")
+                type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
 
-    # asks the user which topic do they need help with
-    player_chosen_help_command = input('What do you want to choose? ')
+            else:
+                # used when the damage is larger than the defense
+                damage_with_defense = damage - enemy.defense
 
-    # lowercase for sanitation
-    player_chosen_help_command_lowercase = player_chosen_help_command.lower()
+                # for debugging only
+                # print(damage_with_defense, "is the damage with defense!")
 
-    # if statement to implement what the player has chosen from
-    if player_chosen_help_command_lowercase == 'a':
-        print(commands)
-        #  subset for the user to be asked what specific command they want to know
-        player_chosen_help_specific_command = input('What command do you want to learn more? ')
+                enemy.health = enemy.health - damage_with_defense
 
-        # lowecase sanitation
-        player_chosen_help_specific_command_lowercase = player_chosen_help_specific_command.lower()
+                # for debugging only
+                # print(enemy.health)
 
-        if player_chosen_help_specific_command_lowercase == 'a':
-            print('Command player attack')
+                type_print_effect(enemy.name + " defended a part of your attack! " +
+                                  self.name + " dealt " + str(damage) + " damage!\n")
+                type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
 
-        print(commands)
-
-
-def quit_game():
-    """
-    Command that will quit the game when the player wants to
-    """
-    #  Asks the player if they want to quit for a second time to make sure it was not a mistake
-    ask_player_again = input("Are you sure you want to exit? (Type y for yes, n for no) ")
-
-    # Change their response to lowercase for cleaner code
-    ask_player_again_lowercase = ask_player_again.lower()
-
-    if ask_player_again_lowercase == 'y':
-        print('Thank you for playing my game! I hope you enjoyed my first ever Programming Project.')
-        sys.exit()
-    elif ask_player_again_lowercase == 'n':
-        player_commands()
         print('')  # for spacing in the terminal
-    else:
-        print("Invalid input")
-        player_commands()
+
+
+# -----------------------
+# Enemy Classes
+# -----------------------
+# Classes of all kinds of enemies that the player will encounter
+
+class DeformedMutatedHuman(Character):
+    """
+    Subclass of characters for the enemies
+    """
+
+    def __init__(self,
+                 name='Deformed Mutated Human',
+                 health=10,
+                 max_health=10,
+                 attack=20,
+                 double_damage=None,
+                 leeching=None,
+                 defense=5,
+                 shield_bubble=None,
+                 ultimate_levelup_bar=None,
+                 ultimate_levelup_bar_per_attack=None,
+                 levelup_bar=None,
+                 levelup_per_defeated_enemy=None):
+        super().__init__(name,
+                         health,
+                         max_health,
+                         attack,
+                         double_damage,
+                         leeching,
+                         defense,
+                         shield_bubble,
+                         ultimate_levelup_bar,
+                         ultimate_levelup_bar_per_attack,
+                         levelup_bar,
+                         levelup_per_defeated_enemy)
+
+
+class MutatedHuman(Character):
+    """
+    Subclass of characters for the enemies
+    """
+
+    def __init__(self,
+                 name='Mutated Human',
+                 health=20,
+                 max_health=20,
+                 attack=10,
+                 double_damage=None,
+                 leeching=None,
+                 defense=7,
+                 shield_bubble=None,
+                 ultimate_levelup_bar=None,
+                 ultimate_levelup_bar_per_attack=None,
+                 levelup_bar=None,
+                 levelup_per_defeated_enemy=None):
+        super().__init__(name,
+                         health,
+                         max_health,
+                         attack,
+                         double_damage,
+                         leeching,
+                         defense,
+                         shield_bubble,
+                         ultimate_levelup_bar,
+                         ultimate_levelup_bar_per_attack,
+                         levelup_bar,
+                         levelup_per_defeated_enemy)
+
+
+class LostWanderer(Character):
+    """
+    Subclass of characters for the enemies
+    """
+
+    def __init__(self,
+                 name='Lost Wanderer',
+                 health=5,
+                 max_health=5,
+                 attack=20,
+                 double_damage=None,
+                 leeching=5,
+                 defense=7,
+                 shield_bubble=None,
+                 ultimate_levelup_bar=None,
+                 ultimate_levelup_bar_per_attack=None,
+                 levelup_bar=None,
+                 levelup_per_defeated_enemy=None):
+        super().__init__(name,
+                         health,
+                         max_health,
+                         attack,
+                         double_damage,
+                         leeching,
+                         defense,
+                         shield_bubble,
+                         ultimate_levelup_bar,
+                         ultimate_levelup_bar_per_attack,
+                         levelup_bar,
+                         levelup_per_defeated_enemy)
+
+
+# -----------------------
+# Player Class
+# -----------------------
+
+class Player(Character):
+    """
+    Subclass of Character and it has all the commands that the player can do
+    """
+    text_effect = type_print_effect
+    input_effect = input_print_effect
+
+    def __init__(self,
+                 health,
+                 max_health,
+                 attack,
+                 double_damage,
+                 leeching,
+                 defense,
+                 shield_bubble,
+                 ultimate_levelup_bar,
+                 ultimate_levelup_bar_per_attack,
+                 levelup_bar,
+                 levelup_per_defeated_enemy):
+
+        # grabbed the parent class for inheritance for its functions
+        super().__init__("",
+                         health,
+                         max_health,
+                         attack,
+                         double_damage,
+                         leeching,
+                         defense,
+                         shield_bubble,
+                         ultimate_levelup_bar,
+                         ultimate_levelup_bar_per_attack,
+                         levelup_bar,
+                         levelup_per_defeated_enemy)
+
+        # for the p.name instance to overwrite the values of the parent class
+        self.name = ''
+        # stats for the enemies
+
+        #  double damage converted to percentage for the user to see
+        self.double_damage_percentage = "{0:.2%}".format(double_damage)
+
+    def random_enemy_encounter(self):
+        """
+        Function for random enemies to fight the player
+        """
+
+        deformed_mutated_human = DeformedMutatedHuman()
+        mutated_human = MutatedHuman()
+        lost_wanderer = LostWanderer()
+
+        random_enemy = random.randint(1, 3)
+
+        if random_enemy == 1:
+            type_print_effect("A " + deformed_mutated_human.name + " has spotted you!\n")
+            self.player_commands()
+        elif random_enemy == 2:
+            type_print_effect("A " + mutated_human.name + " has suddenly sprinted towards you!\n")
+            self.player_commands()
+        elif random_enemy == 3:
+            type_print_effect("The sound of a " + lost_wanderer.name + " echoed through the wind. And it has "
+                                                                       "caught your attention.\n")
+            self.player_commands()
+
+    def attack(self):
+        """
+        Player attack with random integer as its damage
+        """
+        pass
+
+        # call upon leeching every time a character attacks and if the character has it
+        if self.leeching != 0:
+            self.health = self.leeching(self)
+
+    def move(self):
+        """
+        Function when a player moves, uses random integer to determine the number of steps the player takes
+        One out of three chance that the player will encounter an enemy while moving
+        """
+        # probablity for enemy to show up while moving
+        enemy_possibility = random.randint(1, 3)
+
+        # how many steps the player can take
+        number_of_moves = random.randint(1, 10)
+
+        # enemy encounter
+        if enemy_possibility == 1:
+            self.random_enemy_encounter()
+        else:
+            type_print_effect(self.name + " has moved " + str(number_of_moves) + " steps\n")
         print('')  # for spacing in the terminal
+
+    def status(self):
+        """
+        Function that shows the current status (health, attack damage, etc) of the user's character
+        """
+        print("Health: " + str(self.health) + "   |   " +
+              "Attack: " + str(self.attack) + "   |   " +
+              "Double Damage: " + self.double_damage_percentage)
+
+        print("Leeching: " + str(self.leeching) + "  |  " +
+              "Defense: " + str(self.defense) + "    |  " +
+              "Shield Bubble: " + str(self.shield_bubble))
+
+        print("Ultimate Level Up Bar: " + str(self.ultimate_levelup_bar))
+        print("Ultimate Level Up Bar Per Attack: " + str(self.ultimate_levelup_bar_per_attack))
+        print("Level Up Bar: " + str(self.levelup_bar))
+
+        print('')  # for spacing in the terminal
+
+    @staticmethod
+    def help_game():
+        """
+        Function about all the information that the player wants to know
+        """
+        #  Dictionary when the player chooses 'a' which is a help desk for commands
+        commands = [
+            'a = attack',
+            'b = move',
+            'c = status',
+            'd = help',
+            'e = quit'
+        ]
+        enemy = [
+            'a = Deformed Mutating Human'
+            'b = Mutated Human'
+            'c = Lost Wanderer'
+            'd = Chaser'
+
+        ]
+
+        type_print_effect("This is the help section. What do you want to know about?\n")
+
+        #  Dictionary of information that the player can access
+        help_dict = {
+            'a': "Commands",
+            'b': 'Enemies'}
+
+        # dictionary for the user to see
+        print(help_dict)
+
+        # asks the user which topic do they need help with and lowercase for sanitation
+        print('')
+        player_chosen_help_command = input_print_effect('Which command do you want to choose? ').lower()
+
+        # if statement to implement what the player has chosen from
+        # a for the commands
+        if player_chosen_help_command == 'a':
+            print(commands)
+            # space for terminal
+            print('')
+            # subset for the user to be asked what specific command they want to know plus lowercase for sanitation
+            player_chosen_help_specific_command = input_print_effect('What command do you want to learn more? ').lower()
+            print("-" * 20)
+
+            # for attack
+            if player_chosen_help_specific_command == 'a':
+                print("Command for the player to attack.")
+                print("Damage is based on the current weapon that the player is holding.")
+                print('')
+
+            # for move
+            elif player_chosen_help_specific_command == 'b':
+                print("Command for the player to move.")
+                print("There is a small percentage that the player will encounter an enemy while moving.")
+                print('')
+
+            # for status
+            elif player_chosen_help_specific_command == 'c':
+                print("Command for the player to see their character's status.")
+                print('')
+
+            # for help section
+            elif player_chosen_help_specific_command == 'd':
+                print("Command for the player to see the help section of the game.")
+                print('')
+
+            # for quitting the game
+            elif player_chosen_help_specific_command == 'e':
+                print("Command for the player to quit the game.")
+                print('')
+
+            # when invalid input
+            else:
+                print('Invalid input. Please press the aproppriate letter.')
+                print('')
+                Player.help_game()
+
+        # for enemies
+        elif player_chosen_help_command == 'b':
+
+            # for the user to see all types of enemies
+            print(enemy)
+            # space for terminal
+            print('')
+            # subset for the user to be asked what specific enemy they want to know plus lowercase for sanitation
+            player_chosen_enemy_command = input_print_effect('What enemy do you want to learn more? ').lower()
+
+            # for cleanliness in terminal
+            print("-" * 20)
+
+            # for deformed mutated human
+            if player_chosen_enemy_command == 'a':
+                print("Command for the player to attack.")
+                print("Damage is based on the current weapon that the player is holding.")
+                print('')
+
+            # for mutated human
+            elif player_chosen_enemy_command == 'b':
+                print("Command for the player to move.")
+                print("There is a small percentage that the player will encounter an enemy while moving.")
+                print('')
+
+            # for lost wanderer
+            elif player_chosen_enemy_command == 'c':
+                print("Command for the player to see their character's status.")
+                print('')
+
+            # for chaser
+            elif player_chosen_enemy_command == 'd':
+                print("Command for the player to see the help section of the game.")
+                print('')
+            elif player_chosen_enemy_command == 'e':
+                print("Command for the player to quit the game.")
+                print('')
+            else:
+                print('Invalid input. Please press the aproppriate letter.')
+
+                # fencepost solution
+                #  subset for the user to be asked what specific command they want to know plus
+                #  lowercase for sanitation
+                print('')
+                Player.help_game()
+
+        # use for cleaner terminal reading
+        print("-" * 20)
+        print('END OF HELP SECTION')
+        print("-" * 20)
+        print('')
+
+    def quit_game(self):
+        """
+        Command that will quit the game when the player wants to
+        """
+        #  Asks the player if they want to quit for a second time to make sure it was not a mistake and lowercase
+        # for sanitation
+        ask_player_again = input_print_effect("Are you sure you want to exit? (Type y for yes, n for no) ").lower()
+
+        while ask_player_again != '':
+            if ask_player_again == 'y':
+                type_print_effect(
+                    'Thank you for playing my game! I hope you enjoyed my first ever Programming Project.')
+                sys.exit()
+            elif ask_player_again == 'n':
+                print('')  # for spacing in the terminal
+                Player.player_commands(self)
+
+            else:
+                type_print_effect("Invalid input\n")
+                print('')  # for spacing in the terminal
+
+                #  fencepost solution
+                ask_player_again = input_print_effect(
+                    "Are you sure you want to exit? (Type y for yes, n for no) ").lower()
+
+    def player_commands(self):
+        """
+        All commands that the player can do
+        """
+        print('What action do you want to do? We have the following.')
+
+        #  for the user to see
+        command_list = ["a = attack", 'b = move', 'c = status', 'd = help', 'e = quit']
+        print(command_list)
+
+        # asks player for the command that they want to do plus lowercase for sanitation
+        player_actions = input("Please press the appropriate letter "
+                               "for the command that you want to do. ").lower()
+        print('')  # for spacing in the terminal
+
+        if player_actions == 'a':
+            Player.attack(self)
+        elif player_actions == 'b':
+            Player.move(self)
+        elif player_actions == 'c':
+            Player.status(self)
+        elif player_actions == 'd':
+            Player.help_game()
+        elif player_actions == 'e':
+            Player.quit_game(self)
+        else:
+            type_print_effect("Invalid input.\n")
+            print('')  # for spacing in the terminal
+            Player.player_commands(self)
 
 
 # -----------------------
