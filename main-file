@@ -416,6 +416,38 @@ class LostWanderer(Character):
                          levelup_per_defeated_enemy)
 
 
+class Chaser(Character):
+    """
+    Subclass of character, a common enemy
+    """
+
+    def __init__(self,
+                 name='Chaser',
+                 health=15,
+                 max_health=15,
+                 attack=15,
+                 double_damage=None,
+                 leeching=2,
+                 defense=7,
+                 shield_bubble=None,
+                 ultimate_levelup_bar=None,
+                 ultimate_levelup_bar_per_attack=None,
+                 levelup_bar=None,
+                 levelup_per_defeated_enemy=None):
+        super().__init__(name,
+                         health,
+                         max_health,
+                         attack,
+                         double_damage,
+                         leeching,
+                         defense,
+                         shield_bubble,
+                         ultimate_levelup_bar,
+                         ultimate_levelup_bar_per_attack,
+                         levelup_bar,
+                         levelup_per_defeated_enemy)
+
+
 # -----------------------
 # Player Class
 # -----------------------
@@ -462,23 +494,32 @@ class Player(Character):
         """
         Function for random enemies to fight the player
         """
-        
+
         # calling all of the common class enemy when the player walks with a one in third chance to encounter them
         deformed_mutated_human = DeformedMutatedHuman()
         mutated_human = MutatedHuman()
         lost_wanderer = LostWanderer()
+        chaser = Chaser()
 
-        random_enemy = random.randint(1, 3)
+        random_enemy = random.randint(1, 4)
 
         if random_enemy == 1:
             type_print_effect("A " + deformed_mutated_human.name + " has spotted you!\n")
+            print('')  # space for terminal
             self.player_commands()
         elif random_enemy == 2:
-            type_print_effect("A " + mutated_human.name + " has suddenly sprinted towards your direction!\n")
+            type_print_effect("A " + mutated_human.name + " screeched as it notices your movement!\n")
+            print('')  # space for terminal
             self.player_commands()
         elif random_enemy == 3:
             type_print_effect("The sound of a " + lost_wanderer.name + " echoed through the wind. And it has "
                                                                        "caught your attention!\n")
+            print('')  # space for terminal
+            self.player_commands()
+        elif random_enemy == 4:
+            type_print_effect("A vicious " + chaser.name + " has smelled your scent. It suddenly sprinted "
+                                                           "towards your direction!!\n")
+            print('')  # space for terminal
             self.player_commands()
 
     def attack(self):
