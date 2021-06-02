@@ -260,69 +260,98 @@ class Character:
 
     def do_damage(self, enemy):
         """
-        Function for when a character attacks
+        Function for when the player attacks
         :param enemy: To lower the health of the enemy
         """
-        # for debugging only
-        attack_debug = input_print_effect("Attack? y yes n no")
-
-        # debugging only
-        while attack_debug == 'y':
+        attack_debug_2 = input_print_effect("Press Enter to Attack ")
+        while attack_debug_2 == '':
             # damage of the character
             damage = random.randint(0, self.attack)
-
-            # for debugging only
-            # print('The damage is => ', damage)
 
             # utilizing the defense, one in three chance that the defense will break
             break_defense_chance = random.randint(1, 3)
 
-            # if the defenses break
-            if break_defense_chance == 1:
-                # when the damage is equals to zero
-                if damage == 0:
-                    type_print_effect(enemy.name + " felt a scratch! " +
-                                      self.name + " dealt " + str(damage) + " damage!\n")
-                    type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
+            # checks to see if the class that called the method is the player
+            if self == Player:
+                # if the defenses break
+                if break_defense_chance == 1:
+                    # when the damage is equals to zero
+                    if damage == 0:
+                        type_print_effect(enemy.name + " felt a scratch! " +
+                                          self.name + " dealt " + str(damage) + " damage!\n")
+                        type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
 
+                    else:
+                        # enemy losses health with no defense
+                        enemy.health = enemy.health - damage
+                        type_print_effect(enemy.name + "'s defense has broken! " +
+                                          self.name + " dealt " + str(damage) + " damage!\n")
+                        type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                          str(enemy.health) + "!\n")
+                        type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
                 else:
-                    # enemy losses health with no defense
-                    enemy.health = enemy.health - damage
-                    type_print_effect(enemy.name + "'s defense has broken! " +
-                                      self.name + " dealt " + str(damage) + " damage!\n")
-                    type_print_effect("The " + enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-                    type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
-            else:
-                # if the damage is lower than the defense of the enemy
-                if damage <= enemy.defense:
-                    type_print_effect(enemy.name + " has defended all of your attack!\n")
-                    type_print_effect("The " + enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-                    type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
+                    # if the damage is lower than the defense of the enemy
+                    if damage <= enemy.defense:
+                        type_print_effect(enemy.name + " has defended all of your attack!\n")
+                        type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                          str(enemy.health) + "!\n")
+                        type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
 
+                    else:
+                        # used when the damage is larger than the defense
+                        damage_with_defense = damage - enemy.defense
+
+                        # for debugging only
+                        # print(damage_with_defense, "is the damage with defense!")
+
+                        enemy.health = enemy.health - damage_with_defense
+
+                        # for debugging only
+                        # print(enemy.health)
+
+                        type_print_effect(enemy.name + " defended a part of your attack! " +
+                                          self.name + " dealt " + str(damage) + " damage!\n")
+                        type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                          str(enemy.health) + "!\n")
+                        type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
+
+            # if the caller are the common enemies
+            if self == DeformedMutatedHuman or self == MutatedHuman or self == LostWanderer or self == Chaser:
+                # if the defenses break
+                if break_defense_chance == 1:
+                    # when the damage is equals to zero
+                    if damage == 0:
+                        type_print_effect(enemy.name + " dodged all off " +
+                                          self.name + " attacks!\n")
+                        type_print_effect(enemy.name + "'s Health is: " + str(self.health) + "\n")
+
+                    else:
+                        # enemy losses health with no defense
+                        enemy.health = enemy.health - damage
+                        type_print_effect(enemy.name + "'s defense has broken! " +
+                                          self.name + " dealt " + str(damage) + " damage!\n")
+                        type_print_effect(enemy.name + "'s remaining health is " +
+                                          str(enemy.health) + "!\n")
                 else:
-                    # used when the damage is larger than the defense
-                    damage_with_defense = damage - enemy.defense
+                    # if the damage is lower than the defense of the enemy
+                    if damage <= enemy.defense:
+                        type_print_effect(enemy.name + " has defended all of " + self.name + " attacks!\n")
+                        type_print_effect(enemy.name + "'s remaining health is " +
+                                          str(enemy.health) + "!\n")
 
-                    # for debugging only
-                    # print(damage_with_defense, "is the damage with defense!")
+                    else:
+                        # used when the damage is larger than the defense
+                        damage_with_defense = damage - enemy.defense
 
-                    enemy.health = enemy.health - damage_with_defense
+                        enemy.health = enemy.health - damage_with_defense
 
-                    # for debugging only
-                    # print(enemy.health)
+                        type_print_effect(enemy.name + " defended a part of " + self.name + " attack! " +
+                                          self.name + " dealt " + str(damage) + " damage!\n")
+                        type_print_effect(enemy.name + "'s remaining health is " +
+                                          str(enemy.health) + "!\n")
 
-                    type_print_effect(enemy.name + " defended a part of your attack! " +
-                                      self.name + " dealt " + str(damage) + " damage!\n")
-                    type_print_effect("The " + enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-                    type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
-
-            self.do_damage()
-
-            print('')  # for spacing in the terminal
-            attack_debug = input_print_effect("Attack again? y yes n no")
+                print('')  # for spacing in the terminal
+                attack_debug_2 = input_print_effect("Press Enter to Attack ")
 
 
 # -----------------------
@@ -499,7 +528,7 @@ class Player(Character):
         # for the p.name instance to overwrite the values of the parent class
         self.name = ''
 
-        #  double damage converted to percentage for the user to see
+        #  double damage converted to percentage for the user to see in the status command
         self.double_damage_percentage = "{0:.2%}".format(double_damage)
 
     def random_enemy_encounter(self):
@@ -518,21 +547,37 @@ class Player(Character):
         if random_enemy == 1:
             type_print_effect("A " + deformed_mutated_human.name + " has spotted you!\n")
             print('')  # space for terminal
-            self.do_damage(deformed_mutated_human)
+            attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
+            while attack_debug == '':
+                self.do_damage(deformed_mutated_human)
+                deformed_mutated_human.do_damage(Player)
+                attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
         elif random_enemy == 2:
             type_print_effect("A " + mutated_human.name + " screeched as it notices your movement!\n")
             print('')  # space for terminal
-            self.do_damage(mutated_human)
+            attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
+            while attack_debug == '':
+                self.do_damage(mutated_human)
+                mutated_human.do_damage(Player)
+                attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
         elif random_enemy == 3:
             type_print_effect("The sound of a " + lost_wanderer.name + " echoed through the wind. And it has "
                                                                        "caught your attention!\n")
             print('')  # space for terminal
-            self.do_damage(lost_wanderer)
+            attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
+            while attack_debug == '':
+                self.do_damage(lost_wanderer)
+                lost_wanderer.do_damage(Player)
+                attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
         elif random_enemy == 4:
             type_print_effect("A vicious " + chaser.name + " has smelled your scent. It suddenly sprinted "
                                                            "towards your direction!!\n")
             print('')  # space for terminal
-            self.do_damage(chaser)
+            attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
+            while attack_debug == '':
+                self.do_damage(chaser)
+                chaser.do_damage(Player)
+                attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
 
     def attack(self):
         """
