@@ -47,11 +47,11 @@ def main():
     p.name = input_print_effect('Before we start, what is your name? ')
 
     # welcome_message_and_introduction(p.name)
-    debug_attack = input('attack again? ')
+    debug_attack = input('Just Press Enter ')
 
     while debug_attack == '':
         p.player_commands()
-        debug_attack = input('attack again? ')
+        debug_attack = input('Just Press Enter  ')
 
     # first_chapter()
 
@@ -264,7 +264,7 @@ class Character:
         :param enemy: To lower the health of the enemy
         """
         # for debugging only
-        attack_debug = input_print_effect("Attack again? y yes n no")
+        attack_debug = input_print_effect("Attack? y yes n no")
 
         # debugging only
         while attack_debug == 'y':
@@ -283,6 +283,7 @@ class Character:
                 if damage == 0:
                     type_print_effect(enemy.name + " felt a scratch! " +
                                       self.name + " dealt " + str(damage) + " damage!\n")
+                    type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
 
                 else:
                     # enemy losses health with no defense
@@ -291,12 +292,14 @@ class Character:
                                       self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
             else:
                 # if the damage is lower than the defense of the enemy
                 if damage <= enemy.defense:
                     type_print_effect(enemy.name + " has defended all of your attack!\n")
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
 
                 else:
                     # used when the damage is larger than the defense
@@ -314,6 +317,9 @@ class Character:
                                       self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    type_print_effect(self.name + "'s Health is: " + str(self.health) + "\n")
+
+            self.do_damage()
 
             print('')  # for spacing in the terminal
             attack_debug = input_print_effect("Attack again? y yes n no")
