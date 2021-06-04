@@ -10,12 +10,14 @@ Milestone:
 3. Create character - done
 4. Make character move, attack, defend - done
     a. make a set of moves that a player can do:
-        - move
-        - attack
+        - move done
+        - attack not yet
         -
 5. Make an enemy - done
 6. Random occurence of enemy when player is walking - done
-6. Make enemy fight the character
+6. Make enemy fight the character - done
+8. Make a scripted enemy
+9. continue storyline
 """
 
 import random  # used for moving and random events in the game
