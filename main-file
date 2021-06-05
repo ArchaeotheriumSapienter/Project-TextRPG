@@ -25,10 +25,11 @@ import sys  # used for the text effect
 import time  # used to delay the texts for a few miliseconds
 
 BOSS_NAME = '⊑⟒⍀?'
-ENEMY_POSSIBILITY = 5  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
+ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
 # spawning
-FLEE_POSSIBILITY = 3 # constant for flee function based from 1 to an integer for the possibility of the character
+FLEE_POSSIBILITY = 3  # constant for flee function based from 1 to an integer for the possibility of the character
 # fleeing
+RANDOM_ENEMY_INTEGER = 1  # used for debugging in the random_enemy_occurance. Each integer
 NEXT_TEXT_DURATION = 0.1
 INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
 
@@ -47,7 +48,7 @@ def main():
     handler = Character('', 1, 1, 10, 0, 0, 0, 0, 0, 0, 0, 0)
 
     # initial stats of the player
-    p = Player(50, 50, 10, 0.05, 0, 5, 0, 20, 4, 30, 5)
+    p = Player(50, 50, 15, 0.05, 0, 7, 0, 20, 4, 30, 5)
 
     # name input to get the name of the player
     p.name = input_print_effect('Before we start, what is your name? ')
@@ -355,7 +356,28 @@ class Character:
                     type_print_effect(enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
 
-        print('')  # for spacing in the terminal
+        # used when a character or the player dies
+        self.character_death(enemy)
+
+    def character_death(self, enemy):
+        # if the enemy dies
+        if self.__class__ == Player:
+            if enemy.health <= 0:
+                type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
+
+                # used to revive the enemy's health
+                enemy.health = enemy.max_health + 1
+                enemy.max_health = enemy.max_health + 1
+
+                # for levelling up the character and gaining plus health
+                self.health = self.max_health + 1
+                self.max_health = self.max_health + 1
+                type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
+                type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
+                print('')  # space for terminal
+
+        # to cut the loop of still going into attack mode
+        Player.player_commands(self)
 
 
 # -----------------------
@@ -547,49 +569,58 @@ class Player(Character):
         chaser = Chaser()
 
         # each integer is equivalent to one type of enemy
-        random_enemy = random.randint(1, 4)
+        random_enemy = random.randint(1, RANDOM_ENEMY_INTEGER)
 
-        # if statement to determine what enemy the player will encounter based on the random_enemy integer
         if random_enemy == 1:
             type_print_effect("A " + deformed_mutated_human.name + " has spotted you!\n")
             print('')  # space for terminal
-            self.player_commands_attack_mode()
-            while attack_debug == '':
-                self.do_damage(deformed_mutated_human)
-                deformed_mutated_human.do_damage(self)
-                attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
+
         elif random_enemy == 2:
             type_print_effect("A " + mutated_human.name + " screeched as it notices your movement!\n")
             print('')  # space for terminal
-            attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
-            while attack_debug == '':
-                self.do_damage(mutated_human)
-                mutated_human.do_damage(self)
-                attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
+
         elif random_enemy == 3:
             type_print_effect("The sound of a " + lost_wanderer.name + " echoed through the wind. And it has "
                                                                        "caught your attention!\n")
             print('')  # space for terminal
-            attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
-            while attack_debug == '':
-                self.do_damage(lost_wanderer)
-                lost_wanderer.do_damage(self)
-                attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
+
         elif random_enemy == 4:
             type_print_effect("A vicious " + chaser.name + " has smelled your scent. It suddenly sprinted "
                                                            "towards your direction!\n")
             print('')  # space for terminal
-            attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
-            while attack_debug == '':
-                self.do_damage(chaser)
-                chaser.do_damage(self)
-                attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
 
-    def attack(self):
+        self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                         chaser)
+
+    def attack(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer, chaser):
         """
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
         """
-        pass
+        if random_enemy == 1:
+            self.do_damage(deformed_mutated_human)
+            deformed_mutated_human.do_damage(self)
+            self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                             chaser)
+
+        elif random_enemy == 2:
+            self.do_damage(mutated_human)
+            mutated_human.do_damage(self)
+            self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                             chaser)
+
+        elif random_enemy == 3:
+            self.do_damage(lost_wanderer)
+            lost_wanderer.do_damage(self)
+            self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                             chaser)
+
+        elif random_enemy == 4:
+            # attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
+            # while attack_debug == '':
+            self.do_damage(chaser)
+            chaser.do_damage(self)
+            self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                             chaser)
 
         # call upon leeching every time a character attacks and if the character has it
         if self.leeching != 0:
@@ -619,7 +650,6 @@ class Player(Character):
         else:
             type_print_effect(self.name + " has moved " + str(number_of_moves) + " steps.\n")
         print('')  # for spacing in the terminal
-
 
     def flee(self):
         """
@@ -834,7 +864,7 @@ class Player(Character):
             print('')  # for spacing in the terminal
             Player.player_commands(self)
 
-    def player_commands_attack_mode(self):
+    def player_commands_attack_mode(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer, chaser):
         """
         All commands that the player can do when the player encounters an enemy
         """
@@ -850,20 +880,20 @@ class Player(Character):
         print('')  # for spacing in the terminal
 
         if player_actions == 'a':
-            move = Player.attack(self)
+            Player.attack(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer, chaser)
         elif player_actions == 'b':
-            move = Player.flee(self)
+            Player.flee(self)
         elif player_actions == 'c':
-            move = Player.status(self)
+            Player.status(self)
         elif player_actions == 'd':
-            move = Player.help_game()
+            Player.help_game()
         elif player_actions == 'e':
-            move = Player.quit_game(self)
+            Player.quit_game(self)
         else:
             type_print_effect("Invalid input.\n")
             print('')  # for spacing in the terminal
-            Player.player_commands_attack_mode(self)
-        return move
+            Player.player_commands_attack_mode(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                               chaser)
 
 
 # -----------------------
