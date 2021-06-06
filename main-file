@@ -321,6 +321,7 @@ class Character:
         # if the caller are the common enemies
         if self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
                 or self.__class__ == LostWanderer or self.__class__ == Chaser:
+            print('')  # space for terminal
             # for aesthetics in terminal
             print("------------------------------------ENEMY'S TURN-------------------------------------")
             # if the defenses break
@@ -331,6 +332,7 @@ class Character:
                                       enemy.name + "!\n")
                     type_print_effect(enemy.name + "'s Health is: " + str(self.health) + "\n")
 
+                # when the defenses break but there is damage
                 else:
                     # enemy losses health with no defense
                     enemy.health = enemy.health - damage
@@ -338,6 +340,8 @@ class Character:
                                       self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect(enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+
+            # if the defenses did not break
             else:
                 # if the damage is lower than the defense of the enemy
                 if damage <= enemy.defense:
@@ -345,19 +349,18 @@ class Character:
                     type_print_effect(enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
 
+                # if the damage exceeds the defense
                 else:
-                    # used when the damage is larger than the defense
+                    # damage is subtracted to defense, that is the updated damage
                     damage_with_defense = damage - enemy.defense
 
+                    # enemy losses health with defense
                     enemy.health = enemy.health - damage_with_defense
 
                     type_print_effect(enemy.name + " defended a part of " + self.name + " attack! " +
                                       self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect(enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
-
-        # used when a character or the player dies
-        self.character_death(enemy)
 
     def character_death(self, enemy):
         # if the enemy dies
@@ -376,16 +379,21 @@ class Character:
                 type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
                 print('')  # space for terminal
 
-        # to cut the loop of still going into attack mode
-        Player.player_commands(self)
+                # to cut the loop of still going into attack mode when the enemy dies
+                Player.player_commands(self)
+        
+        else:
+            # when the player dies
+            type_print_effect(enemy.name + " has been slain by " + self.name + " with no mercy!\n")
+            type_print_effect("Game over! Thank you so much for playing The Journey\n")
+            
+            # end the game when the enemy dies
+            sys.exit()
 
 
 # -----------------------
-# Enemy Classes
+# Enemy Classes - COMMON
 # -----------------------
-# Classes of all kinds of enemies that the player will encounter
-
-# ENEMY COMMON CLASS
 
 class DeformedMutatedHuman(Character):
     """
@@ -598,7 +606,10 @@ class Player(Character):
         """
         if random_enemy == 1:
             self.do_damage(deformed_mutated_human)
+            # used when a character or the player dies
+            self.character_death(deformed_mutated_human)
             deformed_mutated_human.do_damage(self)
+            deformed_mutated_human.character_death(self)
             self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
                                              chaser)
 
