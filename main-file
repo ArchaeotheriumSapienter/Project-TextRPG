@@ -45,8 +45,6 @@ NEXT_TEXT_DURATION = 0.1
 INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
 
 
-
-
 # -----------------------
 # Main Function
 # -----------------------
@@ -326,13 +324,13 @@ class Character:
                     # for debugging only
                     # print(enemy.health)
 
-                    type_print_effect(enemy.name + " defended a part of your attack! " +
-                                      self.name + " dealt " + str(damage) + " damage!\n")
+                    type_print_effect(enemy.name + " defended a part of " + self.name + " attack!\n")
+                    type_print_effect(self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
 
         # if the caller are the common enemies
-        if self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
+        elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
                 or self.__class__ == LostWanderer or self.__class__ == Chaser:
             print('')  # space for terminal
             # for aesthetics in terminal
@@ -343,7 +341,8 @@ class Character:
                 if damage == 0:
                     type_print_effect(self.name + " barely scratched " +
                                       enemy.name + "!\n")
-                    type_print_effect(enemy.name + "'s Health is: " + str(self.health) + "\n")
+                    type_print_effect(enemy.name + "'s Health is: " + str(enemy.health) + "\n")
+                    print('')  # space for terminal
 
                 # when the defenses break but there is damage
                 else:
@@ -353,6 +352,7 @@ class Character:
                                       self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect(enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    print('')  # space for terminal
 
             # if the defenses did not break
             else:
@@ -361,6 +361,7 @@ class Character:
                     type_print_effect(enemy.name + " defended all of " + self.name + " attacks!\n")
                     type_print_effect(enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    print('')  # space for terminal
 
                 # if the damage exceeds the defense
                 else:
@@ -370,33 +371,35 @@ class Character:
                     # enemy losses health with defense
                     enemy.health = enemy.health - damage_with_defense
 
-                    type_print_effect(enemy.name + " defended a part of " + self.name + " attack! " +
-                                      self.name + " dealt " + str(damage) + " damage!\n")
+                    type_print_effect(enemy.name + " defended a part of " + self.name + " attack!\n")
+                    type_print_effect(self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect(enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    print('')  # space for terminal
 
+        return enemy.health
         # used to call if a character dies
-        self.character_death(enemy)
+        # self.character_death(enemy)
 
     def character_death(self, enemy):
         # if the enemy of the instance caller dies
         if enemy.health <= 0:
             # if the enemy dies
             if self.__class__ == Player:
-    
+
                 type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
-    
+
                 # used to revive the enemy's health
                 enemy.health = enemy.max_health + 1
                 enemy.max_health = enemy.max_health + 1
-    
+
                 # for levelling up the character and gaining plus health
                 self.health = self.max_health + 1
                 self.max_health = self.max_health + 1
                 type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
                 type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
                 print('')  # space for terminal
-    
+
                 # to cut the loop of still going into attack mode when the enemy dies
                 Player.player_commands(self)
 
@@ -404,9 +407,14 @@ class Character:
             else:
                 type_print_effect(enemy.name + " has been slain by " + self.name + " with no mercy!\n")
                 type_print_effect("Game over! Thank you so much for playing The Journey\n")
-    
+
                 # end the game when the enemy dies
                 sys.exit()
+
+        # if enemy did not die
+        # else:
+        # counter attack to player if the player did not die
+        # enemy.do_damage(self)
 
 
 # -----------------------
@@ -623,34 +631,44 @@ class Player(Character):
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
         """
         if random_enemy == DEFORMED_MUTATED_HUMAN:
-            self.do_damage(deformed_mutated_human)
-            # used when a character or the player dies
-            #self.character_death(deformed_mutated_human)
-            deformed_mutated_human.do_damage(self)
-            #deformed_mutated_human.character_death(self)
-            self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                             chaser)
+            enemy_health = self.do_damage(deformed_mutated_human)
+            if enemy_health <= 0:
+                self.character_death(deformed_mutated_human)
+            else:
+                deformed_mutated_human.do_damage(self)
+                deformed_mutated_human.character_death(self)
+                self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                                 chaser)
 
         elif random_enemy == MUTATED_HUMAN:
-            self.do_damage(mutated_human)
-            #self.character_death(mutated_human)
-            mutated_human.do_damage(self)
-            self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                             chaser)
+            enemy_health = self.do_damage(mutated_human)
+            if enemy_health <= 0:
+                self.character_death(mutated_human)
+            else:
+                mutated_human.do_damage(self)
+                mutated_human.character_death(self)
+                self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                                 chaser)
 
         elif random_enemy == LOST_WANDERER:
-            self.do_damage(lost_wanderer)
-            lost_wanderer.do_damage(self)
-            self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                             chaser)
+            enemy_health = self.do_damage(lost_wanderer)
+            if enemy_health <= 0:
+                self.character_death(lost_wanderer)
+            else:
+                lost_wanderer.do_damage(self)
+                lost_wanderer.character_death(self)
+                self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                                 chaser)
 
         elif random_enemy == CHASER:
-            # attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
-            # while attack_debug == '':
-            self.do_damage(chaser)
-            chaser.do_damage(self)
-            self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                             chaser)
+            enemy_health = self.do_damage(chaser)
+            if enemy_health <= 0:
+                self.character_death(chaser)
+            else:
+                chaser.do_damage(self)
+                chaser.character_death(self)
+                self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
+                                                 chaser)
 
         # call upon leeching every time a character attacks and if the character has it
         if self.leeching != 0:
