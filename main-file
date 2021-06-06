@@ -699,15 +699,14 @@ class Player(Character):
             type_print_effect(self.name + " has moved " + str(number_of_moves) + " steps.\n")
         print('')  # for spacing in the terminal
 
+    @staticmethod
     def flee(self):
         """
         A function only found while attack mode is one, a one in integer chance for the character to flee to prevent
         them from dying
         """
         flee_chance = random.randint(1, FLEE_POSSIBILITY)
-
-        if flee_chance == 1:
-            type_print_effect("You have successfully escaped")
+        return flee_chance
 
     def status(self):
         """
@@ -898,7 +897,7 @@ class Player(Character):
         print('')  # for spacing in the terminal
 
         if player_actions == 'a':
-            type_print_effect('There are no enemies in sight...so far.')
+            type_print_effect('There are no enemies in sight...so far.\n')
         elif player_actions == 'b':
             Player.move(self)
         elif player_actions == 'c':
@@ -930,7 +929,7 @@ class Player(Character):
         if player_actions == 'a':
             Player.attack(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer, chaser)
         elif player_actions == 'b':
-            Player.flee(self)
+            Player.flee(self, enemy)
         elif player_actions == 'c':
             Player.status(self)
         elif player_actions == 'd':
