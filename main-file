@@ -25,13 +25,26 @@ import sys  # used for the text effect
 import time  # used to delay the texts for a few miliseconds
 
 BOSS_NAME = '⊑⟒⍀?'
+
+# ======================= POSSIBILITY CONSTANTS ======================= #
 ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
 # spawning
 FLEE_POSSIBILITY = 3  # constant for flee function based from 1 to an integer for the possibility of the character
 # fleeing
 RANDOM_ENEMY_INTEGER = 1  # used for debugging in the random_enemy_occurance. Each integer
+
+# ======================= RANDOM ENEMY CONSTANTS ======================= #
+# constants used for the random enemy function
+DEFORMED_MUTATED_HUMAN = 1
+MUTATED_HUMAN = 2
+LOST_WANDERER = 3
+CHASER = 4
+
+# ======================= TEXT EFFECT CONSTANTS ======================= #
 NEXT_TEXT_DURATION = 0.1
 INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
+
+
 
 
 # -----------------------
@@ -362,33 +375,38 @@ class Character:
                     type_print_effect(enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
 
-    def character_death(self, enemy):
-        # if the enemy dies
-        if self.__class__ == Player:
-            if enemy.health <= 0:
-                type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
+        # used to call if a character dies
+        self.character_death(enemy)
 
+    def character_death(self, enemy):
+        # if the enemy of the instance caller dies
+        if enemy.health <= 0:
+            # if the enemy dies
+            if self.__class__ == Player:
+    
+                type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
+    
                 # used to revive the enemy's health
                 enemy.health = enemy.max_health + 1
                 enemy.max_health = enemy.max_health + 1
-
+    
                 # for levelling up the character and gaining plus health
                 self.health = self.max_health + 1
                 self.max_health = self.max_health + 1
                 type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
                 type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
                 print('')  # space for terminal
-
+    
                 # to cut the loop of still going into attack mode when the enemy dies
                 Player.player_commands(self)
-        
-        else:
+
             # when the player dies
-            type_print_effect(enemy.name + " has been slain by " + self.name + " with no mercy!\n")
-            type_print_effect("Game over! Thank you so much for playing The Journey\n")
-            
-            # end the game when the enemy dies
-            sys.exit()
+            else:
+                type_print_effect(enemy.name + " has been slain by " + self.name + " with no mercy!\n")
+                type_print_effect("Game over! Thank you so much for playing The Journey\n")
+    
+                # end the game when the enemy dies
+                sys.exit()
 
 
 # -----------------------
@@ -579,20 +597,20 @@ class Player(Character):
         # each integer is equivalent to one type of enemy
         random_enemy = random.randint(1, RANDOM_ENEMY_INTEGER)
 
-        if random_enemy == 1:
+        if random_enemy == DEFORMED_MUTATED_HUMAN:
             type_print_effect("A " + deformed_mutated_human.name + " has spotted you!\n")
             print('')  # space for terminal
 
-        elif random_enemy == 2:
+        elif random_enemy == MUTATED_HUMAN:
             type_print_effect("A " + mutated_human.name + " screeched as it notices your movement!\n")
             print('')  # space for terminal
 
-        elif random_enemy == 3:
+        elif random_enemy == LOST_WANDERER:
             type_print_effect("The sound of a " + lost_wanderer.name + " echoed through the wind. And it has "
                                                                        "caught your attention!\n")
             print('')  # space for terminal
 
-        elif random_enemy == 4:
+        elif random_enemy == CHASER:
             type_print_effect("A vicious " + chaser.name + " has smelled your scent. It suddenly sprinted "
                                                            "towards your direction!\n")
             print('')  # space for terminal
@@ -604,28 +622,29 @@ class Player(Character):
         """
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
         """
-        if random_enemy == 1:
+        if random_enemy == DEFORMED_MUTATED_HUMAN:
             self.do_damage(deformed_mutated_human)
             # used when a character or the player dies
-            self.character_death(deformed_mutated_human)
+            #self.character_death(deformed_mutated_human)
             deformed_mutated_human.do_damage(self)
-            deformed_mutated_human.character_death(self)
+            #deformed_mutated_human.character_death(self)
             self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
                                              chaser)
 
-        elif random_enemy == 2:
+        elif random_enemy == MUTATED_HUMAN:
             self.do_damage(mutated_human)
+            #self.character_death(mutated_human)
             mutated_human.do_damage(self)
             self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
                                              chaser)
 
-        elif random_enemy == 3:
+        elif random_enemy == LOST_WANDERER:
             self.do_damage(lost_wanderer)
             lost_wanderer.do_damage(self)
             self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
                                              chaser)
 
-        elif random_enemy == 4:
+        elif random_enemy == CHASER:
             # attack_debug = input_print_effect("Debugging(Press Enter to attack) ")
             # while attack_debug == '':
             self.do_damage(chaser)
