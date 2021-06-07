@@ -305,6 +305,8 @@ class Character:
                                       self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    
+            # if it does not break
             else:
                 # if the damage is lower than the defense of the enemy
                 if damage <= enemy.defense:
@@ -312,17 +314,12 @@ class Character:
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
 
+                # if the damage exceeds the defense
                 else:
                     # used when the damage is larger than the defense
                     damage_with_defense = damage - enemy.defense
 
-                    # for debugging only
-                    # print(damage_with_defense, "is the damage with defense!")
-
                     enemy.health = enemy.health - damage_with_defense
-
-                    # for debugging only
-                    # print(enemy.health)
 
                     type_print_effect(enemy.name + " defended a part of " + self.name + " attack!\n")
                     type_print_effect(self.name + " dealt " + str(damage) + " damage!\n")
@@ -378,8 +375,6 @@ class Character:
                     print('')  # space for terminal
 
         return enemy.health
-        # used to call if a character dies
-        # self.character_death(enemy)
 
     def character_death(self, enemy):
         # if the enemy of the instance caller dies
@@ -410,11 +405,6 @@ class Character:
 
                 # end the game when the enemy dies
                 sys.exit()
-
-        # if enemy did not die
-        # else:
-        # counter attack to player if the player did not die
-        # enemy.do_damage(self)
 
 
 # -----------------------
@@ -597,11 +587,13 @@ class Player(Character):
         """
 
         # calling all of the common class enemy when the player walks with a one in third chance to encounter them
-        common_enemy_dict = {'deformed_mutated_human': DeformedMutatedHuman(),
-                             'mutated_human': MutatedHuman(),
-                             'lost_wanderer': LostWanderer(),
-                             'chaser': Chaser()
-                             }
+        # compiled into a dictionary for organization
+        common_enemy_dict = {
+                            'deformed_mutated_human': DeformedMutatedHuman(),
+                            'mutated_human': MutatedHuman(),
+                            'lost_wanderer': LostWanderer(),
+                            'chaser': Chaser()
+        }
 
         # each integer is equivalent to one type of enemy
         random_enemy = random.randint(1, RANDOM_ENEMY_INTEGER)
@@ -914,7 +906,7 @@ class Player(Character):
         print('What action do you want to do? We have the following.')
 
         #  for the user to see
-        command_list = ["a = attack", 'b = flee', 'c = status', 'd = help', 'e = quit']
+        command_list = ["a = attack", 'b = FLEE', 'c = status', 'd = help', 'e = quit']
         print(command_list)
 
         # asks player for the command that they want to do plus lowercase for sanitation
