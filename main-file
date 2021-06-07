@@ -25,13 +25,14 @@ import sys  # used for the text effect
 import time  # used to delay the texts for a few miliseconds
 
 BOSS_NAME = '⊑⟒⍀?'
-
+# TODO: Change the constants later after debugging
 # ======================= POSSIBILITY CONSTANTS ======================= #
 ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
 # spawning
 FLEE_POSSIBILITY = 3  # constant for flee function based from 1 to an integer for the possibility of the character
 # fleeing
 RANDOM_ENEMY_INTEGER = 1  # used for debugging in the random_enemy_occurance. Each integer
+NUMBER_OF_MOVES = 10  # used to determine the number of steps possible for the player to do
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
@@ -121,7 +122,7 @@ def welcome_message_and_introduction(user_name):
 # Helper Functions
 # -----------------------
 
-#  kulang pa dito YUNG WEAPONS LAGYAN MO MAMAYA
+#  TODO: kulang pa dito YUNG WEAPONS LAGYAN MO MAMAYA
 def introduction(user_name):
     """
     Opening dialogue with Alicia, the first character that the player saw, she will guide the player to the dojo
@@ -250,7 +251,7 @@ class Character:
         self.levelup_bar = levelup_bar
         self.levelup_per_defeated_enemy = levelup_per_defeated_enemy
 
-    def leeching(self, damage):
+    def leeching(self, damage):  # TODO: CHECK LEECHING
         """
         Function for the leeching power in which the damage given by the character is transformed into the
         character's health
@@ -280,6 +281,7 @@ class Character:
         """
         Function for when the player attacks
         :param enemy: To lower the health of the enemy
+        :return enemy.health: To be analyzed inside the attack function in an if statement
         """
         # damage of the character
         damage = random.randint(0, self.attack)
@@ -305,7 +307,7 @@ class Character:
                                       self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
-                    
+
             # if it does not break
             else:
                 # if the damage is lower than the defense of the enemy
@@ -374,9 +376,15 @@ class Character:
                                       str(enemy.health) + "!\n")
                     print('')  # space for terminal
 
+        # returns enemy health to be analyzed in an if statement inside the caller in attack function
         return enemy.health
 
     def character_death(self, enemy):
+        """
+        Function that gets two characters and determine if they die. If an enemy dies, the player gains additional stats
+        If the player dies, game over
+        :param enemy: for the function to get the enemy attributes
+        """
         # if the enemy of the instance caller dies
         if enemy.health <= 0:
             # if the enemy dies
@@ -398,12 +406,12 @@ class Character:
                 # to cut the loop of still going into attack mode when the enemy dies
                 Player.player_commands(self)
 
-            # when the player dies
+            # when the player dies by various enemies
             else:
                 type_print_effect(enemy.name + " has been slain by " + self.name + " with no mercy!\n")
                 type_print_effect("Game over! Thank you so much for playing The Journey\n")
 
-                # end the game when the enemy dies
+                # end the game when the player dies
                 sys.exit()
 
 
@@ -589,15 +597,17 @@ class Player(Character):
         # calling all of the common class enemy when the player walks with a one in third chance to encounter them
         # compiled into a dictionary for organization
         common_enemy_dict = {
-                            'deformed_mutated_human': DeformedMutatedHuman(),
-                            'mutated_human': MutatedHuman(),
-                            'lost_wanderer': LostWanderer(),
-                            'chaser': Chaser()
+            'deformed_mutated_human': DeformedMutatedHuman(),
+            'mutated_human': MutatedHuman(),
+            'lost_wanderer': LostWanderer(),
+            'chaser': Chaser()
         }
 
         # each integer is equivalent to one type of enemy
         random_enemy = random.randint(1, RANDOM_ENEMY_INTEGER)
 
+        # the if statement messages are here for organization so that these messages should appear first
+        # before the player commands attack mode
         if random_enemy == DEFORMED_MUTATED_HUMAN:
             type_print_effect("A " + 'Deformed Mutated Human' + " has spotted you!\n")
             print('')  # space for terminal
@@ -622,15 +632,25 @@ class Player(Character):
         """
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
         """
+        # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
+            # lets the player attack first and .do_damage returns health to be analyzed here
             enemy_health = self.do_damage(common_enemy_dict['deformed_mutated_human'])
+            # if the enemy dies
             if enemy_health <= 0:
+                # let the enemy revive its stat and the player gains additional health, ends attack mode and goes
+                # back to normal commands
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
+            # if the enemy did not die
             else:
+                # the enemy will do counter revenge
                 common_enemy_dict['deformed_mutated_human'].do_damage(self)
+                # if the player died from the damage, it will end the game with a message
                 common_enemy_dict['deformed_mutated_human'].character_death(self)
+                # if the player did not die, let the player choose their next command in attack mode
                 self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
+        # same formula from above, just with different enemies
         elif random_enemy == MUTATED_HUMAN:
             enemy_health = self.do_damage(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
@@ -671,7 +691,7 @@ class Player(Character):
         enemy_possibility = random.randint(1, ENEMY_POSSIBILITY)
 
         # how many steps the player can take
-        number_of_moves = random.randint(1, 10)
+        number_of_moves = random.randint(1, NUMBER_OF_MOVES)
 
         # if the player encounters an enemy
         if enemy_possibility == 1:
@@ -688,6 +708,7 @@ class Player(Character):
         print('')  # for spacing in the terminal
 
     @staticmethod
+    # TODO: code flee
     def flee(self):
         """
         A function only found while attack mode is one, a one in integer chance for the character to flee to prevent
@@ -696,7 +717,7 @@ class Player(Character):
         flee_chance = random.randint(1, FLEE_POSSIBILITY)
         return flee_chance
 
-    def status(self):
+    def status(self, random_enemy, common_enemy_dict, who_called_me):
         """
         Function that shows the current status (health, attack damage, etc) of the user's character
         """
@@ -712,6 +733,10 @@ class Player(Character):
         print("Ultimate Level Up Bar Per Attack: " + str(self.ultimate_levelup_bar_per_attack))
         print("Level Up Bar: " + str(self.levelup_bar))
 
+        if who_called_me == 'attack_mode':
+            self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+            print('')  # for spacing in the terminal
+
         print('')  # for spacing in the terminal
 
     @staticmethod
@@ -719,31 +744,36 @@ class Player(Character):
         """
         Function about all the information that the player wants to know
         """
-        #  Dictionary when the player chooses 'a' which is a help desk for commands
+        # instance for the help game to track the stats of the enemies
+        common_enemy_dict_help_function = {
+            'deformed_mutated_human': DeformedMutatedHuman(),
+            'mutated_human': MutatedHuman(),
+            'lost_wanderer': LostWanderer(),
+            'chaser': Chaser()
+        }
+        # list for all the
         commands = [
             'a = attack',
             'b = move',
             'c = status',
             'd = help',
             'e = quit'
+            'f = flee'
         ]
         enemy = [
             'a = Deformed Mutating Human'
             'b = Mutated Human'
             'c = Lost Wanderer'
             'd = Chaser'
-
         ]
 
         type_print_effect("This is the help section. What do you want to know about?\n")
 
         #  Dictionary of information that the player can access
-        help_dict = {
-            'a': "Commands",
-            'b': 'Enemies'}
+        help_list = ["a = Commands", "b = Enemies"]
 
-        # dictionary for the user to see
-        print(help_dict)
+        # list for the user to see
+        print(help_list)
 
         # asks the user which topic do they need help with and lowercase for sanitation
         print('')
@@ -786,6 +816,13 @@ class Player(Character):
                 print("Command for the player to quit the game.")
                 print('')
 
+            # for fleeing
+            elif player_chosen_help_specific_command == 'f':
+                print("Only available when an enemy has approached the player.")
+                print('There is a percentage that the flee will be successful, if it fails the enemy')
+                print('will attack the player for that turn.')
+                print('')
+
             # when invalid input
             else:
                 print('Invalid input. Please press the aproppriate letter.')
@@ -806,8 +843,9 @@ class Player(Character):
             print("-" * 20)
 
             # for deformed mutated human
+            # FIXME: Change the print so that it represents the enemy and not various commands
             if player_chosen_enemy_command == 'a':
-                print("Command for the player to attack.")
+                print(common_enemy_dict_help_function['deformed_mutated_human'].health)
                 print("Damage is based on the current weapon that the player is holding.")
                 print('')
 
@@ -889,7 +927,9 @@ class Player(Character):
         elif player_actions == 'b':
             Player.move(self)
         elif player_actions == 'c':
-            Player.status(self)
+            # to differentiate player_command_attack_mode from the normal player command
+            # calls None for positional arguments because in passive mode there are no random enemies
+            Player.status(self, random_enemy=None, common_enemy_dict=None, who_called_me='passive_mode')
         elif player_actions == 'd':
             Player.help_game()
         elif player_actions == 'e':
@@ -917,9 +957,12 @@ class Player(Character):
         if player_actions == 'a':
             Player.attack(self, random_enemy, common_enemy_dict)
         elif player_actions == 'b':
+            # an updated command that the player can do ONLY if they are in attack mode.
+            # possibility for the player to run away
             Player.flee(self)
         elif player_actions == 'c':
-            Player.status(self)
+            # to differentiate player_command_attack_mode from the normal player command
+            Player.status(self, random_enemy, common_enemy_dict, who_called_me='attack_mode')
         elif player_actions == 'd':
             Player.help_game()
         elif player_actions == 'e':
