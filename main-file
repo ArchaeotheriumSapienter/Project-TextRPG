@@ -597,78 +597,74 @@ class Player(Character):
         """
 
         # calling all of the common class enemy when the player walks with a one in third chance to encounter them
-        deformed_mutated_human = DeformedMutatedHuman()
-        mutated_human = MutatedHuman()
-        lost_wanderer = LostWanderer()
-        chaser = Chaser()
+        common_enemy_dict = {'deformed_mutated_human': DeformedMutatedHuman(),
+                             'mutated_human': MutatedHuman(),
+                             'lost_wanderer': LostWanderer(),
+                             'chaser': Chaser()
+                             }
 
         # each integer is equivalent to one type of enemy
         random_enemy = random.randint(1, RANDOM_ENEMY_INTEGER)
 
         if random_enemy == DEFORMED_MUTATED_HUMAN:
-            type_print_effect("A " + deformed_mutated_human.name + " has spotted you!\n")
+            type_print_effect("A " + 'Deformed Mutated Human' + " has spotted you!\n")
             print('')  # space for terminal
 
         elif random_enemy == MUTATED_HUMAN:
-            type_print_effect("A " + mutated_human.name + " screeched as it notices your movement!\n")
+            type_print_effect("A " + 'Mutated Human' + " screeched as it notices your movement!\n")
             print('')  # space for terminal
 
         elif random_enemy == LOST_WANDERER:
-            type_print_effect("The sound of a " + lost_wanderer.name + " echoed through the wind. And it has "
-                                                                       "caught your attention!\n")
+            type_print_effect("The sound of a " + 'Lost Wanderer' + " echoed through the wind. And it has "
+                                                                    "caught your attention!\n")
             print('')  # space for terminal
 
         elif random_enemy == CHASER:
-            type_print_effect("A vicious " + chaser.name + " has smelled your scent. It suddenly sprinted "
-                                                           "towards your direction!\n")
+            type_print_effect("A vicious " + 'Chaser' + " has smelled your scent. It suddenly sprinted "
+                                                        "towards your direction!\n")
             print('')  # space for terminal
 
-        self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                         chaser)
+        self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
-    def attack(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer, chaser):
+    def attack(self, random_enemy, common_enemy_dict):
         """
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
         """
         if random_enemy == DEFORMED_MUTATED_HUMAN:
-            enemy_health = self.do_damage(deformed_mutated_human)
+            enemy_health = self.do_damage(common_enemy_dict['deformed_mutated_human'])
             if enemy_health <= 0:
-                self.character_death(deformed_mutated_human)
+                self.character_death(common_enemy_dict['deformed_mutated_human'])
             else:
-                deformed_mutated_human.do_damage(self)
-                deformed_mutated_human.character_death(self)
-                self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                                 chaser)
+                common_enemy_dict['deformed_mutated_human'].do_damage(self)
+                common_enemy_dict['deformed_mutated_human'].character_death(self)
+                self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
         elif random_enemy == MUTATED_HUMAN:
-            enemy_health = self.do_damage(mutated_human)
+            enemy_health = self.do_damage(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
-                self.character_death(mutated_human)
+                self.character_death(common_enemy_dict['mutated_human'])
             else:
-                mutated_human.do_damage(self)
-                mutated_human.character_death(self)
-                self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                                 chaser)
+                common_enemy_dict['mutated_human'].do_damage(self)
+                common_enemy_dict['mutated_human'].character_death(self)
+                self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
         elif random_enemy == LOST_WANDERER:
-            enemy_health = self.do_damage(lost_wanderer)
+            enemy_health = self.do_damage(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
-                self.character_death(lost_wanderer)
+                self.character_death(common_enemy_dict['lost_wanderer'])
             else:
-                lost_wanderer.do_damage(self)
-                lost_wanderer.character_death(self)
-                self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                                 chaser)
+                common_enemy_dict['lost_wanderer'].do_damage(self)
+                common_enemy_dict['lost_wanderer'].character_death(self)
+                self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
         elif random_enemy == CHASER:
-            enemy_health = self.do_damage(chaser)
+            enemy_health = self.do_damage(common_enemy_dict['chaser'])
             if enemy_health <= 0:
-                self.character_death(chaser)
+                self.character_death(common_enemy_dict['chaser'])
             else:
-                chaser.do_damage(self)
-                chaser.character_death(self)
-                self.player_commands_attack_mode(random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                                 chaser)
+                common_enemy_dict['chaser'].do_damage(self)
+                common_enemy_dict['chaser'].character_death(self)
+                self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
         # call upon leeching every time a character attacks and if the character has it
         if self.leeching != 0:
@@ -911,7 +907,7 @@ class Player(Character):
             print('')  # for spacing in the terminal
             Player.player_commands(self)
 
-    def player_commands_attack_mode(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer, chaser):
+    def player_commands_attack_mode(self, random_enemy, common_enemy_dict):
         """
         All commands that the player can do when the player encounters an enemy
         """
@@ -927,9 +923,9 @@ class Player(Character):
         print('')  # for spacing in the terminal
 
         if player_actions == 'a':
-            Player.attack(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer, chaser)
+            Player.attack(self, random_enemy, common_enemy_dict)
         elif player_actions == 'b':
-            Player.flee(self, enemy)
+            Player.flee(self)
         elif player_actions == 'c':
             Player.status(self)
         elif player_actions == 'd':
@@ -939,8 +935,7 @@ class Player(Character):
         else:
             type_print_effect("Invalid input.\n")
             print('')  # for spacing in the terminal
-            Player.player_commands_attack_mode(self, random_enemy, deformed_mutated_human, mutated_human, lost_wanderer,
-                                               chaser)
+            Player.player_commands_attack_mode(self, random_enemy, common_enemy_dict)
 
 
 # -----------------------
