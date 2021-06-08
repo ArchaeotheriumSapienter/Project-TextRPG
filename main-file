@@ -36,19 +36,26 @@ NUMBER_OF_MOVES = 10  # used to determine the number of steps possible for the p
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
-DEFORMED_MUTATED_HUMAN = 1
-MUTATED_HUMAN = 2
-LOST_WANDERER = 3
-CHASER = 4
+DEFORMED_MUTATED_HUMAN = 1  # dedicated number for the monster deformed mutated human
+MUTATED_HUMAN = 2  # dedicated number for the monster mutated human
+LOST_WANDERER = 3  # dedicated number for the lost wanderer
+CHASER = 4  # dedicated number for the chaser
 
 # ======================= TEXT EFFECT CONSTANTS ======================= #
-NEXT_TEXT_DURATION = 0.1
+NEXT_TEXT_DURATION = 0.1  # constant used for having a gap in between text that have the typing effect
 INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
 
+# ========================= AESTHETIC CONSTANTS ======================= #
+NUMBER_OF_DASHES = 20  # used for the breakers found in the terminal when the user plays
+HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference however is this is used
 
-# -----------------------
-# Main Function
-# -----------------------
+
+# for the help section after the stats of the enemy have been revealed
+
+
+# ========================================
+# MAIN FUNCTION
+# ========================================
 
 
 def main():
@@ -251,6 +258,9 @@ class Character:
         self.levelup_bar = levelup_bar
         self.levelup_per_defeated_enemy = levelup_per_defeated_enemy
 
+        #  double damage converted to percentage for the user to see in the status command
+        self.double_damage_percentage = "{0:.2%}".format(double_damage)
+
     def leeching(self, damage):  # TODO: CHECK LEECHING
         """
         Function for the leeching power in which the damage given by the character is transformed into the
@@ -292,7 +302,7 @@ class Character:
         # checks to see if the class that called the method is the player
         if self.__class__ == Player:
             # for aesthetics in terminal
-            print("------------------------------------PLAYER'S TURN------------------------------------")
+            print('=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES)
             # if the defenses break
             if break_defense_chance == 1:
                 # when the damage is equals to zero
@@ -333,7 +343,7 @@ class Character:
                 or self.__class__ == LostWanderer or self.__class__ == Chaser:
             print('')  # space for terminal
             # for aesthetics in terminal
-            print("------------------------------------ENEMY'S TURN-------------------------------------")
+            print('=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES)
             # if the defenses break
             if break_defense_chance == 1:
                 # when the damage is equals to zero
@@ -429,7 +439,7 @@ class DeformedMutatedHuman(Character):
                  health=10,
                  max_health=10,
                  attack=20,
-                 double_damage=None,
+                 double_damage=0,
                  leeching=None,
                  defense=5,
                  shield_bubble=None,
@@ -461,7 +471,7 @@ class MutatedHuman(Character):
                  health=20,
                  max_health=20,
                  attack=10,
-                 double_damage=None,
+                 double_damage=0,
                  leeching=None,
                  defense=7,
                  shield_bubble=None,
@@ -493,7 +503,7 @@ class LostWanderer(Character):
                  health=5,
                  max_health=5,
                  attack=20,
-                 double_damage=None,
+                 double_damage=0,
                  leeching=5,
                  defense=7,
                  shield_bubble=None,
@@ -525,7 +535,7 @@ class Chaser(Character):
                  health=15,
                  max_health=15,
                  attack=15,
-                 double_damage=None,
+                 double_damage=0,
                  leeching=2,
                  defense=7,
                  shield_bubble=None,
@@ -585,9 +595,6 @@ class Player(Character):
 
         # for the p.name instance to overwrite the values of the parent class
         self.name = ''
-
-        #  double damage converted to percentage for the user to see in the status command
-        self.double_damage_percentage = "{0:.2%}".format(double_damage)
 
     def random_enemy_encounter(self):
         """
@@ -725,13 +732,14 @@ class Player(Character):
               "Attack: " + str(self.attack) + "   |   " +
               "Double Damage: " + self.double_damage_percentage)
 
-        print("Leeching: " + str(self.leeching) + "  |  " +
-              "Defense: " + str(self.defense) + "    |  " +
+        print("Leeching: " + str(self.leeching) + "  |   " +
+              "Defense: " + str(self.defense) + "   |   " +
               "Shield Bubble: " + str(self.shield_bubble))
 
         print("Ultimate Level Up Bar: " + str(self.ultimate_levelup_bar))
         print("Ultimate Level Up Bar Per Attack: " + str(self.ultimate_levelup_bar_per_attack))
         print("Level Up Bar: " + str(self.levelup_bar))
+        print('')  # space for terminal
 
         if who_called_me == 'attack_mode':
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
@@ -745,7 +753,7 @@ class Player(Character):
         Function about all the information that the player wants to know
         """
         # instance for the help game to track the stats of the enemies
-        common_enemy_dict_help_function = {
+        common_enemy_dict_help = {
             'deformed_mutated_human': DeformedMutatedHuman(),
             'mutated_human': MutatedHuman(),
             'lost_wanderer': LostWanderer(),
@@ -761,9 +769,9 @@ class Player(Character):
             'f = flee'
         ]
         enemy = [
-            'a = Deformed Mutating Human'
-            'b = Mutated Human'
-            'c = Lost Wanderer'
+            'a = Deformed Mutating Human',
+            'b = Mutated Human',
+            'c = Lost Wanderer',
             'd = Chaser'
         ]
 
@@ -787,7 +795,7 @@ class Player(Character):
             print('')
             # subset for the user to be asked what specific command they want to know plus lowercase for sanitation
             player_chosen_help_specific_command = input_print_effect('What command do you want to learn more? ').lower()
-            print("-" * 20)
+            print("-" * NUMBER_OF_DASHES)
 
             # for attack
             if player_chosen_help_specific_command == 'a':
@@ -839,26 +847,72 @@ class Player(Character):
             # subset for the user to be asked what specific enemy they want to know plus lowercase for sanitation
             player_chosen_enemy_command = input_print_effect('What enemy do you want to learn more? ').lower()
 
-            # for cleanliness in terminal
-            print("-" * 20)
-
             # for deformed mutated human
             # FIXME: Change the print so that it represents the enemy and not various commands
+            # Used for aesthetics in the terminal
+            print('=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES)
+            time.sleep(HELP_BACKSTORY_NEXT_TEXT)
             if player_chosen_enemy_command == 'a':
-                print(common_enemy_dict_help_function['deformed_mutated_human'].health)
-                print("Damage is based on the current weapon that the player is holding.")
-                print('')
+                # prints the stats first
+                print("Health: " + str(common_enemy_dict_help['deformed_mutated_human'].health) + "   |   " +
+                      "Attack: " + str(common_enemy_dict_help['deformed_mutated_human'].attack) + "   |   " +
+                      "Double Damage: " + common_enemy_dict_help['deformed_mutated_human'].double_damage_percentage)
+
+                print("Leeching: " + str(common_enemy_dict_help['deformed_mutated_human'].leeching) + "  |   " +
+                      "Defense: " + str(common_enemy_dict_help['deformed_mutated_human'].defense) + "   |   " +
+                      "Shield Bubble: " + str(common_enemy_dict_help['deformed_mutated_human'].shield_bubble))
+
+                # then prints the backstory
+                # plus cleanliness in the terminal
+                print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                type_print_effect("Once a human that came from Earth, this abomination is the result of countless\n")
+                type_print_effect("experiments that failed, leaving him a husk of his former self.\n")
+                type_print_effect("They no longer have any sort of consciousness. Instead, what's left is their pure\n")
+                type_print_effect('rage for what has become of them. They have lower health due to them being the \n')
+                type_print_effect('later stage in decomposition than the Mutated Human. However, they make up for it\n')
+                type_print_effect('by their sheer strength.\n')
+                type_print_effect('')
 
             # for mutated human
             elif player_chosen_enemy_command == 'b':
-                print("A common enemy. Found at deserted land of the current planet")
-                print("There is a small percentage that the player will encounter an enemy while moving.")
-                print('')
+                print("Health: " + str(common_enemy_dict_help['mutated_human'].health) + "   |   " +
+                      "Attack: " + str(common_enemy_dict_help['mutated_human'].attack) + "   |   " +
+                      "Double Damage: " + common_enemy_dict_help['mutated_human'].double_damage_percentage)
+
+                print("Leeching: " + str(common_enemy_dict_help['mutated_human'].leeching) + "  |   " +
+                      "Defense: " + str(common_enemy_dict_help['mutated_human'].defense) + "   |   " +
+                      "Shield Bubble: " + str(common_enemy_dict_help['mutated_human'].shield_bubble))
+
+                # then prints the backstory
+                # plus cleanliness in the terminal
+                print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                type_print_effect("It has the same sad fate as the Deformed Mutated Human.\n")
+                type_print_effect("The difference, however, is that the Mutated Human is a failed experiment,\n")
+                type_print_effect("that has been conducted quite recently. They have a small percentage\n")
+                type_print_effect('of their consciousness still intact, therefore making their suffering more\n')
+                type_print_effect('horrendous. They have higher health than the Deformed Mutated Human due to\n')
+                type_print_effect('them being recent test subjects. However, they have a higher defense than the\n')
+                type_print_effect('Deformed Mutated Human due to their intact body composition.\n')
+                type_print_effect('')
 
             # for lost wanderer
             elif player_chosen_enemy_command == 'c':
-                print("Command for the player to see their character's status.")
-                print('')
+                print("Health: " + str(common_enemy_dict_help['lost_wanderer'].health) + "   |   " +
+                      "Attack: " + str(common_enemy_dict_help['lost_wanderer'].attack) + "   |   " +
+                      "Double Damage: " + common_enemy_dict_help['lost_wanderer'].double_damage_percentage)
+
+                print("Leeching: " + str(common_enemy_dict_help['lost_wanderer'].leeching) + "  |   " +
+                      "Defense: " + str(common_enemy_dict_help['lost_wanderer'].defense) + "   |   " +
+                      "Shield Bubble: " + str(common_enemy_dict_help['lost_wanderer'].shield_bubble))
+
+                # then prints the backstory
+                # plus cleanliness in the terminal
+                print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                type_print_effect("These are individuals that have escaped the experiments but have failed to\n")
+                type_print_effect("mitigate\n")
+                type_print_effect("that has been conducted quite recently, making the individual have a residue\n")
+                type_print_effect('of their lives before the tragedy.\n')
+                type_print_effect('')
 
             # for chaser
             elif player_chosen_enemy_command == 'd':
@@ -877,9 +931,7 @@ class Player(Character):
                 Player.help_game()
 
         # use for cleaner terminal reading
-        print("-" * 20)
-        print('END OF HELP SECTION')
-        print("-" * 20)
+        print('=' * NUMBER_OF_DASHES + " END OF HELP SECTION " + '=' * NUMBER_OF_DASHES)
         print('')
 
     def quit_game(self):
