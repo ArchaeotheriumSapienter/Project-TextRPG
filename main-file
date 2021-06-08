@@ -53,9 +53,9 @@ HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference how
 # for the help section after the stats of the enemy have been revealed
 
 
-# ========================================
+# =========================================================
 # MAIN FUNCTION
-# ========================================
+# =========================================================
 
 
 def main():
@@ -82,9 +82,9 @@ def main():
     # first_chapter()
 
 
-# -----------------------
-# Functions From Main
-# -----------------------
+# =========================================================
+# FUNCTION FROM MAIN
+# =========================================================
 
 
 def welcome_message_and_introduction(user_name):
@@ -125,9 +125,9 @@ def welcome_message_and_introduction(user_name):
 # def first_chapter():
 
 
-# -----------------------
-# Helper Functions
-# -----------------------
+# =========================================================
+# HELPER FUNCTIONS
+# =========================================================
 
 #  TODO: kulang pa dito YUNG WEAPONS LAGYAN MO MAMAYA
 def introduction(user_name):
@@ -194,9 +194,9 @@ def introduction(user_name):
     type_print_effect("Goodluck out there " + user_name + "\n")
 
 
-# -----------------------
-# Sub-Helper Functions
-# -----------------------
+# =========================================================
+# SUB-HELPER FUNCTIONS
+# =========================================================
 
 def type_print_effect(text):
     """
@@ -228,9 +228,9 @@ def input_print_effect(text):
     return value
 
 
-# -----------------------
-# Classes
-# -----------------------
+# =========================================================
+# PARENT CLASS
+# =========================================================
 
 
 class Character:
@@ -425,9 +425,9 @@ class Character:
                 sys.exit()
 
 
-# -----------------------
-# Enemy Classes - COMMON
-# -----------------------
+# =========================================================
+# SUB-CLASS: COMMON ENEMY
+# =========================================================
 
 class DeformedMutatedHuman(Character):
     """
@@ -557,9 +557,9 @@ class Chaser(Character):
                          levelup_per_defeated_enemy)
 
 
-# -----------------------
-# Player Class
-# -----------------------
+# =========================================================
+# SUB-CLASS: PLAYER
+# =========================================================
 
 class Player(Character):
     """
@@ -1025,9 +1025,9 @@ class Player(Character):
             Player.player_commands_attack_mode(self, random_enemy, common_enemy_dict)
 
 
-# -----------------------
-# No Need For Editing
-# -----------------------
+# =========================================================
+# NO NEED FOR EDITING
+# =========================================================
 
 
 if __name__ == '__main__':
