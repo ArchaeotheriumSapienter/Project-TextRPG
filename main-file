@@ -1,6 +1,6 @@
 """
 File: rpgame.py
--------------------------
+----------------------------------------------------------------------
 This is a simple RPG program where a player can choose various actions and fight enemies
 
 Milestone:
@@ -11,8 +11,10 @@ Milestone:
 4. Make character move, attack, defend - done
     a. make a set of moves that a player can do:
         - move done
-        - attack not yet
-        -
+        - attack - done
+        - status - done
+        - help - almost
+        - flee - not yet
 5. Make an enemy - done
 6. Random occurence of enemy when player is walking - done
 6. Make enemy fight the character - done
