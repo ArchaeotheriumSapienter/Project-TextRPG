@@ -804,44 +804,74 @@ class Player(Character):
             # space for terminal
             print('')
             # subset for the user to be asked what specific command they want to know plus lowercase for sanitation
-            player_chosen_help_specific_command = input_print_effect('What command do you want to learn more? ').lower()
+            chosen_help_specific_command = input_print_effect('What command do you want to learn more? ').lower()
 
+            # where the player will see all commands, below this code are just for looping through this function
+            self.help_commands(chosen_help_specific_command, commands)
+
+            # asked at the end of the submain commands section for the player to choose if they still want to know
+            # more information on the commands subtopic or go back to the main topic
+            print('')  # space terminal
             print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print('')  # space terminal
+
+            # end statement for the user to see when they are inside the commands database
+            type_print_effect("Do you want to dive further into knowing more about different commands?\n")
+            type_print_effect("Or go back to the main help section?\n")
+            type_print_effect("Press y to stick to commands and n for no.\n")
+            type_print_effect("Or press b to go back to the main help section.\n")
+            ask_commands_again = input_print_effect("Please press the appropriate letter. ").lower()
             print('')
 
-            # for attack
-            if player_chosen_help_specific_command == 'a':
-                print("Command for the player to attack.")
-                print("Damage is based on the current weapon that the player is holding.")
+            # while loop when the player is inside the enemy database for them to repeat over and over if they
+            # like
+            while True:
+                # if they chose to learn more
+                if ask_commands_again == 'y':
+                    # shows the user the exact same thing earlier for them to choose what they want to learn more
+                    # for the user to see all types of commands
+                    print(commands)
+                    # space for terminal
+                    print('')
+                    # subset for the user to be asked what specific command they want to know plus lowercase for
+                    # sanitation
+                    chosen_help_specific_command = input_print_effect(
+                        'What command do you want to learn more? ').lower()
 
-            # for move
-            elif player_chosen_help_specific_command == 'b':
-                print("Command for the player to move.")
-                print("There is a small percentage that the player will encounter an enemy while moving.")
+                    # where the player will see all commands, below this code are just for looping through this function
+                    Player.help_commands(chosen_help_specific_command, commands)
 
-            # for status
-            elif player_chosen_help_specific_command == 'c':
-                print("Command for the player to see their character's status.")
+                    # asked at the end of the submain enemies section for the player to choose if they still want to
+                    # know more information on the enemies subtopic or go back to the main topic
+                    print('')  # space terminal
+                    print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+                    print('')  # space terminal
 
-            # for help section
-            elif player_chosen_help_specific_command == 'd':
-                print("Command for the player to see the help section of the game.")
+                    # end statement for the user to see when they are inside the enemy database
+                    type_print_effect("Do you want to dive further into knowing more about different commands?\n")
+                    type_print_effect("Or go back to the main help section?\n")
+                    type_print_effect("Press y to stick to commands and n for no.\n")
+                    type_print_effect("Or press b to go back to the main help section.\n")
+                    ask_commands_again = input_print_effect("Please press the appropriate letter. ").lower()
+                    print('')
 
-            # for quitting the game
-            elif player_chosen_help_specific_command == 'e':
-                print("Command for the player to quit the game.")
+                # when the player choses no
+                elif ask_commands_again == 'n':
+                    # to end the help loop and let the player choose another command besides help
+                    Player.player_commands(self)
 
-            # for fleeing
-            elif player_chosen_help_specific_command == 'f':
-                print("Only available when an enemy has approached the player.")
-                print('There is a percentage that the flee will be successful, if it fails the enemy')
-                print('will attack the player for that turn.')
+                # when the player wants to go back to the main section
+                elif ask_commands_again == 'b':
+                    Player.help_game(self)
 
-            # when invalid input
-            else:
-                print('Invalid input. Please press the aproppriate letter.')
-                print('')
-                Player.help_game(self)
+                else:
+                    # fencepost solution
+                    type_print_effect("Invalid input. Please press the appropriate letter.\n")
+                    print('')  # space terminal
+                    type_print_effect("Press y to stick to commands and n for no.\n")
+                    type_print_effect("Or press b to go back to the main help section.\n")
+                    ask_commands_again = input_print_effect("Please press the appropriate letter. ").lower()
+                    print('')
 
         # for when the player chooses enemies in the main help section
         elif player_chosen_help_command == 'b':
@@ -853,7 +883,7 @@ class Player(Character):
             chosen_enemy_help = input_print_effect('What enemy do you want to learn more? ').lower()
             print('')  # space for terminal
 
-            # loop so that the player can keep asking for more information about their enemies
+            # where the player will see the enemies, below this code are just for looping through this function
             self.help_enemies(chosen_enemy_help, common_enemy_dict_help, common_enemy)
 
             # asked at the end of the submain enemies section for the player to choose if they still want to know
@@ -899,11 +929,11 @@ class Player(Character):
                 elif ask_enemies_again == 'n':
                     # to end the help loop and let the player choose another command besides help
                     Player.player_commands(self)
-                
+
                 # when the player wants to go back to the main section
                 elif ask_enemies_again == 'b':
                     Player.help_game(self)
-                
+
                 else:
                     # fencepost solution
                     type_print_effect("Invalid input. Please press the appropriate letter.\n")
@@ -922,6 +952,7 @@ class Player(Character):
         # more information
         ask_help_again = input_print_effect(
             "Do you want to learn another topic? Press y for yes and n for no. ").lower()
+        print('')
         while True:
             if ask_help_again == 'y':
                 Player.help_game(self)
@@ -937,13 +968,65 @@ class Player(Character):
                     "Do you want to learn another topic? Press y for yes and n for no. ").lower()
                 print('')
 
-    # def help_commands(self):
+    @staticmethod
+    def help_commands(chosen_help_specific_command, commands):
+        # for attack
+        if chosen_help_specific_command == 'a':
+            print('')  # space terminal
+            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print('')  # space terminal
+            print("Command for the player to attack.")
+            print("Damage is based on the current weapon that the player is holding.")
+
+        # for move
+        elif chosen_help_specific_command == 'b':
+            print('')  # space terminal
+            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print('')  # space terminal
+            print("Command for the player to move.")
+            print("There is a small percentage that the player will encounter an enemy while moving.")
+
+        # for status
+        elif chosen_help_specific_command == 'c':
+            print('')  # space terminal
+            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print('')  # space terminal
+            print("Command for the player to see their character's status.")
+
+        # for help section
+        elif chosen_help_specific_command == 'd':
+            print('')  # space terminal
+            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print('')  # space terminal
+            print("Command for the player to see the help section of the game.")
+
+        # for quitting the game
+        elif chosen_help_specific_command == 'e':
+            print('')  # space terminal
+            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print('')  # space terminal
+            print("Command for the player to quit the game.")
+
+        # for fleeing
+        elif chosen_help_specific_command == 'f':
+            print('')  # space terminal
+            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print('')  # space terminal
+            print("Only available when an enemy has approached the player.")
+            print('There is a percentage that the flee will be successful, if it fails the enemy')
+            print('will attack the player for that turn.')
+
+        # when invalid input
+        else:
+            print('Invalid input. Please press the aproppriate letter.')
+            print('')
+            Player.help_game(chosen_help_specific_command)
+
     @staticmethod
     def help_enemies(chosen_enemy_help, common_enemy_dict_help, common_enemy):
         """
         Sub function of help that has the information for all the enemies so the help function is not overcrowded
         with lines of code
-        :return:
         """
         # for the common enemies
         if chosen_enemy_help == 'a':
@@ -957,6 +1040,7 @@ class Player(Character):
                                                           'to learn more? ').lower()
             print('')  # space for terminal
 
+            # neverending loop if they want to keep finding out about enemies
             while True:
                 # for deformed mutated human
                 if chosen_common_enemy_help == 'a':
@@ -1082,7 +1166,7 @@ class Player(Character):
         elif chosen_enemy_help == 'b':
             print('not yet done')
 
-        else: # TODO: add else statement in help enemies
+        else:  # TODO: add else statement in help enemies
             print('not yet done in else statement')
 
     def quit_game(self):
