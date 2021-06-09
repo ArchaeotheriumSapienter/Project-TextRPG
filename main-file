@@ -48,7 +48,7 @@ NEXT_TEXT_DURATION = 0.1  # constant used for having a gap in between text that 
 INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
 
 # ========================= AESTHETIC CONSTANTS ======================= #
-NUMBER_OF_DASHES = 20  # used for the breakers found in the terminal when the user plays
+NUMBER_OF_DASHES = 25  # used for the breakers found in the terminal when the user plays
 HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference however is this is used
 
 
@@ -416,7 +416,7 @@ class Character:
                 print('')  # space for terminal
 
                 # to cut the loop of still going into attack mode when the enemy dies
-                Player.player_commands()
+                Player.player_commands(self)
 
             # when the player dies by various enemies
             else:
@@ -781,9 +781,8 @@ class Player(Character):
             'c = Lost Wanderer',
             'd = Chaser'
         ]
-        # fiXME: Change loop in help
-        print("This is the help section. What do you want to know about?\n")
-        print("Please press the appropriate letter of the information you want to know about.\n")
+        print("This is the help section. What do you want to know about?")
+        print("Please press the appropriate letter of the information you want to know about.")
         print('')
 
         #  Dictionary of information that the player can access
@@ -812,7 +811,7 @@ class Player(Character):
             # asked at the end of the submain commands section for the player to choose if they still want to know
             # more information on the commands subtopic or go back to the main topic
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print('=' * NUMBER_OF_DASHES + " END OF COMMAND SECTION " + '=' * NUMBER_OF_DASHES)
             print('')  # space terminal
 
             # end statement for the user to see when they are inside the commands database
@@ -844,12 +843,10 @@ class Player(Character):
                     # asked at the end of the submain enemies section for the player to choose if they still want to
                     # know more information on the enemies subtopic or go back to the main topic
                     print('')  # space terminal
-                    print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+                    print('=' * NUMBER_OF_DASHES + " END OF COMMAND SECTION " + '=' * NUMBER_OF_DASHES)
                     print('')  # space terminal
 
                     # end statement for the user to see when they are inside the enemy database
-                    type_print_effect("Do you want to dive further into knowing more about different commands?\n")
-                    type_print_effect("Or go back to the main help section?\n")
                     type_print_effect("Press y to stick to commands and n for no.\n")
                     type_print_effect("Or press b to go back to the main help section.\n")
                     ask_commands_again = input_print_effect("Please press the appropriate letter. ").lower()
@@ -947,26 +944,6 @@ class Player(Character):
         print('')  # space terminal
         print('=' * NUMBER_OF_DASHES + " END OF HELP SECTION " + '=' * NUMBER_OF_DASHES)
         print('')  # space terminal
-
-        # asked at the end of the program in the general topic for the player to choose if they still want to know
-        # more information
-        ask_help_again = input_print_effect(
-            "Do you want to learn another topic? Press y for yes and n for no. ").lower()
-        print('')
-        while True:
-            if ask_help_again == 'y':
-                Player.help_game(self)
-            elif ask_help_again == 'n':
-                # to end the help loop and let the player choose another command besides help
-                Player.player_commands(self)
-            else:
-                # fencepost solution
-                print('')
-                type_print_effect("Invalid input. Please press the appropriate letter.\n")
-                print('')  # space terminal
-                ask_help_again = input_print_effect(
-                    "Do you want to learn another topic? Press y for yes and n for no. ").lower()
-                print('')
 
     @staticmethod
     def help_commands(chosen_help_specific_command, commands):
@@ -1212,7 +1189,6 @@ class Player(Character):
         if player_actions == 'a':
             # player can't fight anybody in player_command mode, has to be in attack mode
             type_print_effect('There are no enemies in sight...so far.\n')
-            print('')  # space for terminal
         elif player_actions == 'b':
             Player.move(self)
         elif player_actions == 'c':
