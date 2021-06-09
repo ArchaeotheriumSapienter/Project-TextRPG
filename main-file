@@ -782,8 +782,8 @@ class Player(Character):
             'd = Chaser'
         ]
         # fiXME: Change loop in help
-        type_print_effect("This is the help section. What do you want to know about?\n")
-        type_print_effect("Please press the appropriate letter of the information you want to know about.\n")
+        print("This is the help section. What do you want to know about?\n")
+        print("Please press the appropriate letter of the information you want to know about.\n")
         print('')
 
         #  Dictionary of information that the player can access
@@ -878,9 +878,7 @@ class Player(Character):
                     # shows the user the exact same thing earlier for them to choose what they want to learn more
                     # for the user to see all types of enemies
                     print(enemy)
-                    # space for terminal
-                    # subset for the user to be asked what specific enemy they want to know plus lowercase for
-                    # sanitation
+                    print('')  # space for terminal
                     chosen_enemy_help = input_print_effect('What enemy do you want to learn more? ').lower()
                     print('')  # space for terminal
 
@@ -897,9 +895,15 @@ class Player(Character):
                     ask_enemies_again = input_print_effect("Please press the appropriate letter. ").lower()
                     print('')
 
+                # when the player choses no
                 elif ask_enemies_again == 'n':
                     # to end the help loop and let the player choose another command besides help
                     Player.player_commands(self)
+                
+                # when the player wants to go back to the main section
+                elif ask_enemies_again == 'b':
+                    Player.help_game(self)
+                
                 else:
                     # fencepost solution
                     type_print_effect("Invalid input. Please press the appropriate letter.\n")
@@ -965,11 +969,11 @@ class Player(Character):
                     print("Health: " + str(common_enemy_dict_help['deformed_mutated_human'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict_help['deformed_mutated_human'].attack) + "   |   " +
                           "Double Damage: " + common_enemy_dict_help['deformed_mutated_human'].double_damage_percentage)
-    
+
                     print("Leeching: " + str(common_enemy_dict_help['deformed_mutated_human'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict_help['deformed_mutated_human'].defense) + "   |   " +
                           "Shield Bubble: " + str(common_enemy_dict_help['deformed_mutated_human'].shield_bubble))
-    
+
                     # then prints the backstory
                     # plus cleanliness in the terminal
                     print('')
@@ -986,7 +990,8 @@ class Player(Character):
                                       'However, they make up for it\n')
                     type_print_effect('by their sheer strength.\n')
                     type_print_effect('')
-    
+                    break  # to break the while loop
+
                 # for mutated human
                 elif chosen_common_enemy_help == 'b':
                     # Used for aesthetics in the terminal
@@ -997,11 +1002,11 @@ class Player(Character):
                     print("Health: " + str(common_enemy_dict_help['mutated_human'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict_help['mutated_human'].attack) + "   |   " +
                           "Double Damage: " + common_enemy_dict_help['mutated_human'].double_damage_percentage)
-    
+
                     print("Leeching: " + str(common_enemy_dict_help['mutated_human'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict_help['mutated_human'].defense) + "   |   " +
                           "Shield Bubble: " + str(common_enemy_dict_help['mutated_human'].shield_bubble))
-    
+
                     # then prints the backstory
                     # plus cleanliness in the terminal
                     print('')
@@ -1015,7 +1020,8 @@ class Player(Character):
                     type_print_effect('them being recent test subjects. However, they have a higher defense than the\n')
                     type_print_effect('Deformed Mutated Human due to their intact body composition.\n')
                     type_print_effect('')
-    
+                    break  # to break the while loop
+
                 # for lost wanderer
                 elif chosen_common_enemy_help == 'c':
                     # Used for aesthetics in the terminal
@@ -1026,11 +1032,11 @@ class Player(Character):
                     print("Health: " + str(common_enemy_dict_help['lost_wanderer'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict_help['lost_wanderer'].attack) + "   |   " +
                           "Double Damage: " + common_enemy_dict_help['lost_wanderer'].double_damage_percentage)
-    
+
                     print("Leeching: " + str(common_enemy_dict_help['lost_wanderer'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict_help['lost_wanderer'].defense) + "   |   " +
                           "Shield Bubble: " + str(common_enemy_dict_help['lost_wanderer'].shield_bubble))
-    
+
                     # then prints the backstory
                     # plus cleanliness in the terminal
                     # TODO: add the history about the incident that caused lost wanderers to escape the experiments
@@ -1046,7 +1052,8 @@ class Player(Character):
                                       'the Lost Wanderers have lost their\n')
                     type_print_effect('consciousness due to them escaping a long time ago after the incident.\n')
                     type_print_effect('')
-    
+                    break  # to break the while loop
+
                 # for chaser TODO: do help section in chaser
                 elif chosen_common_enemy_help == 'd':
                     # Used for aesthetics in the terminal
@@ -1056,10 +1063,12 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Command for the player to see the help section of the game.")
                     print('')  # space terminal
+                    break  # to break the while loop
+
                 else:
                     print('Invalid input. Please press the aproppriate letter.')
                     print('')
-    
+
                     print(common_enemy)
                     # space for terminal
                     print('')
