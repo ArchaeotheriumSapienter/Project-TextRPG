@@ -602,7 +602,6 @@ class Player(Character):
         """
         Function for random enemies to fight the player
         """
-
         # calling all of the common class enemy when the player walks with a one in third chance to encounter them
         # compiled into a dictionary for organization
         common_enemy_dict = {
@@ -640,8 +639,12 @@ class Player(Character):
     def attack(self, random_enemy, common_enemy_dict, flee_chance):
         """
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
+        :parameter - random_enemy = for the function to see what enemy the player will face
+        :parameter - common_enemy_dict = for the function to get the enemy attributes
+        :parameter - flee_chance = an integer from the flee function that will let the player escape, but if they failed
+        it will activate attack here
         """
-        # activates 
+        # activates
         if flee_chance != 1:
             Player.attack_with_failed_flee(self, random_enemy, common_enemy_dict)
         # if statement stating what enemy the player will encounter
@@ -699,9 +702,9 @@ class Player(Character):
         Function that only activates when the player chose flee in the commands but failed to escape,
         the enemy will attack the player first as a punishment
         :param random_enemy: to see what enemy will face the player
-        :param common_enemy_dict: to 
+        :param common_enemy_dict: to let the function access the attributes of each enemy
         """
-        
+
         # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
             # the enemy will do counter revenge
