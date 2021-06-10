@@ -539,7 +539,7 @@ class Chaser(Character):
                  attack=15,
                  double_damage=0,
                  leeching=2,
-                 defense=7,
+                 defense=10,
                  shield_bubble=None,
                  ultimate_levelup_bar=None,
                  ultimate_levelup_bar_per_attack=None,
@@ -637,10 +637,13 @@ class Player(Character):
 
         self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
-    def attack(self, random_enemy, common_enemy_dict):
+    def attack(self, random_enemy, common_enemy_dict, flee_chance):
         """
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
         """
+        # activates 
+        if flee_chance != 1:
+            Player.attack_with_failed_flee(self, random_enemy, common_enemy_dict)
         # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
             # lets the player attack first and .do_damage returns health to be analyzed here
@@ -691,6 +694,39 @@ class Player(Character):
         if self.leeching != 0:
             self.health = self.leeching(self)
 
+    def attack_with_failed_flee(self, random_enemy, common_enemy_dict):
+        """
+        Function that only activates when the player chose flee in the commands but failed to escape,
+        the enemy will attack the player first as a punishment
+        :param random_enemy: to see what enemy will face the player
+        :param common_enemy_dict: to 
+        """
+        
+        # if statement stating what enemy the player will encounter
+        if random_enemy == DEFORMED_MUTATED_HUMAN:
+            # the enemy will do counter revenge
+            common_enemy_dict['deformed_mutated_human'].do_damage(self)
+            # if the player died from the damage, it will end the game with a message
+            common_enemy_dict['deformed_mutated_human'].character_death(self)
+            # if the player did not die, let the player choose their next command in attack mode
+            self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+
+        # same formula from above, just with different enemies
+        elif random_enemy == MUTATED_HUMAN:
+            common_enemy_dict['mutated_human'].do_damage(self)
+            common_enemy_dict['mutated_human'].character_death(self)
+            self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+
+        elif random_enemy == LOST_WANDERER:
+            common_enemy_dict['lost_wanderer'].do_damage(self)
+            common_enemy_dict['lost_wanderer'].character_death(self)
+            self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+
+        elif random_enemy == CHASER:
+            common_enemy_dict['chaser'].do_damage(self)
+            common_enemy_dict['chaser'].character_death(self)
+            self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+
     def move(self):
         """
         Function when a player moves, uses random integer to determine the number of steps the player takes
@@ -716,15 +752,21 @@ class Player(Character):
             type_print_effect(self.name + " has moved " + str(number_of_moves) + " steps.\n")
         print('')  # for spacing in the terminal
 
-    @staticmethod
     # TODO: code flee
-    def flee(self):
+    def flee(self, random_enemy, common_enemy_dict):
         """
         A function only found while attack mode is one, a one in integer chance for the character to flee to prevent
         them from dying
         """
         flee_chance = random.randint(1, FLEE_POSSIBILITY)
-        return flee_chance
+
+        if flee_chance == 1:
+            type_print_effect("You successfully escaped the enemy!\n")
+            Player.player_commands(self)
+        else:
+            type_print_effect('You failed to escape.\n')
+            Player.attack(self, random_enemy, common_enemy_dict, flee_chance)
+
 
     def status(self, random_enemy, common_enemy_dict, who_called_me):
         """
@@ -806,7 +848,7 @@ class Player(Character):
             chosen_help_specific_command = input_print_effect('What command do you want to learn more? ').lower()
 
             # where the player will see all commands, below this code are just for looping through this function
-            self.help_commands(chosen_help_specific_command, commands)
+            self.help_commands(chosen_help_specific_command)
 
             # asked at the end of the submain commands section for the player to choose if they still want to know
             # more information on the commands subtopic or go back to the main topic
@@ -838,7 +880,7 @@ class Player(Character):
                         'What command do you want to learn more? ').lower()
 
                     # where the player will see all commands, below this code are just for looping through this function
-                    Player.help_commands(chosen_help_specific_command, commands)
+                    self.help_commands(chosen_help_specific_command)
 
                     # asked at the end of the submain enemies section for the player to choose if they still want to
                     # know more information on the enemies subtopic or go back to the main topic
@@ -910,7 +952,7 @@ class Player(Character):
                     print('')  # space for terminal
 
                     # chosen enemy help will go inside prompting a new if statement to be executed inside help_enemies
-                    Player.help_enemies(chosen_enemy_help, common_enemy_dict_help, common_enemy)
+                    self.help_enemies(chosen_enemy_help, common_enemy_dict_help, common_enemy)
 
                     print('')  # space terminal
                     print('=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES)
@@ -945,8 +987,7 @@ class Player(Character):
         print('=' * NUMBER_OF_DASHES + " END OF HELP SECTION " + '=' * NUMBER_OF_DASHES)
         print('')  # space terminal
 
-    @staticmethod
-    def help_commands(chosen_help_specific_command, commands):
+    def help_commands(self, chosen_help_specific_command):
         # for attack
         if chosen_help_specific_command == 'a':
             print('')  # space terminal
@@ -997,10 +1038,9 @@ class Player(Character):
         else:
             print('Invalid input. Please press the aproppriate letter.')
             print('')
-            Player.help_game(chosen_help_specific_command)
+            Player.help_game(self)
 
-    @staticmethod
-    def help_enemies(chosen_enemy_help, common_enemy_dict_help, common_enemy):
+    def help_enemies(self, chosen_enemy_help, common_enemy_dict_help, common_enemy):
         """
         Sub function of help that has the information for all the enemies so the help function is not overcrowded
         with lines of code
@@ -1100,7 +1140,8 @@ class Player(Character):
 
                     # then prints the backstory
                     # plus cleanliness in the terminal
-                    # TODO: add the history about the incident that caused lost wanderers to escape the experiments
+                    # TODO: add the history about the incident in the main story line that caused lost
+                    #  wanderers to escape the experiments
                     print('')
                     print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
                     print('')
@@ -1108,22 +1149,45 @@ class Player(Character):
                     type_print_effect("mitigate the effects, therefore making their body worse than the Deformed\n")
                     type_print_effect("and Mutated Humans. They have drastically low health due to the effects but\n")
                     type_print_effect('they have gained the ability to restore their health '
-                                      'when attacking individuals\n')
-                    type_print_effect('they discovered. Unlike the Mutated Humans, '
-                                      'the Lost Wanderers have lost their\n')
+                                      'when attacking individuals.\n')
+                    type_print_effect('Unlike the Mutated Humans the Lost Wanderers have lost their\n')
                     type_print_effect('consciousness due to them escaping a long time ago after the incident.\n')
                     type_print_effect('')
                     break  # to break the while loop
 
-                # for chaser TODO: do help section in chaser
+                # for chaser
                 elif chosen_common_enemy_help == 'd':
                     # Used for aesthetics in the terminal
                     print('=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES)
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
-                    print("Command for the player to see the help section of the game.")
-                    print('')  # space terminal
+                    # Used for aesthetics in the terminal
+                    print('=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES)
+                    print('')
+                    # for gap for the player to see the stats for a while before the backstory
+                    time.sleep(HELP_BACKSTORY_NEXT_TEXT)
+                    print("Health: " + str(common_enemy_dict_help['chaser'].health) + "    |   " +
+                          "Attack: " + str(common_enemy_dict_help['chaser'].attack) + "   |   " +
+                          "Double Damage: " + common_enemy_dict_help['chaser'].double_damage_percentage)
+
+                    print("Leeching: " + str(common_enemy_dict_help['chaser'].leeching) + "  |   " +
+                          "Defense: " + str(common_enemy_dict_help['chaser'].defense) + "   |   " +
+                          "Shield Bubble: " + str(common_enemy_dict_help['chaser'].shield_bubble))
+
+                    # then prints the backstory
+                    # plus cleanliness in the terminal
+                    print('')
+                    print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                    print('')
+                    type_print_effect("These are animals of different origins that have escaped the experiments.\n")
+                    type_print_effect(
+                        "They are similar to the lost wanderers. Their entire existence is solely based\n")
+                    type_print_effect(" in finding nutrition to feed themselves as they decay faster than the\n")
+                    type_print_effect('Deformed and Mutated Humans. Out of all the enemies that the player encounter\n')
+                    type_print_effect('while walking, they have the most balanced stats and have also gained the\n')
+                    type_print_effect('the leech ability as well as high defense from their tough exterior.\n')
+                    type_print_effect('')
                     break  # to break the while loop
 
                 else:
@@ -1143,8 +1207,10 @@ class Player(Character):
         elif chosen_enemy_help == 'b':
             print('not yet done')
 
-        else:  # TODO: add else statement in help enemies
-            print('not yet done in else statement')
+        else:  #
+            print('Invalid input. Please press the appropriate letter.')
+            print('')
+            Player.help_game(self)
 
     def quit_game(self):
         """
@@ -1220,11 +1286,13 @@ class Player(Character):
         print('')  # for spacing in the terminal
 
         if player_actions == 'a':
-            Player.attack(self, random_enemy, common_enemy_dict)
+            # flee chance is equals to one since 1 is represented as escape, and in the flee function, attack
+            # will only be activated when the flee_chance is not equals to zero
+            Player.attack(self, random_enemy, common_enemy_dict, flee_chance=1)
         elif player_actions == 'b':
             # an updated command that the player can do ONLY if they are in attack mode.
             # possibility for the player to run away
-            Player.flee(self)
+            Player.flee(self, random_enemy, common_enemy_dict)
         elif player_actions == 'c':
             # to differentiate player_command_attack_mode from the normal player command
             Player.status(self, random_enemy, common_enemy_dict, who_called_me='attack_mode')
