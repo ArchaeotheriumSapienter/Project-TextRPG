@@ -644,9 +644,13 @@ class Player(Character):
         :parameter - flee_chance = an integer from the flee function that will let the player escape, but if they failed
         it will activate attack here
         """
-        # activates
+        print('FLEE CHANCE IN ATTACK IS => ', flee_chance)
+        # activates when the player tries to escape but failed
         if flee_chance != 1:
             Player.attack_with_failed_flee(self, random_enemy, common_enemy_dict)
+        else:
+            Player.player_commands(self)
+
         # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
             # lets the player attack first and .do_damage returns health to be analyzed here
@@ -762,14 +766,15 @@ class Player(Character):
         them from dying
         """
         flee_chance = random.randint(1, FLEE_POSSIBILITY)
+        print("FLEE CHANCE IN FLEE FUNCTION => ", flee_chance)
 
         if flee_chance == 1:
             type_print_effect("You successfully escaped the enemy!\n")
+            print('')
             Player.player_commands(self)
         else:
             type_print_effect('You failed to escape.\n')
             Player.attack(self, random_enemy, common_enemy_dict, flee_chance)
-
 
     def status(self, random_enemy, common_enemy_dict, who_called_me):
         """
