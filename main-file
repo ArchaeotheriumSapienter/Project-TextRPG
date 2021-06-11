@@ -333,7 +333,8 @@ class Character:
                                       str(enemy.health) + "!\n")
                     # call upon leeching when there is damage from the enemy
                     if self.leeching != 0:
-                        self.health = self.leeching(damage, enemy)
+                        health = self.leeching(damage, enemy)
+                        self.health = health
 
             # if it does not break
             else:
