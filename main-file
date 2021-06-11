@@ -636,7 +636,7 @@ class Player(Character):
 
         self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
-    def attack(self, random_enemy, common_enemy_dict, flee_chance):
+    def attack(self, random_enemy, common_enemy_dict):
         """
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
         :parameter - random_enemy = for the function to see what enemy the player will face
@@ -644,12 +644,6 @@ class Player(Character):
         :parameter - flee_chance = an integer from the flee function that will let the player escape, but if they failed
         it will activate attack here
         """
-        print('FLEE CHANCE IN ATTACK IS => ', flee_chance)
-        # activates when the player tries to escape but failed
-        if flee_chance != 1:
-            Player.attack_with_failed_flee(self, random_enemy, common_enemy_dict)
-        else:
-            Player.player_commands(self)
 
         # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
@@ -734,6 +728,10 @@ class Player(Character):
             common_enemy_dict['chaser'].character_death(self)
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
+        # call upon leeching every time a character attacks and if the character has it
+        if self.leeching != 0:
+            self.health = self.leeching(self)
+
     def move(self):
         """
         Function when a player moves, uses random integer to determine the number of steps the player takes
@@ -759,7 +757,6 @@ class Player(Character):
             type_print_effect(self.name + " has moved " + str(number_of_moves) + " steps.\n")
         print('')  # for spacing in the terminal
 
-    # TODO: code flee
     def flee(self, random_enemy, common_enemy_dict):
         """
         A function only found while attack mode is one, a one in integer chance for the character to flee to prevent
@@ -774,7 +771,7 @@ class Player(Character):
             Player.player_commands(self)
         else:
             type_print_effect('You failed to escape.\n')
-            Player.attack(self, random_enemy, common_enemy_dict, flee_chance)
+            Player.attack_with_failed_flee(self, random_enemy, common_enemy_dict)
 
     def status(self, random_enemy, common_enemy_dict, who_called_me):
         """
@@ -1294,9 +1291,7 @@ class Player(Character):
         print('')  # for spacing in the terminal
 
         if player_actions == 'a':
-            # flee chance is equals to one since 1 is represented as escape, and in the flee function, attack
-            # will only be activated when the flee_chance is not equals to zero
-            Player.attack(self, random_enemy, common_enemy_dict, flee_chance=1)
+            Player.attack(self, random_enemy, common_enemy_dict)
         elif player_actions == 'b':
             # an updated command that the player can do ONLY if they are in attack mode.
             # possibility for the player to run away
