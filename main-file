@@ -13,8 +13,9 @@ Milestone:
         - move done
         - attack - done
         - status - done
-        - help - almost
-        - flee - not yet
+        - help - done
+        - flee - done
+        - leech - almost
 5. Make an enemy - done
 6. Random occurence of enemy when player is walking - done
 6. Make enemy fight the character - done
@@ -27,7 +28,7 @@ import sys  # used for the text effect
 import time  # used to delay the texts for a few miliseconds
 
 BOSS_NAME = '⊑⟒⍀?'
-# TODO: Change the constants later after debugging
+# TODO: Change the constants later after debugging: enemy possibility, random enemy integer, break defense chance
 # ======================= POSSIBILITY CONSTANTS ======================= #
 ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
 # spawning
@@ -35,6 +36,8 @@ FLEE_POSSIBILITY = 3  # constant for flee function based from 1 to an integer fo
 # fleeing
 RANDOM_ENEMY_INTEGER = 1  # used for debugging in the random_enemy_occurance. Each integer
 NUMBER_OF_MOVES = 10  # used to determine the number of steps possible for the player to do
+BREAK_DEFENSE_CHANCE = 1  # constant used in the .do_damage function in which there is a one in an integer possibility
+# that an attack can break a defense
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
@@ -68,8 +71,8 @@ def main():
     #  handler for the character parent class and the minimum value of each stats that a character can have
     handler = Character('', 1, 1, 10, 0, 0, 0, 0, 0, 0, 0, 0)
 
-    # initial stats of the player
-    p = Player(50, 50, 15, 0.05, 0, 7, 0, 20, 4, 30, 5)
+    # initial stats of the player TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING
+    p = Player(50, 50, 15, 0.05, 5, 7, 0, 20, 4, 30, 5)
 
     # name input to get the name of the player
     p.name = input_print_effect('Before we start, what is your name? ')
@@ -263,7 +266,7 @@ class Character:
         #  double damage converted to percentage for the user to see in the status command
         self.double_damage_percentage = "{0:.2%}".format(double_damage)
 
-    def leeching(self, damage):  # TODO: CHECK LEECHING
+    def leeching(self, damage, enemy):  # TODO: CHECK LEECHING
         """
         Function for the leeching power in which the damage given by the character is transformed into the
         character's health
@@ -272,20 +275,29 @@ class Character:
 
         # if the current health is less than max health
         if self.health < self.max_health:
-            # if the leeching points is less than the damage given, give the value of the self.leeching as the
-            # additional health
+            # if the leeching points is less than the damage given by the attacker, give the value of the
+            # self.leeching as the additional health
             if self.leeching <= damage:
                 self.health += self.leeching
+                type_print_effect(self.name + " successfully leeched " + str(self.leeching) +
+                                  " health from " + enemy.name + "\n")
+                print('')
 
             # if the self.leeching points is higher than the damage, give the value of the damage as the health
             # points
             elif self.leeching > damage:
                 self.health += damage
+                type_print_effect(self.name + " successfully leeched but not reached the maximum leeching"
+                                              " effect from " + enemy.name + " with " + str(self.leeching)
+                                  + " health.\n")
+                print('')
 
         # used when the self.health is higher than the maximum health due to leeching
-        if self.health > self.max_health:
+        elif self.health > self.max_health:
             surplus_health = self.health - self.max_health
             self.health = self.health - surplus_health
+            type_print_effect(self.name + " leeched too much from " + enemy.name + " with " +
+                              str(self.leeching) + " health and has gained full health!\n")
 
         return self.health
 
@@ -299,7 +311,7 @@ class Character:
         damage = random.randint(0, self.attack)
 
         # utilizing the defense, one in three chance that the defense will break
-        break_defense_chance = random.randint(1, 3)
+        break_defense_chance = random.randint(1, BREAK_DEFENSE_CHANCE)
 
         # checks to see if the class that called the method is the player
         if self.__class__ == Player:
@@ -319,6 +331,9 @@ class Character:
                                       self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    # call upon leeching when there is damage from the enemy
+                    if self.leeching != 0:
+                        self.health = self.leeching(damage, enemy)
 
             # if it does not break
             else:
@@ -339,6 +354,10 @@ class Character:
                     type_print_effect(self.name + " dealt " + str(damage) + " damage!\n")
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
+                    # call upon leeching when there is damage from the enemy
+                    if self.leeching != 0:
+                        health = self.leeching(damage, enemy)
+                        self.health = health
 
         # if the caller are the common enemies
         elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
@@ -691,10 +710,6 @@ class Player(Character):
                 common_enemy_dict['chaser'].character_death(self)
                 self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
-        # call upon leeching every time a character attacks and if the character has it
-        if self.leeching != 0:
-            self.health = self.leeching(self)
-
     def attack_with_failed_flee(self, random_enemy, common_enemy_dict):
         """
         Function that only activates when the player chose flee in the commands but failed to escape,
@@ -763,7 +778,6 @@ class Player(Character):
         them from dying
         """
         flee_chance = random.randint(1, FLEE_POSSIBILITY)
-        print("FLEE CHANCE IN FLEE FUNCTION => ", flee_chance)
 
         if flee_chance == 1:
             type_print_effect("You successfully escaped the enemy!\n")
