@@ -269,22 +269,33 @@ class Character:
     def leeching_health(self, damage, enemy):  # TODO: CHECK LEECHING
         """
         Function for the leeching power in which the damage given by the character is transformed into the
-        character's health
+        character's health. But if the leeching is higher than the damage, only the damage is transformed into the
+        health
         Return: self.health
         """
         # calculates the missing health to prevent over health in a character
         health_missing = self.health_max - self.health
-        
-        # if the leeching points is less than the damage given by the attacker, the ranging value of health given is 
-        # determined by the value of the self.leeching that the character has
-        if health_missing <= self.leeching <= damage:
-            self.health += health_missing
-            type_print_effect(self.name + " successfully leeched " + str(self.leeching) +
-                              " health from " + enemy.name + ".\n")
-            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
 
-        if health_missing > self.leeching <= damage:
+        # executed if the health missing is less than the leech or damage
+        if health_missing <= self.leeching <= damage or health_missing <= self.leeching > damage:
+            self.health += health_missing
+            type_print_effect(self.name + " successfully leeched " + str(health_missing) +
+                              " health from " + enemy.name + " and gained full health!\n")
+            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
+
+        # executed when the health missing is greater than the leech or damage
+        elif health_missing > self.leeching <= damage:
             self.health += self.leeching
+            type_print_effect(self.name + " leeched " + str(self.leeching) +
+                              " health from " + enemy.name + ".\n")
+            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
+
+        # executed when the health missing is greater than the leech but the leech is greater than the damage
+        elif health_missing > self.leeching > damage:
+            self.health += damage
+            type_print_effect(self.name + " leeched " + str(damage) +
+                              " health from " + enemy.name + " with all possible damage given at this round.\n")
+            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
 
             print('')
 
@@ -674,6 +685,7 @@ class Player(Character):
         # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
             # lets the player attack first and .do_damage returns health to be analyzed here
+            print("HEALTH OF ENEMY IN ENCOUNTER IS ", common_enemy_dict['deformed_mutated_human'].health)
             enemy_health = self.do_damage(common_enemy_dict['deformed_mutated_human'])
             # if the enemy dies
             if enemy_health <= 0:
