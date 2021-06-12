@@ -28,11 +28,11 @@ import sys  # used for the text effect
 import time  # used to delay the texts for a few miliseconds
 
 BOSS_NAME = '⊑⟒⍀?'
-# TODO: Change the constants later after debugging: enemy possibility, random enemy integer, break defense chance
+# TODO: Change the constants later after debugging: enemy possibility, random enemy integer, break defense chance, flee
 # ======================= POSSIBILITY CONSTANTS ======================= #
 ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
 # spawning
-FLEE_POSSIBILITY = 3  # constant for flee function based from 1 to an integer for the possibility of the character
+FLEE_POSSIBILITY = 2  # constant for flee function based from 1 to an integer for the possibility of the character
 # fleeing
 RANDOM_ENEMY_INTEGER = 1  # used for debugging in the random_enemy_occurance. Each integer
 NUMBER_OF_MOVES = 10  # used to determine the number of steps possible for the player to do
@@ -65,14 +65,14 @@ HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference how
 
 def main():
     # values in the classes are (from left to right):
-    # name, health, max_health, attack, double_damage, leeching, defense, shield_bubble,
+    # name, health, health_max, attack, double_damage, leeching, defense, shield_bubble,
     # ultimate_levelup_bar, ultimate_levelup_bar_per_attack, levelup_bar, levelup_per_defeated_enemy
 
     #  handler for the character parent class and the minimum value of each stats that a character can have
     handler = Character('', 1, 1, 10, 0, 0, 0, 0, 0, 0, 0, 0)
 
     # initial stats of the player TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING
-    p = Player(50, 50, 15, 0.05, 5, 7, 0, 20, 4, 30, 5)
+    p = Player(50, 50, 10, 0.05, 11, 7, 0, 20, 4, 30, 5)
 
     # name input to get the name of the player
     p.name = input_print_effect('Before we start, what is your name? ')
@@ -244,11 +244,11 @@ class Character:
     This also has all the functions that each character can do
     """
 
-    def __init__(self, name, health, max_health, attack, double_damage, leeching, defense, shield_bubble,
+    def __init__(self, name, health, health_max, attack, double_damage, leeching, defense, shield_bubble,
                  ultimate_levelup_bar, ultimate_levelup_bar_per_attack, levelup_bar, levelup_per_defeated_enemy):
         self.name = name
         self.health = health
-        self.max_health = max_health
+        self.health_max = health_max
         self.attack = attack
         self.double_damage = double_damage
         self.leeching = leeching
@@ -266,38 +266,45 @@ class Character:
         #  double damage converted to percentage for the user to see in the status command
         self.double_damage_percentage = "{0:.2%}".format(double_damage)
 
-    def leeching(self, damage, enemy):  # TODO: CHECK LEECHING
+    def leeching_health(self, damage, enemy):  # TODO: CHECK LEECHING
         """
         Function for the leeching power in which the damage given by the character is transformed into the
         character's health
         Return: self.health
         """
+        # calculates the missing health to prevent over health in a character
+        health_missing = self.health_max - self.health
+        
+        # if the leeching points is less than the damage given by the attacker, the ranging value of health given is 
+        # determined by the value of the self.leeching that the character has
+        if health_missing <= self.leeching <= damage:
+            self.health += health_missing
+            type_print_effect(self.name + " successfully leeched " + str(self.leeching) +
+                              " health from " + enemy.name + ".\n")
+            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
 
-        # if the current health is less than max health
-        if self.health < self.max_health:
-            # if the leeching points is less than the damage given by the attacker, give the value of the
-            # self.leeching as the additional health
-            if self.leeching <= damage:
-                self.health += self.leeching
-                type_print_effect(self.name + " successfully leeched " + str(self.leeching) +
-                                  " health from " + enemy.name + "\n")
-                print('')
+        if health_missing > self.leeching <= damage:
+            self.health += self.leeching
 
-            # if the self.leeching points is higher than the damage, give the value of the damage as the health
-            # points
-            elif self.leeching > damage:
-                self.health += damage
-                type_print_effect(self.name + " successfully leeched but not reached the maximum leeching"
-                                              " effect from " + enemy.name + " with " + str(self.leeching)
-                                  + " health.\n")
-                print('')
+            print('')
+
+        # if the self.leeching points is higher than the damage, give the value of the damage as the health
+        # points due to the low given damage
+        elif self.leeching > damage:
+            self.health += damage
+            type_print_effect(self.name + " successfully leeched but not reached the maximum leeching"
+                                          " effect from " + enemy.name + " with " + str(self.leeching)
+                              + " health due to low given damage.\n")
+            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
+            print('')
 
         # used when the self.health is higher than the maximum health due to leeching
-        elif self.health > self.max_health:
-            surplus_health = self.health - self.max_health
+        elif self.health > self.health_max:
+            surplus_health = self.health - self.health_max
             self.health = self.health - surplus_health
             type_print_effect(self.name + " leeched too much from " + enemy.name + " with " +
                               str(self.leeching) + " health and has gained full health!\n")
+            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
 
         return self.health
 
@@ -332,9 +339,8 @@ class Character:
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
                     # call upon leeching when there is damage from the enemy
-                    if self.leeching != 0:
-                        health = self.leeching(damage, enemy)
-                        self.health = health
+                    if self.leeching != 0 and self.health < self.health_max:
+                        self.leeching_health(damage, enemy)
 
             # if it does not break
             else:
@@ -356,9 +362,8 @@ class Character:
                     type_print_effect("The " + enemy.name + "'s remaining health is " +
                                       str(enemy.health) + "!\n")
                     # call upon leeching when there is damage from the enemy
-                    if self.leeching != 0:
-                        health = self.leeching(damage, enemy)
-                        self.health = health
+                    if self.leeching != 0 and self.health < self.health_max:
+                        self.health = self.leeching_health(damage, enemy)
 
         # if the caller are the common enemies
         elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
@@ -425,12 +430,13 @@ class Character:
                 type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
 
                 # used to revive the enemy's health
-                enemy.health = enemy.max_health + 1
-                enemy.max_health = enemy.max_health + 1
+                enemy.health = enemy.health_max + 1
+                enemy.health_max = enemy.health_max + 1
+                print(enemy.health_max, "IS THE HEALTH OF ", enemy.name)
 
                 # for levelling up the character and gaining plus health
-                self.health = self.max_health + 1
-                self.max_health = self.max_health + 1
+                self.health = self.health_max + 1
+                self.health_max = self.health_max + 1
                 type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
                 type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
                 print('')  # space for terminal
@@ -459,7 +465,7 @@ class DeformedMutatedHuman(Character):
     def __init__(self,
                  name='Deformed Mutated Human',
                  health=10,
-                 max_health=10,
+                 health_max=10,
                  attack=20,
                  double_damage=0,
                  leeching=None,
@@ -471,7 +477,7 @@ class DeformedMutatedHuman(Character):
                  levelup_per_defeated_enemy=None):
         super().__init__(name,
                          health,
-                         max_health,
+                         health_max,
                          attack,
                          double_damage,
                          leeching,
@@ -491,7 +497,7 @@ class MutatedHuman(Character):
     def __init__(self,
                  name='Mutated Human',
                  health=20,
-                 max_health=20,
+                 health_max=20,
                  attack=10,
                  double_damage=0,
                  leeching=None,
@@ -503,7 +509,7 @@ class MutatedHuman(Character):
                  levelup_per_defeated_enemy=None):
         super().__init__(name,
                          health,
-                         max_health,
+                         health_max,
                          attack,
                          double_damage,
                          leeching,
@@ -523,7 +529,7 @@ class LostWanderer(Character):
     def __init__(self,
                  name='Lost Wanderer',
                  health=5,
-                 max_health=5,
+                 health_max=5,
                  attack=20,
                  double_damage=0,
                  leeching=5,
@@ -535,7 +541,7 @@ class LostWanderer(Character):
                  levelup_per_defeated_enemy=None):
         super().__init__(name,
                          health,
-                         max_health,
+                         health_max,
                          attack,
                          double_damage,
                          leeching,
@@ -555,7 +561,7 @@ class Chaser(Character):
     def __init__(self,
                  name='Chaser',
                  health=15,
-                 max_health=15,
+                 health_max=15,
                  attack=15,
                  double_damage=0,
                  leeching=2,
@@ -567,7 +573,7 @@ class Chaser(Character):
                  levelup_per_defeated_enemy=None):
         super().__init__(name,
                          health,
-                         max_health,
+                         health_max,
                          attack,
                          double_damage,
                          leeching,
@@ -590,7 +596,7 @@ class Player(Character):
 
     def __init__(self,
                  health,
-                 max_health,
+                 health_max,
                  attack,
                  double_damage,
                  leeching,
@@ -604,7 +610,7 @@ class Player(Character):
         # grabbed the parent class for inheritance for its functions
         super().__init__("",
                          health,
-                         max_health,
+                         health_max,
                          attack,
                          double_damage,
                          leeching,
@@ -744,10 +750,6 @@ class Player(Character):
             common_enemy_dict['chaser'].character_death(self)
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
-        # call upon leeching every time a character attacks and if the character has it
-        if self.leeching != 0:
-            self.health = self.leeching(self)
-
     def move(self):
         """
         Function when a player moves, uses random integer to determine the number of steps the player takes
@@ -811,6 +813,7 @@ class Player(Character):
 
         print('')  # for spacing in the terminal
 
+    # TODO: add player status
     def help_game(self):
         """
         Function about all the information that the player wants to know
