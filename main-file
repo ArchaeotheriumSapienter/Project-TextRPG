@@ -69,10 +69,10 @@ def main():
     # ultimate_levelup_bar, ultimate_levelup_bar_per_attack, levelup_bar, levelup_per_defeated_enemy
 
     #  handler for the character parent class and the minimum value of each stats that a character can have
-    handler = Character('', 1, 1, 10, 0, 0, 0, 0, 0, 0, 0, 0)
 
-    # initial stats of the player TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING
-    p = Player(50, 50, 10, 0.05, 11, 7, 0, 20, 4, 30, 5)
+    p = Player()
+
+    print(help(DeformedMutatedHuman))
 
     # name input to get the name of the player
     p.name = input_print_effect('Before we start, what is your name? ')
@@ -244,27 +244,26 @@ class Character:
     This also has all the functions that each character can do
     """
 
-    def __init__(self, name, health, health_max, attack, double_damage, leeching, defense, shield_bubble,
-                 ultimate_levelup_bar, ultimate_levelup_bar_per_attack, levelup_bar, levelup_per_defeated_enemy):
-        self.name = name
-        self.health = health
-        self.health_max = health_max
-        self.attack = attack
-        self.double_damage = double_damage
-        self.leeching = leeching
-        self.defense = defense
-        self.shield_bubble = shield_bubble
+    def __init__(self):
+        self.name = ''
+        self.health = 1
+        self.health_max = 1
+        self.attack = 10
+        self.double_damage = 0
+        self.leeching = 0
+        self.defense = 0
+        self.shield_bubble = 0
 
         # stats for levelling up to gain your ultimate
-        self.ultimate_levelup_bar = ultimate_levelup_bar
-        self.ultimate_levelup_bar_per_attack = ultimate_levelup_bar_per_attack
+        self.ultimate_levelup_bar = 0
+        self.ultimate_levelup_bar_per_attack = 0
 
         # stats for levelling up your character
-        self.levelup_bar = levelup_bar
-        self.levelup_per_defeated_enemy = levelup_per_defeated_enemy
+        self.levelup_bar = 0
+        self.levelup_per_defeated_enemy = 0
 
         #  double damage converted to percentage for the user to see in the status command
-        self.double_damage_percentage = "{0:.2%}".format(double_damage)
+        self.double_damage_percentage = "{0:.2%}".format(self.double_damage)
 
     def leeching_health(self, damage, enemy):  # TODO: CHECK LEECHING
         """
@@ -473,31 +472,21 @@ class DeformedMutatedHuman(Character):
     Subclass of characters, a common enemy
     """
 
-    def __init__(self,
-                 name='Deformed Mutated Human',
-                 health=10,
-                 health_max=10,
-                 attack=20,
-                 double_damage=0,
-                 leeching=None,
-                 defense=5,
-                 shield_bubble=None,
-                 ultimate_levelup_bar=None,
-                 ultimate_levelup_bar_per_attack=None,
-                 levelup_bar=None,
-                 levelup_per_defeated_enemy=None):
-        super().__init__(name,
-                         health,
-                         health_max,
-                         attack,
-                         double_damage,
-                         leeching,
-                         defense,
-                         shield_bubble,
-                         ultimate_levelup_bar,
-                         ultimate_levelup_bar_per_attack,
-                         levelup_bar,
-                         levelup_per_defeated_enemy)
+    def __init__(self):
+        super().__init__()
+
+        self.name = 'Deformed Mutated Human'
+        self.health = 10
+        self.health_max = 10
+        self.attack = 20
+        self.double_damage = 0
+        self.leeching = 0
+        self.defense = 5
+        self.shield_bubble = 0
+        self.ultimate_levelup_bar = 0
+        self.ultimate_levelup_bar_per_attack = 0
+        self.levelup_bar = 0
+        self.levelup_per_defeated_enemy = 0
 
 
 class MutatedHuman(Character):
@@ -505,31 +494,21 @@ class MutatedHuman(Character):
     Subclass of character, a common enemy
     """
 
-    def __init__(self,
-                 name='Mutated Human',
-                 health=20,
-                 health_max=20,
-                 attack=10,
-                 double_damage=0,
-                 leeching=None,
-                 defense=7,
-                 shield_bubble=None,
-                 ultimate_levelup_bar=None,
-                 ultimate_levelup_bar_per_attack=None,
-                 levelup_bar=None,
-                 levelup_per_defeated_enemy=None):
-        super().__init__(name,
-                         health,
-                         health_max,
-                         attack,
-                         double_damage,
-                         leeching,
-                         defense,
-                         shield_bubble,
-                         ultimate_levelup_bar,
-                         ultimate_levelup_bar_per_attack,
-                         levelup_bar,
-                         levelup_per_defeated_enemy)
+    def __init__(self):
+        super().__init__()
+
+        self.name = 'Mutated Human'
+        self.health = 20
+        self.health_max = 20
+        self.attack = 10
+        self.double_damage = 0
+        self.leeching = 0
+        self.defense = 7
+        self.shield_bubble = 0
+        self.ultimate_levelup_bar = 0
+        self.ultimate_levelup_bar_per_attack = 0
+        self.levelup_bar = 0
+        self.levelup_per_defeated_enemy = 0
 
 
 class LostWanderer(Character):
@@ -537,31 +516,21 @@ class LostWanderer(Character):
     Subclass of character, a common enemy
     """
 
-    def __init__(self,
-                 name='Lost Wanderer',
-                 health=5,
-                 health_max=5,
-                 attack=20,
-                 double_damage=0,
-                 leeching=5,
-                 defense=7,
-                 shield_bubble=None,
-                 ultimate_levelup_bar=None,
-                 ultimate_levelup_bar_per_attack=None,
-                 levelup_bar=None,
-                 levelup_per_defeated_enemy=None):
-        super().__init__(name,
-                         health,
-                         health_max,
-                         attack,
-                         double_damage,
-                         leeching,
-                         defense,
-                         shield_bubble,
-                         ultimate_levelup_bar,
-                         ultimate_levelup_bar_per_attack,
-                         levelup_bar,
-                         levelup_per_defeated_enemy)
+    def __init__(self):
+        super().__init__()
+
+        self.name = 'Lost Wanderer'
+        self.health = 5
+        self.health_max = 5
+        self.attack = 20
+        self.double_damage = 0
+        self.leeching = 5
+        self.defense = 7
+        self.shield_bubble = 0
+        self.ultimate_levelup_bar = 0
+        self.ultimate_levelup_bar_per_attack = 0
+        self.levelup_bar = 0
+        self.levelup_per_defeated_enemy = 0
 
 
 class Chaser(Character):
@@ -569,31 +538,21 @@ class Chaser(Character):
     Subclass of character, a common enemy
     """
 
-    def __init__(self,
-                 name='Chaser',
-                 health=15,
-                 health_max=15,
-                 attack=15,
-                 double_damage=0,
-                 leeching=2,
-                 defense=10,
-                 shield_bubble=None,
-                 ultimate_levelup_bar=None,
-                 ultimate_levelup_bar_per_attack=None,
-                 levelup_bar=None,
-                 levelup_per_defeated_enemy=None):
-        super().__init__(name,
-                         health,
-                         health_max,
-                         attack,
-                         double_damage,
-                         leeching,
-                         defense,
-                         shield_bubble,
-                         ultimate_levelup_bar,
-                         ultimate_levelup_bar_per_attack,
-                         levelup_bar,
-                         levelup_per_defeated_enemy)
+    def __init__(self):
+        super().__init__()
+
+        self.name = 'Lost Wanderer'
+        self.health = 15
+        self.health_max = 15
+        self.attack = 15
+        self.double_damage = 0
+        self.leeching = 2
+        self.defense = 10
+        self.shield_bubble = 0
+        self.ultimate_levelup_bar = 0
+        self.ultimate_levelup_bar_per_attack = 0
+        self.levelup_bar = 0
+        self.levelup_per_defeated_enemy = 0
 
 
 # =========================================================
@@ -605,35 +564,23 @@ class Player(Character):
     Subclass of Character and it has all the commands that the player can do
     """
 
-    def __init__(self,
-                 health,
-                 health_max,
-                 attack,
-                 double_damage,
-                 leeching,
-                 defense,
-                 shield_bubble,
-                 ultimate_levelup_bar,
-                 ultimate_levelup_bar_per_attack,
-                 levelup_bar,
-                 levelup_per_defeated_enemy):
-
-        # grabbed the parent class for inheritance for its functions
-        super().__init__("",
-                         health,
-                         health_max,
-                         attack,
-                         double_damage,
-                         leeching,
-                         defense,
-                         shield_bubble,
-                         ultimate_levelup_bar,
-                         ultimate_levelup_bar_per_attack,
-                         levelup_bar,
-                         levelup_per_defeated_enemy)
+    # initial stats of the player TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING
+    def __init__(self):
+        super().__init__()
 
         # for the p.name instance to overwrite the values of the parent class
         self.name = ''
+        self.health = 50
+        self.health_max = 50
+        self.attack = 10
+        self.double_damage = 0.05
+        self.leeching = 11
+        self.defense = 7
+        self.shield_bubble = 0
+        self.ultimate_levelup_bar = 20
+        self.ultimate_levelup_bar_per_attack = 4
+        self.levelup_bar = 30
+        self.levelup_per_defeated_enemy = 5
 
     def random_enemy_encounter(self):
         """
