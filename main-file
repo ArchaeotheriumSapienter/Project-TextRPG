@@ -275,6 +275,10 @@ class Character:
         # calculates the missing health to prevent over health in a character
         health_missing = self.health_max - self.health
 
+        # for aesthetics in terminal
+        print('')
+        print('=' * NUMBER_OF_DASHES + " LEECH EFFECT " + '=' * NUMBER_OF_DASHES)
+
         # executed if the health missing is less than the leech or damage
         if health_missing <= self.leeching <= damage or health_missing <= self.leeching > damage:
             self.health += health_missing
@@ -436,6 +440,9 @@ class Character:
         if enemy.health <= 0:
             # if the enemy dies
             if self.__class__ == Player:
+                print('')  # space for terminal
+                # for aesthetics in terminal
+                print('=' * NUMBER_OF_DASHES + " ENEMY DEFEAT " + '=' * NUMBER_OF_DASHES)
 
                 type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
 
@@ -447,6 +454,7 @@ class Character:
                 # for levelling up the character and gaining plus health
                 self.health = self.health_max + 1
                 self.health_max = self.health_max + 1
+
                 type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
                 type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
                 print('')  # space for terminal
@@ -456,6 +464,10 @@ class Character:
 
             # when the player dies by various enemies
             else:
+                print('')  # space for terminal
+                # for aesthetics in terminal
+                print('=' * NUMBER_OF_DASHES + " PLAYER DEFEAT " + '=' * NUMBER_OF_DASHES)
+
                 type_print_effect(enemy.name + " has been slain by " + self.name + " with no mercy!\n")
                 type_print_effect("Game over! Thank you so much for playing The Journey\n")
 
