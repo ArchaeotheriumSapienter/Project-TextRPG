@@ -476,7 +476,8 @@ class Character:
             # to cut the loop of still going into attack mode when the enemy dies
             Player.player_commands(self)
 
-        else:
+        elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
+                or self.__class__ == LostWanderer or self.__class__ == Chaser:
             # for levelling up the enemy
             self.health = self.health_max + 1
             self.health_max = self.health_max + 1
@@ -661,7 +662,7 @@ class Player(Character):
                 # back to normal commands
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
                 self.level_up()
-            # if the enemy did not die
+                common_enemy_dict['deformed_mutated_human'].level_up()
             else:
                 # the enemy will do counter revenge
                 common_enemy_dict['deformed_mutated_human'].do_damage(self)
@@ -675,6 +676,8 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['mutated_human'])
+                self.level_up()
+                common_enemy_dict['mutated_human'].level_up()
             else:
                 common_enemy_dict['mutated_human'].do_damage(self)
                 common_enemy_dict['mutated_human'].character_death(self)
@@ -684,6 +687,8 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['lost_wanderer'])
+                self.level_up()
+                common_enemy_dict['lost_wanderer'].level_up()
             else:
                 common_enemy_dict['lost_wanderer'].do_damage(self)
                 common_enemy_dict['lost_wanderer'].character_death(self)
@@ -693,6 +698,8 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['chaser'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['chaser'])
+                self.level_up()
+                common_enemy_dict['chaser'].level_up()
             else:
                 common_enemy_dict['chaser'].do_damage(self)
                 common_enemy_dict['chaser'].character_death(self)
