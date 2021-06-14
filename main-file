@@ -300,8 +300,6 @@ class Character:
                               " health from " + enemy.name + " with all possible damage given at this round.\n")
             type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
 
-            print('')
-
         # if the self.leeching points is higher than the damage, give the value of the damage as the health
         # points due to the low given damage
         elif self.leeching > damage:
@@ -310,7 +308,6 @@ class Character:
                                           " effect from " + enemy.name + " with " + str(self.leeching)
                               + " health due to low given damage.\n")
             type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
-            print('')
 
         # used when the self.health is higher than the maximum health due to leeching
         elif self.health > self.health_max:
@@ -354,7 +351,7 @@ class Character:
                                       str(enemy.health) + "!\n")
                     # call upon leeching when there is damage from the enemy
                     if self.leeching != 0 and self.health < self.health_max:
-                        self.leeching_health(damage, enemy)
+                        self.health = self.leeching_health(damage, enemy)
 
             # if it does not break
             else:
@@ -479,6 +476,7 @@ class Character:
         elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
                 or self.__class__ == LostWanderer or self.__class__ == Chaser:
             # for levelling up the enemy
+            print('DEBUGGING', self.name, 'MY HEALTH IS:', self.health)
             self.health = self.health_max + 1
             self.health_max = self.health_max + 1
 
