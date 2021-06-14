@@ -470,15 +470,12 @@ class Character:
             type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
             print('')  # space for terminal
 
-            # to cut the loop of still going into attack mode when the enemy dies
-            Player.player_commands(self)
-
         elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
                 or self.__class__ == LostWanderer or self.__class__ == Chaser:
-            # for levelling up the enemy
-            print('DEBUGGING', self.name, 'MY HEALTH IS:', self.health)
             self.health = self.health_max + 1
             self.health_max = self.health_max + 1
+            # for levelling up the enemy
+            print('DEBUGGING', self.name, 'MY HEALTH IS:', self.health, "AND MY MAX IS:", self.health_max)
 
 
 # =========================================================
@@ -656,11 +653,17 @@ class Player(Character):
 
             # if the enemy dies
             if enemy_health <= 0:
-                # let the enemy revive its stat and the player gains additional health, ends attack mode and goes
-                # back to normal commands
+                # message prompt about death of enemy
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
+
+                # let the user level up
                 self.level_up()
+
+                # let the enemy level up too
                 common_enemy_dict['deformed_mutated_human'].level_up()
+
+                # to cut the loop of still going into attack mode when the enemy dies
+                Player.player_commands(self)
             else:
                 # the enemy will do counter revenge
                 common_enemy_dict['deformed_mutated_human'].do_damage(self)
@@ -676,6 +679,7 @@ class Player(Character):
                 self.character_death(common_enemy_dict['mutated_human'])
                 self.level_up()
                 common_enemy_dict['mutated_human'].level_up()
+                Player.player_commands(self)
             else:
                 common_enemy_dict['mutated_human'].do_damage(self)
                 common_enemy_dict['mutated_human'].character_death(self)
@@ -687,6 +691,7 @@ class Player(Character):
                 self.character_death(common_enemy_dict['lost_wanderer'])
                 self.level_up()
                 common_enemy_dict['lost_wanderer'].level_up()
+                Player.player_commands(self)
             else:
                 common_enemy_dict['lost_wanderer'].do_damage(self)
                 common_enemy_dict['lost_wanderer'].character_death(self)
@@ -698,6 +703,7 @@ class Player(Character):
                 self.character_death(common_enemy_dict['chaser'])
                 self.level_up()
                 common_enemy_dict['chaser'].level_up()
+                Player.player_commands(self)
             else:
                 common_enemy_dict['chaser'].do_damage(self)
                 common_enemy_dict['chaser'].character_death(self)
