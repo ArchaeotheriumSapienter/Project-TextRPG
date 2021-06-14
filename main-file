@@ -446,22 +446,6 @@ class Character:
 
                 type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
 
-                # used to revive the enemy's health
-                enemy.health = enemy.health_max + 1
-                enemy.health_max = enemy.health_max + 1
-                print(enemy.health_max, "IS THE HEALTH OF ", enemy.name)
-
-                # for levelling up the character and gaining plus health
-                self.health = self.health_max + 1
-                self.health_max = self.health_max + 1
-
-                type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
-                type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
-                print('')  # space for terminal
-
-                # to cut the loop of still going into attack mode when the enemy dies
-                Player.player_commands(self)
-
             # when the player dies by various enemies
             else:
                 print('')  # space for terminal
@@ -473,6 +457,29 @@ class Character:
 
                 # end the game when the player dies
                 sys.exit()
+
+    def level_up(self):
+        """
+        Function for the player to level up, letting them choose what they can upgrade from. This will also let
+        the enemy revive themselves with upgraded stats.
+        """
+        # first check if the caller is the player, to give messages about upgrading
+        if self.__class__ == Player:
+            # for levelling up the character and gaining plus health
+            self.health = self.health_max + 1
+            self.health_max = self.health_max + 1
+
+            type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
+            type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
+            print('')  # space for terminal
+
+            # to cut the loop of still going into attack mode when the enemy dies
+            Player.player_commands(self)
+
+        else:
+            # for levelling up the enemy
+            self.health = self.health_max + 1
+            self.health_max = self.health_max + 1
 
 
 # =========================================================
@@ -643,14 +650,17 @@ class Player(Character):
 
         # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
+
             # lets the player attack first and .do_damage returns health to be analyzed here
             print("HEALTH OF ENEMY IN ENCOUNTER IS ", common_enemy_dict['deformed_mutated_human'].health)
             enemy_health = self.do_damage(common_enemy_dict['deformed_mutated_human'])
+
             # if the enemy dies
             if enemy_health <= 0:
                 # let the enemy revive its stat and the player gains additional health, ends attack mode and goes
                 # back to normal commands
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
+                self.level_up()
             # if the enemy did not die
             else:
                 # the enemy will do counter revenge
