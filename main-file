@@ -294,28 +294,11 @@ class Character:
             type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
 
         # executed when the health missing is greater than the leech but the leech is greater than the damage
-        elif health_missing > self.leeching > damage:
+        elif health_missing > self.leeching > damage or self.leeching > damage:
             self.health += damage
             type_print_effect(self.name + " leeched " + str(damage) +
                               " health from " + enemy.name + " with all possible damage given at this round.\n")
             type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
-
-        # if the self.leeching points is higher than the damage, give the value of the damage as the health
-        # points due to the low given damage
-        elif self.leeching > damage:
-            self.health += damage
-            type_print_effect(self.name + " successfully leeched but not reached the maximum leeching"
-                                          " effect from " + enemy.name + " with " + str(self.leeching)
-                              + " health due to low given damage.\n")
-            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
-
-        # used when the self.health is higher than the maximum health due to leeching
-        elif self.health > self.health_max:
-            surplus_health = self.health - self.health_max
-            self.health = self.health - surplus_health
-            type_print_effect(self.name + " leeched too much from " + enemy.name + " with " +
-                              str(self.leeching) + " health and has gained full health!\n")
-            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
 
         return self.health
 
