@@ -265,7 +265,143 @@ class Character:
         #  double damage converted to percentage for the user to see in the status command
         self.double_damage_percentage = "{0:.2%}".format(self.double_damage)
 
-    def leeching_health(self, damage, enemy):  # TODO: CHECK LEECHING
+    def do_damage(self, enemy):
+        """
+        Function for when the player attacks, parent function of do_damage_player and do_damage_enemy
+        :param enemy: To lower the health of the enemy
+        :return enemy.health: To be analyzed inside the attack function in an if statement
+        """
+        # damage of the character
+        damage = random.randint(0, self.attack)
+
+        # utilizing the defense, one in three chance that the defense will break
+        break_defense_chance = random.randint(1, BREAK_DEFENSE_CHANCE)
+
+        # checks to see if the class that called the method is the player
+        if self.__class__ == Player:
+            # when the player does damage to the enemy, has messages for the terminal
+            self.do_damage_player(enemy, damage, break_defense_chance)
+
+        # if the caller are the common enemies
+        elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
+                or self.__class__ == LostWanderer or self.__class__ == Chaser:
+
+            # when the enemy attacks, gives messages whether the player died and how many damage the enemy dealt
+            self.do_damage_enemy(enemy, damage, break_defense_chance)
+
+        # returns enemy health to be analyzed in an if statement inside the caller in attack function
+        return enemy.health
+
+    def do_damage_player(self, enemy, damage, break_defense_chance):
+        """
+        Subfunction of the do_damage, for cutting down code inside the do_damage function.
+        This function gives the messages of damage to the user as the player
+        :param enemy: for the enemy to lose health and give name in terminal
+        :param damage: to determine damage given to the enemy
+        :param break_defense_chance: to determine if the enemy will break its defense
+        :return:
+        """
+        # for aesthetics in terminal
+        print('=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES)
+        # if the defenses break
+        if break_defense_chance == 1:
+            # when the damage is equals to zero
+            if damage == 0:
+                type_print_effect(enemy.name + " felt a scratch! " +
+                                  self.name + " dealt " + str(damage) + " damage!\n")
+
+            else:
+                # enemy losses health with no defense
+                enemy.health = enemy.health - damage
+                type_print_effect(enemy.name + "'s defense has broken! " +
+                                  self.name + " dealt " + str(damage) + " damage!\n")
+                type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
+                # call upon leeching when there is damage from the enemy
+                if self.leeching != 0 and self.health < self.health_max:
+                    self.health = self.leeching_health(damage, enemy)
+
+        # if it does not break
+        else:
+            # if the damage is lower than the defense of the enemy
+            if damage <= enemy.defense:
+                type_print_effect(enemy.name + " has defended all of your attack!\n")
+                type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
+
+            # if the damage exceeds the defense
+            else:
+                # used when the damage is larger than the defense
+                damage_with_defense = damage - enemy.defense
+
+                enemy.health = enemy.health - damage_with_defense
+
+                type_print_effect(enemy.name + " defended a part of " + self.name + " attack!\n")
+                type_print_effect(self.name + " dealt " + str(damage) + " damage!\n")
+                type_print_effect("The " + enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
+                # call upon leeching when there is damage from the enemy
+                if self.leeching != 0 and self.health < self.health_max:
+                    self.health = self.leeching_health(damage, enemy)
+
+        # returns self.health to be used by the do_damage function
+        return self.health
+
+    def do_damage_enemy(self, enemy, damage, break_defense_chance):
+        """
+        Function just like the do_damage_player but it is used instead for the enemy and gives message to the player
+        on what damage they dealt and if they defeat the player
+        :param enemy: enemy is the player
+        :param damage: damage given to the player
+        :param break_defense_chance: if the defense of the player broke
+        :return:
+        """
+        print('')  # space for terminal
+        # for aesthetics in terminal
+        print('=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES)
+        # if the defenses break
+        if break_defense_chance == 1:
+            # when the damage is equals to zero
+            if damage == 0:
+                type_print_effect(self.name + " barely scratched " +
+                                  enemy.name + "!\n")
+                type_print_effect(enemy.name + "'s Health is: " + str(enemy.health) + "\n")
+                print('')  # space for terminal
+
+            # when the defenses break but there is damage
+            else:
+                # enemy losses health with no defense
+                enemy.health = enemy.health - damage
+                type_print_effect(enemy.name + "'s defense has broken! " +
+                                  self.name + " dealt " + str(damage) + " damage!\n")
+                type_print_effect(enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
+                print('')  # space for terminal
+
+        # if the defenses did not break
+        else:
+            # if the damage is lower than the defense of the enemy
+            if damage <= enemy.defense:
+                type_print_effect(enemy.name + " defended all of " + self.name + " attacks!\n")
+                type_print_effect(enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
+                print('')  # space for terminal
+
+            # if the damage exceeds the defense
+            else:
+                # damage is subtracted to defense, that is the updated damage
+                damage_with_defense = damage - enemy.defense
+
+                # enemy losses health with defense
+                enemy.health = enemy.health - damage_with_defense
+
+                type_print_effect(enemy.name + " defended a part of " + self.name + " attack!\n")
+                type_print_effect(self.name + " dealt " + str(damage) + " damage!\n")
+                type_print_effect(enemy.name + "'s remaining health is " +
+                                  str(enemy.health) + "!\n")
+                print('')  # space for terminal
+
+    def leeching_health(self, damage, enemy):
         """
         Function for the leeching power in which the damage given by the character is transformed into the
         character's health. But if the leeching is higher than the damage, only the damage is transformed into the
@@ -301,114 +437,6 @@ class Character:
             type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
 
         return self.health
-
-    def do_damage(self, enemy):
-        """
-        Function for when the player attacks
-        :param enemy: To lower the health of the enemy
-        :return enemy.health: To be analyzed inside the attack function in an if statement
-        """
-        # damage of the character
-        damage = random.randint(0, self.attack)
-
-        # utilizing the defense, one in three chance that the defense will break
-        break_defense_chance = random.randint(1, BREAK_DEFENSE_CHANCE)
-
-        # checks to see if the class that called the method is the player
-        if self.__class__ == Player:
-            # for aesthetics in terminal
-            print('=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES)
-            # if the defenses break
-            if break_defense_chance == 1:
-                # when the damage is equals to zero
-                if damage == 0:
-                    type_print_effect(enemy.name + " felt a scratch! " +
-                                      self.name + " dealt " + str(damage) + " damage!\n")
-
-                else:
-                    # enemy losses health with no defense
-                    enemy.health = enemy.health - damage
-                    type_print_effect(enemy.name + "'s defense has broken! " +
-                                      self.name + " dealt " + str(damage) + " damage!\n")
-                    type_print_effect("The " + enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-                    # call upon leeching when there is damage from the enemy
-                    if self.leeching != 0 and self.health < self.health_max:
-                        self.health = self.leeching_health(damage, enemy)
-
-            # if it does not break
-            else:
-                # if the damage is lower than the defense of the enemy
-                if damage <= enemy.defense:
-                    type_print_effect(enemy.name + " has defended all of your attack!\n")
-                    type_print_effect("The " + enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-
-                # if the damage exceeds the defense
-                else:
-                    # used when the damage is larger than the defense
-                    damage_with_defense = damage - enemy.defense
-
-                    enemy.health = enemy.health - damage_with_defense
-
-                    type_print_effect(enemy.name + " defended a part of " + self.name + " attack!\n")
-                    type_print_effect(self.name + " dealt " + str(damage) + " damage!\n")
-                    type_print_effect("The " + enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-                    # call upon leeching when there is damage from the enemy
-                    if self.leeching != 0 and self.health < self.health_max:
-                        self.health = self.leeching_health(damage, enemy)
-
-        # if the caller are the common enemies
-        elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
-                or self.__class__ == LostWanderer or self.__class__ == Chaser:
-            print('')  # space for terminal
-            # for aesthetics in terminal
-            print('=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES)
-            # if the defenses break
-            if break_defense_chance == 1:
-                # when the damage is equals to zero
-                if damage == 0:
-                    type_print_effect(self.name + " barely scratched " +
-                                      enemy.name + "!\n")
-                    type_print_effect(enemy.name + "'s Health is: " + str(enemy.health) + "\n")
-                    print('')  # space for terminal
-
-                # when the defenses break but there is damage
-                else:
-                    # enemy losses health with no defense
-                    enemy.health = enemy.health - damage
-                    type_print_effect(enemy.name + "'s defense has broken! " +
-                                      self.name + " dealt " + str(damage) + " damage!\n")
-                    type_print_effect(enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-                    print('')  # space for terminal
-
-            # if the defenses did not break
-            else:
-                # if the damage is lower than the defense of the enemy
-                if damage <= enemy.defense:
-                    type_print_effect(enemy.name + " defended all of " + self.name + " attacks!\n")
-                    type_print_effect(enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-                    print('')  # space for terminal
-
-                # if the damage exceeds the defense
-                else:
-                    # damage is subtracted to defense, that is the updated damage
-                    damage_with_defense = damage - enemy.defense
-
-                    # enemy losses health with defense
-                    enemy.health = enemy.health - damage_with_defense
-
-                    type_print_effect(enemy.name + " defended a part of " + self.name + " attack!\n")
-                    type_print_effect(self.name + " dealt " + str(damage) + " damage!\n")
-                    type_print_effect(enemy.name + "'s remaining health is " +
-                                      str(enemy.health) + "!\n")
-                    print('')  # space for terminal
-
-        # returns enemy health to be analyzed in an if statement inside the caller in attack function
-        return enemy.health
 
     def character_death(self, enemy):
         """
@@ -561,7 +589,6 @@ class Player(Character):
     """
     Subclass of Character and it has all the commands that the player can do
     """
-
     # initial stats of the player TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING
     def __init__(self):
         super().__init__()
