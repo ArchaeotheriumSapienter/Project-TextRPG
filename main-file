@@ -275,6 +275,10 @@ class Character:
         # calculates the missing health to prevent over health in a character
         health_missing = self.health_max - self.health
 
+        # for aesthetics in terminal
+        print('')
+        print('=' * NUMBER_OF_DASHES + " LEECH EFFECT " + '=' * NUMBER_OF_DASHES)
+
         # executed if the health missing is less than the leech or damage
         if health_missing <= self.leeching <= damage or health_missing <= self.leeching > damage:
             self.health += health_missing
@@ -290,31 +294,11 @@ class Character:
             type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
 
         # executed when the health missing is greater than the leech but the leech is greater than the damage
-        elif health_missing > self.leeching > damage:
+        elif health_missing > self.leeching > damage or self.leeching > damage:
             self.health += damage
             type_print_effect(self.name + " leeched " + str(damage) +
                               " health from " + enemy.name + " with all possible damage given at this round.\n")
             type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".\n")
-
-            print('')
-
-        # if the self.leeching points is higher than the damage, give the value of the damage as the health
-        # points due to the low given damage
-        elif self.leeching > damage:
-            self.health += damage
-            type_print_effect(self.name + " successfully leeched but not reached the maximum leeching"
-                                          " effect from " + enemy.name + " with " + str(self.leeching)
-                              + " health due to low given damage.\n")
-            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
-            print('')
-
-        # used when the self.health is higher than the maximum health due to leeching
-        elif self.health > self.health_max:
-            surplus_health = self.health - self.health_max
-            self.health = self.health - surplus_health
-            type_print_effect(self.name + " leeched too much from " + enemy.name + " with " +
-                              str(self.leeching) + " health and has gained full health!\n")
-            type_print_effect(self.name + "'s health is currently at " + str(self.health) + ".")
 
         return self.health
 
@@ -350,7 +334,7 @@ class Character:
                                       str(enemy.health) + "!\n")
                     # call upon leeching when there is damage from the enemy
                     if self.leeching != 0 and self.health < self.health_max:
-                        self.leeching_health(damage, enemy)
+                        self.health = self.leeching_health(damage, enemy)
 
             # if it does not break
             else:
@@ -436,31 +420,45 @@ class Character:
         if enemy.health <= 0:
             # if the enemy dies
             if self.__class__ == Player:
+                print('')  # space for terminal
+                # for aesthetics in terminal
+                print('=' * NUMBER_OF_DASHES + " ENEMY DEFEAT " + '=' * NUMBER_OF_DASHES)
 
                 type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
 
-                # used to revive the enemy's health
-                enemy.health = enemy.health_max + 1
-                enemy.health_max = enemy.health_max + 1
-                print(enemy.health_max, "IS THE HEALTH OF ", enemy.name)
-
-                # for levelling up the character and gaining plus health
-                self.health = self.health_max + 1
-                self.health_max = self.health_max + 1
-                type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
-                type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
-                print('')  # space for terminal
-
-                # to cut the loop of still going into attack mode when the enemy dies
-                Player.player_commands(self)
-
             # when the player dies by various enemies
             else:
+                print('')  # space for terminal
+                # for aesthetics in terminal
+                print('=' * NUMBER_OF_DASHES + " PLAYER DEFEAT " + '=' * NUMBER_OF_DASHES)
+
                 type_print_effect(enemy.name + " has been slain by " + self.name + " with no mercy!\n")
                 type_print_effect("Game over! Thank you so much for playing The Journey\n")
 
                 # end the game when the player dies
                 sys.exit()
+
+    def level_up(self):
+        """
+        Function for the player to level up, letting them choose what they can upgrade from. This will also let
+        the enemy revive themselves with upgraded stats.
+        """
+        # first check if the caller is the player, to give messages about upgrading
+        if self.__class__ == Player:
+            # for levelling up the character and gaining plus health
+            self.health = self.health_max + 1
+            self.health_max = self.health_max + 1
+
+            type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
+            type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
+            print('')  # space for terminal
+
+        elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
+                or self.__class__ == LostWanderer or self.__class__ == Chaser:
+            self.health = self.health_max + 1
+            self.health_max = self.health_max + 1
+            # for levelling up the enemy
+            print('DEBUGGING', self.name, 'MY HEALTH IS:', self.health, "AND MY MAX IS:", self.health_max)
 
 
 # =========================================================
@@ -631,15 +629,24 @@ class Player(Character):
 
         # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
+
             # lets the player attack first and .do_damage returns health to be analyzed here
             print("HEALTH OF ENEMY IN ENCOUNTER IS ", common_enemy_dict['deformed_mutated_human'].health)
             enemy_health = self.do_damage(common_enemy_dict['deformed_mutated_human'])
+
             # if the enemy dies
             if enemy_health <= 0:
-                # let the enemy revive its stat and the player gains additional health, ends attack mode and goes
-                # back to normal commands
+                # message prompt about death of enemy
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
-            # if the enemy did not die
+
+                # let the user level up
+                self.level_up()
+
+                # let the enemy level up too
+                common_enemy_dict['deformed_mutated_human'].level_up()
+
+                # to cut the loop of still going into attack mode when the enemy dies
+                Player.player_commands(self)
             else:
                 # the enemy will do counter revenge
                 common_enemy_dict['deformed_mutated_human'].do_damage(self)
@@ -653,6 +660,9 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['mutated_human'])
+                self.level_up()
+                common_enemy_dict['mutated_human'].level_up()
+                Player.player_commands(self)
             else:
                 common_enemy_dict['mutated_human'].do_damage(self)
                 common_enemy_dict['mutated_human'].character_death(self)
@@ -662,6 +672,9 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['lost_wanderer'])
+                self.level_up()
+                common_enemy_dict['lost_wanderer'].level_up()
+                Player.player_commands(self)
             else:
                 common_enemy_dict['lost_wanderer'].do_damage(self)
                 common_enemy_dict['lost_wanderer'].character_death(self)
@@ -671,6 +684,9 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['chaser'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['chaser'])
+                self.level_up()
+                common_enemy_dict['chaser'].level_up()
+                Player.player_commands(self)
             else:
                 common_enemy_dict['chaser'].do_damage(self)
                 common_enemy_dict['chaser'].character_death(self)
