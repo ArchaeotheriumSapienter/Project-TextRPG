@@ -1,7 +1,8 @@
 """
 File: rpgame.py
 ----------------------------------------------------------------------
-This is a simple RPG program where a player can choose various actions and fight enemies
+This is an RPG program where the player can fight various types of enemies. It has its own story line based
+from the creator. The enemies also get harder as the player plays.
 
 Milestone:
 1. Prompt welcome message - done
@@ -70,7 +71,7 @@ def main():
 
     #  handler for the character parent class and the minimum value of each stats that a character can have
     p = Player()
-    
+
 
     # name input to get the name of the player
     p.name = input_print_effect('Before we start, what is your name? ')
@@ -491,9 +492,9 @@ class Character:
 
     def enemy_level_up(self):
         """
-        Function specifically for levelling up the enemy. It will level up all of their necessary stats for 
+        Function specifically for levelling up the enemy. It will level up all of their necessary stats for
         a harder battle with the player
-        :return: 
+        :return:
         """
         self.health = self.health_max + 1
         self.health_max = self.health_max + 1
