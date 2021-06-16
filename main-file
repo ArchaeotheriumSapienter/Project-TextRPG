@@ -69,19 +69,26 @@ def main():
     # ultimate_levelup_bar, ultimate_levelup_bar_per_attack, levelup_bar, levelup_per_defeated_enemy
 
     #  handler for the character parent class and the minimum value of each stats that a character can have
-
     p = Player()
-
-    print(help(DeformedMutatedHuman))
 
     # name input to get the name of the player
     p.name = input_print_effect('Before we start, what is your name? ')
+
+    # calling all of the common class enemy when the player walks with a one in third chance to encounter them
+    # compiled into a dictionary for organization
+
+    common_enemy_dict = {
+        'deformed_mutated_human': DeformedMutatedHuman(),
+        'mutated_human': MutatedHuman(),
+        'lost_wanderer': LostWanderer(),
+        'chaser': Chaser()
+    }
 
     # welcome_message_and_introduction(p.name)
     debug_attack = input('Just Press Enter ')
 
     while debug_attack == '':
-        p.player_commands()
+        p.player_commands(common_enemy_dict)
         debug_attack = input('Just Press Enter  ')
 
     # first_chapter()
@@ -466,7 +473,7 @@ class Character:
                 # end the game when the player dies
                 sys.exit()
 
-    def level_up(self):
+    def level_up(self, common_enemy_dict):
         """
         Function for the player to level up, letting them choose what they can upgrade from. This will also let
         the enemy revive themselves with upgraded stats.
@@ -481,12 +488,14 @@ class Character:
             type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
             print('')  # space for terminal
 
-        elif self.__class__ == DeformedMutatedHuman or self.__class__ == MutatedHuman \
-                or self.__class__ == LostWanderer or self.__class__ == Chaser:
-            self.health = self.health_max + 1
-            self.health_max = self.health_max + 1
+            common_enemy_dict['deformed_mutated_human'].health = \
+                common_enemy_dict['deformed_mutated_human'].health_max + 1
+            common_enemy_dict['deformed_mutated_human'].health_max = \
+                common_enemy_dict['deformed_mutated_human'].health_max + 1
             # for levelling up the enemy
-            print('DEBUGGING', self.name, 'MY HEALTH IS:', self.health, "AND MY MAX IS:", self.health_max)
+            print('DEBUGGING', common_enemy_dict['deformed_mutated_human'].name, 'MY HEALTH IS:'
+                  , common_enemy_dict['deformed_mutated_human'].health, "AND MY MAX IS:"
+                  , common_enemy_dict['deformed_mutated_human'].health_max)
 
 
 # =========================================================
@@ -607,18 +616,10 @@ class Player(Character):
         self.levelup_bar = 30
         self.levelup_per_defeated_enemy = 5
 
-    def random_enemy_encounter(self):
+    def random_enemy_encounter(self, common_enemy_dict):
         """
         Function for random enemies to fight the player
         """
-        # calling all of the common class enemy when the player walks with a one in third chance to encounter them
-        # compiled into a dictionary for organization
-        common_enemy_dict = {
-            'deformed_mutated_human': DeformedMutatedHuman(),
-            'mutated_human': MutatedHuman(),
-            'lost_wanderer': LostWanderer(),
-            'chaser': Chaser()
-        }
 
         # each integer is equivalent to one type of enemy
         random_enemy = random.randint(1, RANDOM_ENEMY_INTEGER)
@@ -666,14 +667,11 @@ class Player(Character):
                 # message prompt about death of enemy
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
 
-                # let the user level up
-                self.level_up()
-
-                # let the enemy level up too
-                common_enemy_dict['deformed_mutated_human'].level_up()
+                # let the user level up with the argument as the enemy to let them level up too
+                self.level_up(common_enemy_dict['deformed_mutated_human'])
 
                 # to cut the loop of still going into attack mode when the enemy dies
-                Player.player_commands(self)
+                Player.player_commands(self, common_enemy_dict)
             else:
                 # the enemy will do counter revenge
                 common_enemy_dict['deformed_mutated_human'].do_damage(self)
@@ -687,9 +685,8 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['mutated_human'])
-                self.level_up()
-                common_enemy_dict['mutated_human'].level_up()
-                Player.player_commands(self)
+                self.level_up(common_enemy_dict['mutated_human'])
+                Player.player_commands(self, common_enemy_dict)
             else:
                 common_enemy_dict['mutated_human'].do_damage(self)
                 common_enemy_dict['mutated_human'].character_death(self)
@@ -699,9 +696,8 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['lost_wanderer'])
-                self.level_up()
-                common_enemy_dict['lost_wanderer'].level_up()
-                Player.player_commands(self)
+                self.level_up(common_enemy_dict['lost_wanderer'])
+                Player.player_commands(self, common_enemy_dict)
             else:
                 common_enemy_dict['lost_wanderer'].do_damage(self)
                 common_enemy_dict['lost_wanderer'].character_death(self)
@@ -711,9 +707,8 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['chaser'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['chaser'])
-                self.level_up()
-                common_enemy_dict['chaser'].level_up()
-                Player.player_commands(self)
+                self.level_up(common_enemy_dict['chaser'])
+                Player.player_commands(self, common_enemy_dict)
             else:
                 common_enemy_dict['chaser'].do_damage(self)
                 common_enemy_dict['chaser'].character_death(self)
@@ -752,7 +747,7 @@ class Player(Character):
             common_enemy_dict['chaser'].character_death(self)
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
-    def move(self):
+    def move(self, common_enemy_dict):
         """
         Function when a player moves, uses random integer to determine the number of steps the player takes
         One out of an integer chance that the player will encounter an enemy while moving
@@ -766,7 +761,7 @@ class Player(Character):
         # if the player encounters an enemy
         if enemy_possibility == 1:
             # call upon the random_enemy_encounter to see what enemy the player will face off
-            self.random_enemy_encounter()
+            self.random_enemy_encounter(common_enemy_dict)
         elif enemy_possibility == 2:
             type_print_effect(self.name + " has nearly missed an enemy, and has moved " + str(number_of_moves)
                               + " steps.\n")
@@ -787,7 +782,7 @@ class Player(Character):
         if flee_chance == 1:
             type_print_effect("You successfully escaped the enemy!\n")
             print('')
-            Player.player_commands(self)
+            Player.player_commands(self, common_enemy_dict)
         else:
             type_print_effect('You failed to escape.\n')
             Player.attack_with_failed_flee(self, random_enemy, common_enemy_dict)
@@ -809,6 +804,8 @@ class Player(Character):
         print("Level Up Bar: " + str(self.levelup_bar))
         print('')  # space for terminal
 
+        # used when the player is in the middle of fighting a mob and chose status, it will go automatically to
+        # attack mode to not let the player escape the loop
         if who_called_me == 'attack_mode':
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
             print('')  # for spacing in the terminal
@@ -816,7 +813,7 @@ class Player(Character):
         print('')  # for spacing in the terminal
 
     # TODO: add player status
-    def help_game(self):
+    def help_game(self, common_enemy_dict):
         """
         Function about all the information that the player wants to know
         """
@@ -835,13 +832,7 @@ class Player(Character):
             'b = Uncommon Enemies',
             'c = Allies'
         ]
-        # instance for the help game to track the stats of the enemies
-        common_enemy_dict_help = {
-            'deformed_mutated_human': DeformedMutatedHuman(),
-            'mutated_human': MutatedHuman(),
-            'lost_wanderer': LostWanderer(),
-            'chaser': Chaser()
-        }
+
         common_enemy = [
             'a = Deformed Mutating Human',
             'b = Mutated Human',
@@ -873,7 +864,7 @@ class Player(Character):
             chosen_help_specific_command = input_print_effect('What command do you want to learn more? ').lower()
 
             # where the player will see all commands, below this code are just for looping through this function
-            self.help_commands(chosen_help_specific_command)
+            self.help_commands(chosen_help_specific_command, common_enemy_dict)
 
             # asked at the end of the submain commands section for the player to choose if they still want to know
             # more information on the commands subtopic or go back to the main topic
@@ -905,7 +896,7 @@ class Player(Character):
                         'What command do you want to learn more? ').lower()
 
                     # where the player will see all commands, below this code are just for looping through this function
-                    self.help_commands(chosen_help_specific_command)
+                    self.help_commands(chosen_help_specific_command, common_enemy_dict)
 
                     # asked at the end of the submain enemies section for the player to choose if they still want to
                     # know more information on the enemies subtopic or go back to the main topic
@@ -922,11 +913,11 @@ class Player(Character):
                 # when the player choses no
                 elif ask_commands_again == 'n':
                     # to end the help loop and let the player choose another command besides help
-                    Player.player_commands(self)
+                    Player.player_commands(self, common_enemy_dict)
 
                 # when the player wants to go back to the main section
                 elif ask_commands_again == 'b':
-                    Player.help_game(self)
+                    Player.help_game(self, common_enemy_dict)
 
                 else:
                     # fencepost solution
@@ -948,7 +939,7 @@ class Player(Character):
             print('')  # space for terminal
 
             # where the player will see the enemies, below this code are just for looping through this function
-            self.help_enemies(chosen_enemy_help, common_enemy_dict_help, common_enemy)
+            self.help_enemies(chosen_enemy_help, common_enemy_dict, common_enemy)
 
             # asked at the end of the submain enemies section for the player to choose if they still want to know
             # more information on the enemies subtopic or go back to the main topic
@@ -977,7 +968,7 @@ class Player(Character):
                     print('')  # space for terminal
 
                     # chosen enemy help will go inside prompting a new if statement to be executed inside help_enemies
-                    self.help_enemies(chosen_enemy_help, common_enemy_dict_help, common_enemy)
+                    self.help_enemies(chosen_enemy_help, common_enemy_dict, common_enemy)
 
                     print('')  # space terminal
                     print('=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES)
@@ -992,11 +983,11 @@ class Player(Character):
                 # when the player choses no
                 elif ask_enemies_again == 'n':
                     # to end the help loop and let the player choose another command besides help
-                    Player.player_commands(self)
+                    Player.player_commands(self, common_enemy_dict)
 
                 # when the player wants to go back to the main section
                 elif ask_enemies_again == 'b':
-                    Player.help_game(self)
+                    Player.help_game(self, common_enemy_dict)
 
                 else:
                     # fencepost solution
@@ -1012,7 +1003,7 @@ class Player(Character):
         print('=' * NUMBER_OF_DASHES + " END OF HELP SECTION " + '=' * NUMBER_OF_DASHES)
         print('')  # space terminal
 
-    def help_commands(self, chosen_help_specific_command):
+    def help_commands(self, chosen_help_specific_command, common_enemy_dict):
         # for attack
         if chosen_help_specific_command == 'a':
             print('')  # space terminal
@@ -1063,9 +1054,9 @@ class Player(Character):
         else:
             print('Invalid input. Please press the aproppriate letter.')
             print('')
-            Player.help_game(self)
+            Player.help_game(self, common_enemy_dict)
 
-    def help_enemies(self, chosen_enemy_help, common_enemy_dict_help, common_enemy):
+    def help_enemies(self, chosen_enemy_help, common_enemy_dict, common_enemy):
         """
         Sub function of help that has the information for all the enemies so the help function is not overcrowded
         with lines of code
@@ -1092,13 +1083,13 @@ class Player(Character):
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     # prints the stats first
-                    print("Health: " + str(common_enemy_dict_help['deformed_mutated_human'].health) + "    |   " +
-                          "Attack: " + str(common_enemy_dict_help['deformed_mutated_human'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict_help['deformed_mutated_human'].double_damage_percentage)
+                    print("Health: " + str(common_enemy_dict['deformed_mutated_human'].health) + "    |   " +
+                          "Attack: " + str(common_enemy_dict['deformed_mutated_human'].attack) + "   |   " +
+                          "Double Damage: " + common_enemy_dict['deformed_mutated_human'].double_damage_percentage)
 
-                    print("Leeching: " + str(common_enemy_dict_help['deformed_mutated_human'].leeching) + "  |   " +
-                          "Defense: " + str(common_enemy_dict_help['deformed_mutated_human'].defense) + "   |   " +
-                          "Shield Bubble: " + str(common_enemy_dict_help['deformed_mutated_human'].shield_bubble))
+                    print("Leeching: " + str(common_enemy_dict['deformed_mutated_human'].leeching) + "  |   " +
+                          "Defense: " + str(common_enemy_dict['deformed_mutated_human'].defense) + "   |   " +
+                          "Shield Bubble: " + str(common_enemy_dict['deformed_mutated_human'].shield_bubble))
 
                     # then prints the backstory
                     # plus cleanliness in the terminal
@@ -1125,13 +1116,13 @@ class Player(Character):
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
-                    print("Health: " + str(common_enemy_dict_help['mutated_human'].health) + "    |   " +
-                          "Attack: " + str(common_enemy_dict_help['mutated_human'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict_help['mutated_human'].double_damage_percentage)
+                    print("Health: " + str(common_enemy_dict['mutated_human'].health) + "    |   " +
+                          "Attack: " + str(common_enemy_dict['mutated_human'].attack) + "   |   " +
+                          "Double Damage: " + common_enemy_dict['mutated_human'].double_damage_percentage)
 
-                    print("Leeching: " + str(common_enemy_dict_help['mutated_human'].leeching) + "  |   " +
-                          "Defense: " + str(common_enemy_dict_help['mutated_human'].defense) + "   |   " +
-                          "Shield Bubble: " + str(common_enemy_dict_help['mutated_human'].shield_bubble))
+                    print("Leeching: " + str(common_enemy_dict['mutated_human'].leeching) + "  |   " +
+                          "Defense: " + str(common_enemy_dict['mutated_human'].defense) + "   |   " +
+                          "Shield Bubble: " + str(common_enemy_dict['mutated_human'].shield_bubble))
 
                     # then prints the backstory
                     # plus cleanliness in the terminal
@@ -1155,13 +1146,13 @@ class Player(Character):
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
-                    print("Health: " + str(common_enemy_dict_help['lost_wanderer'].health) + "    |   " +
-                          "Attack: " + str(common_enemy_dict_help['lost_wanderer'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict_help['lost_wanderer'].double_damage_percentage)
+                    print("Health: " + str(common_enemy_dict['lost_wanderer'].health) + "    |   " +
+                          "Attack: " + str(common_enemy_dict['lost_wanderer'].attack) + "   |   " +
+                          "Double Damage: " + common_enemy_dict['lost_wanderer'].double_damage_percentage)
 
-                    print("Leeching: " + str(common_enemy_dict_help['lost_wanderer'].leeching) + "  |   " +
-                          "Defense: " + str(common_enemy_dict_help['lost_wanderer'].defense) + "   |   " +
-                          "Shield Bubble: " + str(common_enemy_dict_help['lost_wanderer'].shield_bubble))
+                    print("Leeching: " + str(common_enemy_dict['lost_wanderer'].leeching) + "  |   " +
+                          "Defense: " + str(common_enemy_dict['lost_wanderer'].defense) + "   |   " +
+                          "Shield Bubble: " + str(common_enemy_dict['lost_wanderer'].shield_bubble))
 
                     # then prints the backstory
                     # plus cleanliness in the terminal
@@ -1192,13 +1183,13 @@ class Player(Character):
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
-                    print("Health: " + str(common_enemy_dict_help['chaser'].health) + "    |   " +
-                          "Attack: " + str(common_enemy_dict_help['chaser'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict_help['chaser'].double_damage_percentage)
+                    print("Health: " + str(common_enemy_dict['chaser'].health) + "    |   " +
+                          "Attack: " + str(common_enemy_dict['chaser'].attack) + "   |   " +
+                          "Double Damage: " + common_enemy_dict['chaser'].double_damage_percentage)
 
-                    print("Leeching: " + str(common_enemy_dict_help['chaser'].leeching) + "  |   " +
-                          "Defense: " + str(common_enemy_dict_help['chaser'].defense) + "   |   " +
-                          "Shield Bubble: " + str(common_enemy_dict_help['chaser'].shield_bubble))
+                    print("Leeching: " + str(common_enemy_dict['chaser'].leeching) + "  |   " +
+                          "Defense: " + str(common_enemy_dict['chaser'].defense) + "   |   " +
+                          "Shield Bubble: " + str(common_enemy_dict['chaser'].shield_bubble))
 
                     # then prints the backstory
                     # plus cleanliness in the terminal
@@ -1235,9 +1226,9 @@ class Player(Character):
         else:  #
             print('Invalid input. Please press the appropriate letter.')
             print('')
-            Player.help_game(self)
+            Player.help_game(self, common_enemy_dict)
 
-    def quit_game(self):
+    def quit_game(self, common_enemy_dict):
         """
         Command that will quit the game when the player wants to
         """
@@ -1252,7 +1243,7 @@ class Player(Character):
                 sys.exit()
             elif ask_player_again == 'n':
                 print('')  # for spacing in the terminal
-                Player.player_commands(self)
+                Player.player_commands(self, common_enemy_dict)
 
             else:
                 type_print_effect("Invalid input\n")
@@ -1262,7 +1253,7 @@ class Player(Character):
                 ask_player_again = input_print_effect(
                     "Are you sure you want to exit? (Type y for yes, n for no) ").lower()
 
-    def player_commands(self):
+    def player_commands(self, common_enemy_dict):
         """
         All commands that the player can do when there are no enemies
         """
@@ -1281,19 +1272,19 @@ class Player(Character):
             # player can't fight anybody in player_command mode, has to be in attack mode
             type_print_effect('There are no enemies in sight...so far.\n')
         elif player_actions == 'b':
-            Player.move(self)
+            Player.move(self, common_enemy_dict)
         elif player_actions == 'c':
             # to differentiate player_command_attack_mode from the normal player command
             # calls None for positional arguments because in passive mode there are no random enemies
             Player.status(self, random_enemy=None, common_enemy_dict=None, who_called_me='passive_mode')
         elif player_actions == 'd':
-            Player.help_game(self)
+            Player.help_game(self, common_enemy_dict)
         elif player_actions == 'e':
-            Player.quit_game(self)
+            Player.quit_game(self, common_enemy_dict)
         else:
             type_print_effect("Invalid input.\n")
             print('')  # for spacing in the terminal
-            Player.player_commands(self)
+            Player.player_commands(self, common_enemy_dict)
 
     def player_commands_attack_mode(self, random_enemy, common_enemy_dict):
         """
@@ -1320,9 +1311,9 @@ class Player(Character):
             # to differentiate player_command_attack_mode from the normal player command
             Player.status(self, random_enemy, common_enemy_dict, who_called_me='attack_mode')
         elif player_actions == 'd':
-            Player.help_game(self)
+            Player.help_game(self, common_enemy_dict)
         elif player_actions == 'e':
-            Player.quit_game(self)
+            Player.quit_game(self, common_enemy_dict)
         else:
             type_print_effect("Invalid input.\n")
             print('')  # for spacing in the terminal
