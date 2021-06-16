@@ -520,6 +520,7 @@ class Character:
 
         print("levelup_bar: ", self.levelup_bar)
         print("levelup_per_defeated_enemy: ", self.levelup_per_defeated_enemy)
+=======
 
 # =========================================================
 # SUB-CLASS: COMMON ENEMY
@@ -706,8 +707,10 @@ class Player(Character):
                 # message prompt about death of enemy
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
 
+
                 # lets the enemy revive themselves and player to level up themselves
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
+
 
                 # to cut the loop of still going into attack mode when the enemy dies
                 self.player_commands(common_enemy_dict)
@@ -720,8 +723,10 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['mutated_human'])
+
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
                 self.player_commands(common_enemy_dict)
+
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
@@ -729,9 +734,11 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['lost_wanderer'])
+
                 # lets the enemy revive themselves and player to level up themselves
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
                 self.player_commands(common_enemy_dict)
+                
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
@@ -739,9 +746,11 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['chaser'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['chaser'])
+
                 # lets the enemy revive themselves and player to level up themselves
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
                 self.player_commands(common_enemy_dict)
+                
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
