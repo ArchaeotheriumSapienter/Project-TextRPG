@@ -72,7 +72,6 @@ def main():
     #  handler for the character parent class and the minimum value of each stats that a character can have
     p = Player()
 
-
     # name input to get the name of the player
     p.name = input_print_effect('Before we start, what is your name? ')
 
@@ -308,8 +307,9 @@ class Character:
         :param enemy: for the enemy to lose health and give name in terminal
         :param damage: to determine damage given to the enemy
         :param break_defense_chance: to determine if the enemy will break its defense
-        :return:
+        :return: self.health: so that it will check whether or not the enemy or player will die
         """
+
         # for aesthetics in terminal
         print('=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES)
         # if the defenses break
@@ -363,7 +363,6 @@ class Character:
         :param enemy: enemy is the player
         :param damage: damage given to the player
         :param break_defense_chance: if the defense of the player broke
-        :return:
         """
         print('')  # space for terminal
         # for aesthetics in terminal
@@ -498,7 +497,7 @@ class Character:
         """
         self.health = self.health_max + 1
         self.health_max = self.health_max + 1
-        self.attack += 0.5
+        self.attack += 1
         self.leeching += 0.1
         self.defense += 0.5
         self.shield_bubble += 0.5
@@ -506,21 +505,27 @@ class Character:
         self.__repr__()
 
     def __repr__(self):
-        print("NAME: ", self.name)
-        print("health: ", self.health)
-        print("health_max: ", self.health_max)
-        print("attack: ", self.attack)
-        print("double_damage: ", self.double_damage)
-        print("leeching: ", self.leeching)
-        print("defense: ", self.defense)
-        print("shield_bubble: ", self.shield_bubble)
+        """
+        repr function to check each enemy mob as they upgrade through time
+        :return:
+        """
+        print("NAME:", self.name)
+        print("health:", self.health)
+        print("health_max:", self.health_max)
+        print("attack:", self.attack)
+        print("double_damage:", self.double_damage)
+        print("leeching:", self.leeching)
+        print("defense:", self.defense)
+        print("shield_bubble:", self.shield_bubble)
 
-        print("ultimate_levelup_bar: ", self.ultimate_levelup_bar)
-        print("ultimate_levelup_bar_per_attack: ", self.ultimate_levelup_bar_per_attack)
+        print('')  # for terminal
+        print("ultimate_levelup_bar:", self.ultimate_levelup_bar)
+        print("ultimate_levelup_bar_per_attack:", self.ultimate_levelup_bar_per_attack)
 
-        print("levelup_bar: ", self.levelup_bar)
-        print("levelup_per_defeated_enemy: ", self.levelup_per_defeated_enemy)
-=======
+        print('')  # for terminal
+        print("levelup_bar:", self.levelup_bar)
+        print("levelup_per_defeated_enemy:", self.levelup_per_defeated_enemy)
+        print('')  # for terminal
 
 # =========================================================
 # SUB-CLASS: COMMON ENEMY
@@ -707,10 +712,8 @@ class Player(Character):
                 # message prompt about death of enemy
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
 
-
                 # lets the enemy revive themselves and player to level up themselves
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
-
 
                 # to cut the loop of still going into attack mode when the enemy dies
                 self.player_commands(common_enemy_dict)
@@ -723,10 +726,8 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['mutated_human'])
-
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
                 self.player_commands(common_enemy_dict)
-
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
@@ -734,11 +735,9 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['lost_wanderer'])
-
                 # lets the enemy revive themselves and player to level up themselves
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
                 self.player_commands(common_enemy_dict)
-                
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
@@ -746,11 +745,9 @@ class Player(Character):
             enemy_health = self.do_damage(common_enemy_dict['chaser'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['chaser'])
-
                 # lets the enemy revive themselves and player to level up themselves
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
                 self.player_commands(common_enemy_dict)
-                
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
