@@ -263,6 +263,7 @@ class Character:
         self.leeching = 0
         self.defense = 0
         self.shield_bubble = 0
+        self.shield_bubble_max = 0
 
         # stats for levelling up to gain your ultimate
         self.ultimate_levelup_bar = 0
@@ -519,7 +520,8 @@ class Character:
             # for levelling up the character and gaining plus stats
             self.health = self.health_max + 1
             self.health_max = self.health_max + 1
-            self.shield_bubble = self.shield_bubble + 1
+            self.shield_bubble = self.shield_bubble_max + 1
+            self.shield_bubble_max = self.shield_bubble_max + 1
 
             type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
             type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
@@ -537,7 +539,8 @@ class Character:
         self.attack += 1
         self.leeching += 0.1
         self.defense += 0.5
-        self.shield_bubble += self.shield_bubble + 0.5
+        self.shield_bubble = self.shield_bubble + 0.5
+        self.shield_bubble_max = self.shield_bubble_max + 1
 
         # debugging
         self.__repr__()
@@ -586,6 +589,7 @@ class DeformedMutatedHuman(Character):
         self.leeching = 0
         self.defense = 5
         self.shield_bubble = 5
+        self.shield_bubble_max = 5
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
@@ -608,6 +612,7 @@ class MutatedHuman(Character):
         self.leeching = 0
         self.defense = 7
         self.shield_bubble = 0
+        self.shield_bubble_max = 0
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
@@ -630,6 +635,7 @@ class LostWanderer(Character):
         self.leeching = 5
         self.defense = 7
         self.shield_bubble = 0
+        self.shield_bubble_max = 0
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
@@ -652,6 +658,7 @@ class Chaser(Character):
         self.leeching = 2
         self.defense = 10
         self.shield_bubble = 0
+        self.shield_bubble_max = 0
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
@@ -680,6 +687,7 @@ class Player(Character):
         self.leeching = 11
         self.defense = 7
         self.shield_bubble = 20
+        self.shield_bubble_max = 20
         self.ultimate_levelup_bar = 20
         self.ultimate_levelup_bar_per_attack = 4
         self.levelup_bar = 30
