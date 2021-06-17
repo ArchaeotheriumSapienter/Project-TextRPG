@@ -539,8 +539,8 @@ class Character:
         self.attack += 1
         self.leeching += 0.1
         self.defense += 0.5
-        self.shield_bubble = self.shield_bubble + 0.5
-        self.shield_bubble_max = self.shield_bubble_max + 1
+        self.shield_bubble = self.shield_bubble_max + 0.5
+        self.shield_bubble_max = self.shield_bubble_max + 0.5
 
         # debugging
         self.__repr__()
