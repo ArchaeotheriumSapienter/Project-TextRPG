@@ -54,7 +54,9 @@ INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
 # ========================= AESTHETIC CONSTANTS ======================= #
 NUMBER_OF_DASHES = 25  # used for the breakers found in the terminal when the user plays
 HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference however is this is used
-
+# Used when the player attacks
+PLAYER_TURN_BANNER = '=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES
+ENEMY_TURN_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES
 
 # for the help section after the stats of the enemy have been revealed
 
@@ -294,9 +296,16 @@ class Character:
             self.do_damage(enemy, damage)
 
         else:
+            if self.__class__ == Player:
+                # for aesthetics purposes
+                print(PLAYER_TURN_BANNER)
+            else:
+                print(ENEMY_TURN_BANNER)
+                # for aesthetics purposes
             type_print_effect(enemy.name + " 's Shield Bubble has withstand the attack of " + self.name + ".\n")
-            type_print_effect("The remaining Shield Bubble of " + enemy.name + " is " 
+            type_print_effect("The remaining Shield Bubble of " + enemy.name + " is "
                               + str(enemy.shield_bubble) + ".\n")
+            print('')  # for terminal
 
         # returns enemy health to be analyzed in an if statement inside the caller in attack function
         return enemy.health
@@ -337,7 +346,7 @@ class Character:
         """
 
         # for aesthetics in terminal
-        print('=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES)
+        print(PLAYER_TURN_BANNER)
         # if the defenses break
         if break_defense_chance == 1:
             # when the damage is equals to zero
@@ -392,7 +401,7 @@ class Character:
         """
         print('')  # space for terminal
         # for aesthetics in terminal
-        print('=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES)
+        print(ENEMY_TURN_BANNER)
         # if the defenses break
         if break_defense_chance == 1:
             # when the damage is equals to zero
@@ -575,7 +584,7 @@ class DeformedMutatedHuman(Character):
         self.double_damage = 0
         self.leeching = 0
         self.defense = 5
-        self.shield_bubble = 0
+        self.shield_bubble = 20
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
