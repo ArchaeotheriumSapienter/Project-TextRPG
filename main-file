@@ -283,12 +283,30 @@ class Character:
         """
         # damage of the character
         damage = random.randint(0, self.attack)
+        print('DEBUGGING: DAMAGE IS ', damage)
 
-        # computes the shield bubble to the damage done by the character
-        self.shield_bubble = abs(self.shield_bubble - damage)
+        # computes the shield bubble of the enemy to the damage done by the character
+        enemy.shield_bubble = enemy.shield_bubble - damage
+        print("DEBUGGING: THE SHIELD BUBBLE OF " + enemy.name + " IS " + str(enemy.shield_bubble))
 
+        if enemy.shield_bubble <= 0:
+            print('DEBUGGING: MY SHIELD BUBBLE BROKE OH NO WTF IS THISSSSSSS')
+            self.do_damage(enemy, damage)
 
+        else:
+            type_print_effect(enemy.name + " 's Shield Bubble has withstand the attack of " + self.name + ".\n")
+            type_print_effect("The remaining Shield Bubble of " + enemy.name + " is " + str(enemy.shield_bubble))
 
+        # returns enemy health to be analyzed in an if statement inside the caller in attack function
+        return enemy.health
+
+    def do_damage(self, enemy, damage):
+        """
+        Function when the shield bubble burst, it will attack the health directly
+        :param enemy: to determine which will give damage to
+        :param damage: amount of damage that will be given
+        :return enemy_health: to be analyzed in an if statement in the attack function in the Player class
+        """
         # utilizing the defense, one in three chance that the defense will break
         break_defense_chance = random.randint(1, BREAK_DEFENSE_CHANCE)
 
@@ -502,13 +520,15 @@ class Character:
         a harder battle with the player
         :return:
         """
+        # for levelling up the enemy
         self.health = self.health_max + 1
         self.health_max = self.health_max + 1
         self.attack += 1
         self.leeching += 0.1
         self.defense += 0.5
         self.shield_bubble += 0.5
-        # for levelling up the enemy
+
+        # debugging
         self.__repr__()
 
     def __repr__(self):
@@ -636,7 +656,7 @@ class Player(Character):
     Subclass of Character and it has all the commands that the player can do
     """
 
-    # initial stats of the player TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING
+    # initial stats of the player TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE
     def __init__(self):
         super().__init__()
 
@@ -648,7 +668,7 @@ class Player(Character):
         self.double_damage = 0.05
         self.leeching = 11
         self.defense = 7
-        self.shield_bubble = 0
+        self.shield_bubble = 20
         self.ultimate_levelup_bar = 20
         self.ultimate_levelup_bar_per_attack = 4
         self.levelup_bar = 30
