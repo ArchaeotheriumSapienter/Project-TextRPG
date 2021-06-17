@@ -283,7 +283,7 @@ class Character:
         """
         # damage of the character
         damage = random.randint(0, self.attack)
-        print('DEBUGGING: DAMAGE IS ', damage)
+        print('DEBUGGING: DAMAGE IS ', damage, "OF", self.name)
 
         # computes the shield bubble of the enemy to the damage done by the character
         enemy.shield_bubble = enemy.shield_bubble - damage
@@ -295,7 +295,8 @@ class Character:
 
         else:
             type_print_effect(enemy.name + " 's Shield Bubble has withstand the attack of " + self.name + ".\n")
-            type_print_effect("The remaining Shield Bubble of " + enemy.name + " is " + str(enemy.shield_bubble))
+            type_print_effect("The remaining Shield Bubble of " + enemy.name + " is " 
+                              + str(enemy.shield_bubble) + ".\n")
 
         # returns enemy health to be analyzed in an if statement inside the caller in attack function
         return enemy.health
