@@ -273,14 +273,21 @@ class Character:
         #  double damage converted to percentage for the user to see in the status command
         self.double_damage_percentage = "{0:.2%}".format(self.double_damage)
 
-    def do_damage(self, enemy):
+    def do_damage_with_shield_bubble(self, enemy):
         """
-        Function for when the player attacks, parent function of do_damage_player and do_damage_enemy
+        Function for when the player or enemy attacks, parent function of do_damage_player and do_damage_enemy.
+        It first computes the shield bubble of the characters then if the shield bubble pops it will commence to
+        the normal kinds of attacks with defense
         :param enemy: To lower the health of the enemy
         :return enemy.health: To be analyzed inside the attack function in an if statement
         """
         # damage of the character
         damage = random.randint(0, self.attack)
+
+        # computes the shield bubble to the damage done by the character
+        self.shield_bubble = abs(self.shield_bubble - damage)
+
+
 
         # utilizing the defense, one in three chance that the defense will break
         break_defense_chance = random.randint(1, BREAK_DEFENSE_CHANCE)
@@ -527,6 +534,7 @@ class Character:
         print("levelup_per_defeated_enemy:", self.levelup_per_defeated_enemy)
         print('')  # for terminal
 
+
 # =========================================================
 # SUB-CLASS: COMMON ENEMY
 # =========================================================
@@ -646,21 +654,6 @@ class Player(Character):
         self.levelup_bar = 30
         self.levelup_per_defeated_enemy = 5
 
-    def revive_enemy_and_level_them_up_alongside_player(self, common_enemy_dict):
-        """
-        This activates when the player defeats a common enemy. It lets all of the enemies level up all of their stats
-        for a harder game in the long run. It also levels up the player
-        :return:
-        """
-        # let the user level up
-        self.level_up()
-
-        # let all common enemies level up
-        common_enemy_dict['deformed_mutated_human'].enemy_level_up()
-        common_enemy_dict['mutated_human'].enemy_level_up()
-        common_enemy_dict['lost_wanderer'].enemy_level_up()
-        common_enemy_dict['chaser'].enemy_level_up()
-
     def random_enemy_encounter(self, common_enemy_dict):
         """
         Function for random enemies to fight the player
@@ -705,9 +698,9 @@ class Player(Character):
 
             # lets the player attack first and .do_damage returns health to be analyzed here
             print("HEALTH OF ENEMY IN ENCOUNTER IS ", common_enemy_dict['deformed_mutated_human'].health)
-            enemy_health = self.do_damage(common_enemy_dict['deformed_mutated_human'])
+            enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['deformed_mutated_human'])
 
-            # if the enemy dies
+            # if the enemy dies when their health is zero
             if enemy_health <= 0:
                 # message prompt about death of enemy
                 self.character_death(common_enemy_dict['deformed_mutated_human'])
@@ -717,13 +710,15 @@ class Player(Character):
 
                 # to cut the loop of still going into attack mode when the enemy dies
                 self.player_commands(common_enemy_dict)
+
+            # if enemy is not yet death it will prompt the enemy to do revenge attack
             else:
                 # the enemy will do counter revenge
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
         # same formula from above, just with different enemies
         elif random_enemy == MUTATED_HUMAN:
-            enemy_health = self.do_damage(common_enemy_dict['mutated_human'])
+            enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['mutated_human'])
                 self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
@@ -732,7 +727,7 @@ class Player(Character):
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
         elif random_enemy == LOST_WANDERER:
-            enemy_health = self.do_damage(common_enemy_dict['lost_wanderer'])
+            enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['lost_wanderer'])
                 # lets the enemy revive themselves and player to level up themselves
@@ -742,7 +737,7 @@ class Player(Character):
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
         elif random_enemy == CHASER:
-            enemy_health = self.do_damage(common_enemy_dict['chaser'])
+            enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['chaser'])
             if enemy_health <= 0:
                 self.character_death(common_enemy_dict['chaser'])
                 # lets the enemy revive themselves and player to level up themselves
@@ -764,7 +759,7 @@ class Player(Character):
         # if statement stating what enemy the player will encounter
         if random_enemy == DEFORMED_MUTATED_HUMAN:
             # the enemy will do counter revenge
-            common_enemy_dict['deformed_mutated_human'].do_damage(self)
+            common_enemy_dict['deformed_mutated_human'].do_damage_with_shield_bubble(self)
             # if the player died from the damage, it will end the game with a message
             common_enemy_dict['deformed_mutated_human'].character_death(self)
             # if the player did not die, let the player choose their next command in attack mode
@@ -772,19 +767,34 @@ class Player(Character):
 
         # same formula from above, just with different enemies
         elif random_enemy == MUTATED_HUMAN:
-            common_enemy_dict['mutated_human'].do_damage(self)
+            common_enemy_dict['mutated_human'].do_damage_with_shield_bubble(self)
             common_enemy_dict['mutated_human'].character_death(self)
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
         elif random_enemy == LOST_WANDERER:
-            common_enemy_dict['lost_wanderer'].do_damage(self)
+            common_enemy_dict['lost_wanderer'].do_damage_with_shield_bubble(self)
             common_enemy_dict['lost_wanderer'].character_death(self)
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
         elif random_enemy == CHASER:
-            common_enemy_dict['chaser'].do_damage(self)
+            common_enemy_dict['chaser'].do_damage_with_shield_bubble(self)
             common_enemy_dict['chaser'].character_death(self)
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+
+    def revive_enemy_and_level_them_up_alongside_player(self, common_enemy_dict):
+        """
+        This activates when the player defeats a common enemy. It lets all of the enemies level up all of their stats
+        for a harder game in the long run. It also levels up the player
+        :return:
+        """
+        # let the user level up
+        self.level_up()
+
+        # let all common enemies level up
+        common_enemy_dict['deformed_mutated_human'].enemy_level_up()
+        common_enemy_dict['mutated_human'].enemy_level_up()
+        common_enemy_dict['lost_wanderer'].enemy_level_up()
+        common_enemy_dict['chaser'].enemy_level_up()
 
     def move(self, common_enemy_dict):
         """
