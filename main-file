@@ -516,9 +516,10 @@ class Character:
         """
         # first check if the caller is the player, to give messages about upgrading
         if self.__class__ == Player:
-            # for levelling up the character and gaining plus health
+            # for levelling up the character and gaining plus stats
             self.health = self.health_max + 1
             self.health_max = self.health_max + 1
+            self.shield_bubble = self.shield_bubble + 1
 
             type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
             type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
@@ -536,7 +537,7 @@ class Character:
         self.attack += 1
         self.leeching += 0.1
         self.defense += 0.5
-        self.shield_bubble += 0.5
+        self.shield_bubble += self.shield_bubble + 0.5
 
         # debugging
         self.__repr__()
@@ -584,7 +585,7 @@ class DeformedMutatedHuman(Character):
         self.double_damage = 0
         self.leeching = 0
         self.defense = 5
-        self.shield_bubble = 20
+        self.shield_bubble = 5
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
