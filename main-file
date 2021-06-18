@@ -1003,7 +1003,7 @@ class Player(Character):
                 elif ask_commands_again == 'n':
                     # to end the help loop and let the player choose another command besides help
 
-                    # used when the player is in the middle of fighting a mob and chose status,
+                    # used when the player is in the middle of fighting a mob and chose help,
                     # it will go automatically to
                     # attack mode to not let the player escape the loop
                     if who_called_me == 'attack_mode':
@@ -1081,7 +1081,7 @@ class Player(Character):
                 elif ask_enemies_again == 'n':
                     # to end the help loop and let the player choose another command besides help
 
-                    # used when the player is in the middle of fighting a mob and chose status,
+                    # used when the player is in the middle of fighting a mob and chose help,
                     # it will go automatically to
                     # attack mode to not let the player escape the loop
                     if who_called_me == 'attack_mode':
@@ -1279,12 +1279,7 @@ class Player(Character):
                 # for chaser
                 elif chosen_common_enemy_help == 'd':
                     # Used for aesthetics in the terminal
-                    print('=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES)
-                    print('')
-                    # for gap for the player to see the stats for a while before the backstory
-                    time.sleep(HELP_BACKSTORY_NEXT_TEXT)
-                    # Used for aesthetics in the terminal
-                    print('=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES)
+                    print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
@@ -1333,7 +1328,7 @@ class Player(Character):
             print('')
             self.help_game(common_enemy_dict, random_enemy, who_called_me)
 
-    def quit_game(self, common_enemy_dict):
+    def quit_game(self, common_enemy_dict, random_enemy, who_called_me='attack_mode'):
         """
         Command that will quit the game when the player wants to
         """
@@ -1348,7 +1343,11 @@ class Player(Character):
                 sys.exit()
             elif ask_player_again == 'n':
                 print('')  # for spacing in the terminal
-                self.player_commands(common_enemy_dict)
+                # used when the player is in the middle of fighting a mob and chose help, it will go automatically to
+                # attack mode to not let the player escape the loop
+                if who_called_me == 'attack_mode':
+                    self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+                    print('')  # for spacing in the terminal
 
             else:
                 type_print_effect("Invalid input\n")
@@ -1385,7 +1384,7 @@ class Player(Character):
         elif player_actions == 'd':
             self.help_game(common_enemy_dict, random_enemy=None, who_called_me='passive_mode')
         elif player_actions == 'e':
-            self.quit_game(common_enemy_dict)
+            self.quit_game(common_enemy_dict, random_enemy=None, who_called_me='passive_mode')
         else:
             type_print_effect("Invalid input.\n")
             print('')  # for spacing in the terminal
@@ -1418,7 +1417,7 @@ class Player(Character):
         elif player_actions == 'd':
             self.help_game(common_enemy_dict, random_enemy, who_called_me='attack_mode')
         elif player_actions == 'e':
-            self.quit_game(common_enemy_dict)
+            self.quit_game(common_enemy_dict, random_enemy, who_called_me='attack_mode')
         else:
             type_print_effect("Invalid input.\n")
             print('')  # for spacing in the terminal
