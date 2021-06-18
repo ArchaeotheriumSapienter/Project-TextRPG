@@ -1002,8 +1002,8 @@ class Player(Character):
                 # when the player choses no
                 elif ask_commands_again == 'n':
                     # to end the help loop and let the player choose another command besides help
-                    
-                    # used when the player is in the middle of fighting a mob and chose status, 
+
+                    # used when the player is in the middle of fighting a mob and chose status,
                     # it will go automatically to
                     # attack mode to not let the player escape the loop
                     if who_called_me == 'attack_mode':
@@ -1011,7 +1011,7 @@ class Player(Character):
                         print('')  # for spacing in the terminal
                     else:
                         self.player_commands(common_enemy_dict)
-                    
+
                 # when the player wants to go back to the main section
                 elif ask_commands_again == 'b':
                     self.help_game(common_enemy_dict, random_enemy, who_called_me)
@@ -1081,9 +1081,9 @@ class Player(Character):
                 elif ask_enemies_again == 'n':
                     # to end the help loop and let the player choose another command besides help
 
-                    # used when the player is in the middle of fighting a mob and chose status, 
+                    # used when the player is in the middle of fighting a mob and chose status,
                     # it will go automatically to
-                    # attack mode to not let the player escape the loop                    
+                    # attack mode to not let the player escape the loop
                     if who_called_me == 'attack_mode':
                         self.player_commands_attack_mode(random_enemy, common_enemy_dict)
                         print('')  # for spacing in the terminal
@@ -1416,7 +1416,7 @@ class Player(Character):
             # to differentiate player_command_attack_mode from the normal player command
             self.status(random_enemy, common_enemy_dict, who_called_me='attack_mode')
         elif player_actions == 'd':
-            self.help_game(common_enemy_dict, random_enemy=None, who_called_me='attack_mode')
+            self.help_game(common_enemy_dict, random_enemy, who_called_me='attack_mode')
         elif player_actions == 'e':
             self.quit_game(common_enemy_dict)
         else:
