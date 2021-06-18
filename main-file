@@ -1343,7 +1343,7 @@ class Player(Character):
                 sys.exit()
             elif ask_player_again == 'n':
                 print('')  # for spacing in the terminal
-                # used when the player is in the middle of fighting a mob and chose help, it will go automatically to
+                # used when the player is in the middle of fighting a mob and chose quit, it will go automatically to
                 # attack mode to not let the player escape the loop
                 if who_called_me == 'attack_mode':
                     self.player_commands_attack_mode(random_enemy, common_enemy_dict)
