@@ -901,7 +901,7 @@ class Player(Character):
         print('')  # for spacing in the terminal
 
     # TODO: add player status
-    def help_game(self, common_enemy_dict):
+    def help_game(self, common_enemy_dict, random_enemy, who_called_me):
         """
         Function about all the information that the player wants to know
         """
@@ -915,6 +915,7 @@ class Player(Character):
             'f = flee'
         ]
 
+        # to be used in the dictionary as grouping
         enemy = [
             'a = Common Enemies',
             'b = Uncommon Enemies',
@@ -952,7 +953,7 @@ class Player(Character):
             chosen_help_specific_command = input_print_effect('What command do you want to learn more? ').lower()
 
             # where the player will see all commands, below this code are just for looping through this function
-            self.help_commands(chosen_help_specific_command, common_enemy_dict)
+            self.help_commands(chosen_help_specific_command, random_enemy, common_enemy_dict, who_called_me)
 
             # asked at the end of the submain commands section for the player to choose if they still want to know
             # more information on the commands subtopic or go back to the main topic
@@ -968,7 +969,7 @@ class Player(Character):
             ask_commands_again = input_print_effect("Please press the appropriate letter. ").lower()
             print('')
 
-            # while loop when the player is inside the enemy database for them to repeat over and over if they
+            # while loop when the player is inside the command database for them to repeat over and over if they
             # like
             while True:
                 # if they chose to learn more
@@ -984,7 +985,7 @@ class Player(Character):
                         'What command do you want to learn more? ').lower()
 
                     # where the player will see all commands, below this code are just for looping through this function
-                    self.help_commands(chosen_help_specific_command, common_enemy_dict)
+                    self.help_commands(chosen_help_specific_command, random_enemy, common_enemy_dict, who_called_me)
 
                     # asked at the end of the submain enemies section for the player to choose if they still want to
                     # know more information on the enemies subtopic or go back to the main topic
@@ -1001,11 +1002,19 @@ class Player(Character):
                 # when the player choses no
                 elif ask_commands_again == 'n':
                     # to end the help loop and let the player choose another command besides help
-                    self.player_commands(common_enemy_dict)
-
+                    
+                    # used when the player is in the middle of fighting a mob and chose status, 
+                    # it will go automatically to
+                    # attack mode to not let the player escape the loop
+                    if who_called_me == 'attack_mode':
+                        self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+                        print('')  # for spacing in the terminal
+                    else:
+                        self.player_commands(common_enemy_dict)
+                    
                 # when the player wants to go back to the main section
                 elif ask_commands_again == 'b':
-                    self.help_game(common_enemy_dict)
+                    self.help_game(common_enemy_dict, random_enemy, who_called_me)
 
                 else:
                     # fencepost solution
@@ -1027,7 +1036,7 @@ class Player(Character):
             print('')  # space for terminal
 
             # where the player will see the enemies, below this code are just for looping through this function
-            self.help_enemies(chosen_enemy_help, common_enemy_dict, common_enemy)
+            self.help_enemies(chosen_enemy_help, common_enemy, random_enemy, common_enemy_dict, who_called_me)
 
             # asked at the end of the submain enemies section for the player to choose if they still want to know
             # more information on the enemies subtopic or go back to the main topic
@@ -1056,7 +1065,7 @@ class Player(Character):
                     print('')  # space for terminal
 
                     # chosen enemy help will go inside prompting a new if statement to be executed inside help_enemies
-                    self.help_enemies(chosen_enemy_help, common_enemy_dict, common_enemy)
+                    self.help_enemies(chosen_enemy_help,  common_enemy, random_enemy, common_enemy_dict, who_called_me)
 
                     print('')  # space terminal
                     print('=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES)
@@ -1071,11 +1080,19 @@ class Player(Character):
                 # when the player choses no
                 elif ask_enemies_again == 'n':
                     # to end the help loop and let the player choose another command besides help
-                    self.player_commands(common_enemy_dict)
+
+                    # used when the player is in the middle of fighting a mob and chose status, 
+                    # it will go automatically to
+                    # attack mode to not let the player escape the loop                    
+                    if who_called_me == 'attack_mode':
+                        self.player_commands_attack_mode(random_enemy, common_enemy_dict)
+                        print('')  # for spacing in the terminal
+                    else:
+                        self.player_commands(common_enemy_dict)
 
                 # when the player wants to go back to the main section
                 elif ask_enemies_again == 'b':
-                    self.help_game(common_enemy_dict)
+                    self.help_game(common_enemy_dict, random_enemy, who_called_me)
 
                 else:
                     # fencepost solution
@@ -1091,7 +1108,7 @@ class Player(Character):
         print('=' * NUMBER_OF_DASHES + " END OF HELP SECTION " + '=' * NUMBER_OF_DASHES)
         print('')  # space terminal
 
-    def help_commands(self, chosen_help_specific_command, common_enemy_dict):
+    def help_commands(self, chosen_help_specific_command, random_enemy, common_enemy_dict, who_called_me):
         # for attack
         if chosen_help_specific_command == 'a':
             print('')  # space terminal
@@ -1142,9 +1159,9 @@ class Player(Character):
         else:
             print('Invalid input. Please press the aproppriate letter.')
             print('')
-            self.help_game(common_enemy_dict)
+            self.help_game(common_enemy_dict, random_enemy, who_called_me)
 
-    def help_enemies(self, chosen_enemy_help, common_enemy_dict, common_enemy):
+    def help_enemies(self, chosen_enemy_help,  common_enemy, random_enemy, common_enemy_dict, who_called_me):
         """
         Sub function of help that has the information for all the enemies so the help function is not overcrowded
         with lines of code
@@ -1314,7 +1331,7 @@ class Player(Character):
         else:  #
             print('Invalid input. Please press the appropriate letter.')
             print('')
-            self.help_game(common_enemy_dict)
+            self.help_game(common_enemy_dict, random_enemy, who_called_me)
 
     def quit_game(self, common_enemy_dict):
         """
@@ -1366,7 +1383,7 @@ class Player(Character):
             # calls None for positional arguments because in passive mode there are no random enemies
             self.status(random_enemy=None, common_enemy_dict=None, who_called_me='passive_mode')
         elif player_actions == 'd':
-            self.help_game(common_enemy_dict)
+            self.help_game(common_enemy_dict, random_enemy=None, who_called_me='passive_mode')
         elif player_actions == 'e':
             self.quit_game(common_enemy_dict)
         else:
@@ -1399,7 +1416,7 @@ class Player(Character):
             # to differentiate player_command_attack_mode from the normal player command
             self.status(random_enemy, common_enemy_dict, who_called_me='attack_mode')
         elif player_actions == 'd':
-            self.help_game(common_enemy_dict)
+            self.help_game(common_enemy_dict, random_enemy=None, who_called_me='attack_mode')
         elif player_actions == 'e':
             self.quit_game(common_enemy_dict)
         else:
