@@ -57,8 +57,32 @@ INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
 NUMBER_OF_DASHES = 25  # used for the breakers found in the terminal when the user plays
 HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference however is this is used
 # Used when the player attacks
+
+# ========================== BANNER CONSTANTS ======================== #
 PLAYER_TURN_BANNER = '=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES
 ENEMY_TURN_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES
+
+PLAYER_DEFEAT_BANNER = '=' * NUMBER_OF_DASHES + " PLAYER DEFEAT " + '=' * NUMBER_OF_DASHES
+ENEMY_DEFEAT_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY DEFEAT " + '=' * NUMBER_OF_DASHES
+
+# for leeching effect
+LEECH_BANNER = '=' * NUMBER_OF_DASHES + " LEECH EFFECT " + '=' * NUMBER_OF_DASHES
+
+# for double damage effect
+DOUBLE_DAMAGE_BANNER = '=' * NUMBER_OF_DASHES + " DOUBLE DAMAGE " + '=' * NUMBER_OF_DASHES
+
+# in the help menu
+HELP_END_BANNER = '=' * NUMBER_OF_DASHES + " END OF HELP SECTION " + '=' * NUMBER_OF_DASHES
+
+# in the help command menu
+COMMAND_DESCRIPTION_HELP_BANNER = '=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES
+COMMAND_END_HELP_BANNER = '=' * NUMBER_OF_DASHES + " END OF COMMAND SECTION " + '=' * NUMBER_OF_DASHES
+
+# in the help enemy menu
+ENEMY_STATS_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES
+ENEMY_BACK_STORY_BANNER = '=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES
+ENEMY_END_HELP_SECTION = '=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES
+
 
 
 # for the help section after the stats of the enemy have been revealed
@@ -298,7 +322,9 @@ class Character:
         if double_damage_chance <= self.double_damage:
             # the damage is multiplied to two as a double damage
             damage *= 2
-            print('DOUBLE DAMAGE IS', damage)
+            print('DEBUGGING: DOUBLE DAMAGE IS', damage)
+            print(DOUBLE_DAMAGE_BANNER)
+            type_print_effect('DOUBLE DAMAGE HAS BEEN ACTIVATED!\n')
 
         return damage
 
@@ -332,7 +358,7 @@ class Character:
             else:
                 print(ENEMY_TURN_BANNER)
                 # for aesthetics purposes
-                
+
             # message saying that the shield bubble is still intact
             type_print_effect(enemy.name + " 's Shield Bubble has withstand the attack of " + self.name + ".\n")
             type_print_effect("The remaining Shield Bubble of " + enemy.name + " is "
@@ -488,7 +514,7 @@ class Character:
 
         # for aesthetics in terminal
         print('')
-        print('=' * NUMBER_OF_DASHES + " LEECH EFFECT " + '=' * NUMBER_OF_DASHES)
+        print(LEECH_BANNER)
 
         # executed if the health missing is less than the leech or damage
         if health_missing <= self.leeching <= damage or health_missing <= self.leeching > damage:
@@ -525,7 +551,7 @@ class Character:
             if self.__class__ == Player:
                 print('')  # space for terminal
                 # for aesthetics in terminal
-                print('=' * NUMBER_OF_DASHES + " ENEMY DEFEAT " + '=' * NUMBER_OF_DASHES)
+                print(ENEMY_DEFEAT_BANNER)
 
                 type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
 
@@ -533,7 +559,7 @@ class Character:
             else:
                 print('')  # space for terminal
                 # for aesthetics in terminal
-                print('=' * NUMBER_OF_DASHES + " PLAYER DEFEAT " + '=' * NUMBER_OF_DASHES)
+                print(PLAYER_DEFEAT_BANNER)
 
                 type_print_effect(enemy.name + " has been slain by " + self.name + " with no mercy!\n")
                 type_print_effect("Game over! Thank you so much for playing The Journey\n")
@@ -704,9 +730,9 @@ class Player(Character):
     Subclass of Character and it has all the commands that the player can do
     """
 
-    # initial stats of the player 
+    # initial stats of the player
     # TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE, and double damage
-    # 
+    #
     def __init__(self):
         super().__init__()
 
@@ -990,7 +1016,7 @@ class Player(Character):
             # asked at the end of the submain commands section for the player to choose if they still want to know
             # more information on the commands subtopic or go back to the main topic
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " END OF COMMAND SECTION " + '=' * NUMBER_OF_DASHES)
+            print(COMMAND_END_HELP_BANNER)
             print('')  # space terminal
 
             # end statement for the user to see when they are inside the commands database
@@ -1022,7 +1048,7 @@ class Player(Character):
                     # asked at the end of the submain enemies section for the player to choose if they still want to
                     # know more information on the enemies subtopic or go back to the main topic
                     print('')  # space terminal
-                    print('=' * NUMBER_OF_DASHES + " END OF COMMAND SECTION " + '=' * NUMBER_OF_DASHES)
+                    print(COMMAND_END_HELP_BANNER)
                     print('')  # space terminal
 
                     # end statement for the user to see when they are inside the enemy database
@@ -1073,7 +1099,7 @@ class Player(Character):
             # asked at the end of the submain enemies section for the player to choose if they still want to know
             # more information on the enemies subtopic or go back to the main topic
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES)
+            print(ENEMY_END_HELP_SECTION)
             print('')  # space terminal
 
             # end statement for the user to see when they are inside the enemy database
@@ -1100,7 +1126,7 @@ class Player(Character):
                     self.help_enemies(chosen_enemy_help, common_enemy, random_enemy, common_enemy_dict, who_called_me)
 
                     print('')  # space terminal
-                    print('=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_END_HELP_SECTION)
                     print('')  # space terminal
 
                     # asks the user again if they still want to stick
@@ -1137,14 +1163,14 @@ class Player(Character):
 
         # use for cleaner terminal reading at the end of each information given
         print('')  # space terminal
-        print('=' * NUMBER_OF_DASHES + " END OF HELP SECTION " + '=' * NUMBER_OF_DASHES)
+        print(HELP_END_BANNER)
         print('')  # space terminal
 
     def help_commands(self, chosen_help_specific_command, random_enemy, common_enemy_dict, who_called_me):
         # for attack
         if chosen_help_specific_command == 'a':
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print(COMMAND_DESCRIPTION_HELP_BANNER)
             print('')  # space terminal
             print("Command for the player to attack.")
             print("Damage is based on the current weapon that the player is holding.")
@@ -1152,7 +1178,7 @@ class Player(Character):
         # for move
         elif chosen_help_specific_command == 'b':
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print(COMMAND_DESCRIPTION_HELP_BANNER)
             print('')  # space terminal
             print("Command for the player to move.")
             print("There is a small percentage that the player will encounter an enemy while moving.")
@@ -1160,28 +1186,28 @@ class Player(Character):
         # for status
         elif chosen_help_specific_command == 'c':
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print(COMMAND_DESCRIPTION_HELP_BANNER)
             print('')  # space terminal
             print("Command for the player to see their character's status.")
 
         # for help section
         elif chosen_help_specific_command == 'd':
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print(COMMAND_DESCRIPTION_HELP_BANNER)
             print('')  # space terminal
             print("Command for the player to see the help section of the game.")
 
         # for quitting the game
         elif chosen_help_specific_command == 'e':
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print(COMMAND_DESCRIPTION_HELP_BANNER)
             print('')  # space terminal
             print("Command for the player to quit the game.")
 
         # for fleeing
         elif chosen_help_specific_command == 'f':
             print('')  # space terminal
-            print('=' * NUMBER_OF_DASHES + " COMMAND DESCRIPTION " + '=' * NUMBER_OF_DASHES)
+            print(COMMAND_DESCRIPTION_HELP_BANNER)
             print('')  # space terminal
             print("Only available when an enemy has approached the player.")
             print('There is a percentage that the flee will be successful, if it fails the enemy')
@@ -1215,7 +1241,7 @@ class Player(Character):
                 # for deformed mutated human
                 if chosen_common_enemy_help == 'a':
                     # Used for aesthetics in the terminal
-                    print('=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_STATS_BANNER)
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
@@ -1232,7 +1258,7 @@ class Player(Character):
                     # then prints the backstory
                     # plus cleanliness in the terminal
                     print('')
-                    print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_BACK_STORY_BANNER)
                     print('')
                     type_print_effect("Once a human that came from Earth, this "
                                       "abomination is the result of countless\n")
@@ -1250,7 +1276,7 @@ class Player(Character):
                 # for mutated human
                 elif chosen_common_enemy_help == 'b':
                     # Used for aesthetics in the terminal
-                    print('=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_STATS_BANNER)
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
@@ -1265,7 +1291,7 @@ class Player(Character):
                     # then prints the backstory
                     # plus cleanliness in the terminal
                     print('')
-                    print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_BACK_STORY_BANNER)
                     print('')
                     type_print_effect("It has the same sad fate as the Deformed Mutated Human.\n")
                     type_print_effect("The difference, however, is that the Mutated Human is a failed experiment,\n")
@@ -1280,7 +1306,7 @@ class Player(Character):
                 # for lost wanderer
                 elif chosen_common_enemy_help == 'c':
                     # Used for aesthetics in the terminal
-                    print('=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_STATS_BANNER)
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
@@ -1297,7 +1323,7 @@ class Player(Character):
                     # TODO: add the history about the incident in the main story line that caused lost
                     #  wanderers to escape the experiments
                     print('')
-                    print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_BACK_STORY_BANNER)
                     print('')
                     type_print_effect("These are individuals that have escaped the experiments but have failed to\n")
                     type_print_effect("mitigate the effects, therefore making their body worse than the Deformed\n")
@@ -1312,7 +1338,7 @@ class Player(Character):
                 # for chaser
                 elif chosen_common_enemy_help == 'd':
                     # Used for aesthetics in the terminal
-                    print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_STATS_BANNER)
                     print('')
                     # for gap for the player to see the stats for a while before the backstory
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
@@ -1327,7 +1353,7 @@ class Player(Character):
                     # then prints the backstory
                     # plus cleanliness in the terminal
                     print('')
-                    print('=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES)
+                    print(ENEMY_BACK_STORY_BANNER)
                     print('')
                     type_print_effect("These are animals of different origins that have escaped the experiments.\n")
                     type_print_effect(
