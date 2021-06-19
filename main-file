@@ -276,6 +276,15 @@ class Character:
         #  double damage converted to percentage for the user to see in the status command
         self.double_damage_percentage = "{0:.2%}".format(self.double_damage)
 
+    def double_damage_percentage_generator(self):
+        """
+        This is a function used for getting the percentage that will determine if the damage dealt by the character
+        will do a double damage
+        :return: 
+        """
+        
+        
+
     def do_damage_with_shield_bubble(self, enemy):
         """
         Function for when the player or enemy attacks, parent function of do_damage_player and do_damage_enemy.
@@ -320,6 +329,8 @@ class Character:
         """
         # utilizing the defense, one in three chance that the defense will break
         break_defense_chance = random.randint(1, BREAK_DEFENSE_CHANCE)
+
+        
 
         # checks to see if the class that called the method is the player
         if self.__class__ == Player:
@@ -548,7 +559,6 @@ class Character:
     def __repr__(self):
         """
         repr function to check each enemy mob as they upgrade through time
-        :return:
         """
         print("NAME:", self.name)
         print("health:", self.health)
