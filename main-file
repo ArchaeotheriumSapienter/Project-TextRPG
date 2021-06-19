@@ -94,7 +94,8 @@ def main():
     debug_attack = input('Just Press Enter ')
 
     while debug_attack == '':
-        p.player_commands(common_enemy_dict)
+        p.double_damage_and_damage_generator()
+        # p.player_commands(common_enemy_dict)
         debug_attack = input('Just Press Enter  ')
 
     # first_chapter()
@@ -283,7 +284,7 @@ class Character:
         """
         This is a function used for getting the percentage that will determine if the damage dealt by the character
         will do a double damage plus the generating damage that the character will do
-        :return:
+        :return: damage: so that it will be used by the characters
         """
         # damage of the character
         damage = random.randint(0, self.attack)
@@ -316,17 +317,23 @@ class Character:
         enemy.shield_bubble = enemy.shield_bubble - damage
         print("DEBUGGING: THE SHIELD BUBBLE OF " + enemy.name + " IS " + str(enemy.shield_bubble))
 
+        # if statement if the shield bubble stat is non existent or if the shield bubble has broke
         if enemy.shield_bubble <= 0:
             print('DEBUGGING: MY SHIELD BUBBLE BROKE OH NO WTF IS THISSSSSSS')
+            # it will go straight to attacking the character directly
             self.do_damage(enemy, damage)
 
+        # if the shield bubble is still intact
         else:
+            # checks the class of the caller for aesthetics
             if self.__class__ == Player:
                 # for aesthetics purposes
                 print(PLAYER_TURN_BANNER)
             else:
                 print(ENEMY_TURN_BANNER)
                 # for aesthetics purposes
+                
+            # message saying that the shield bubble is still intact
             type_print_effect(enemy.name + " 's Shield Bubble has withstand the attack of " + self.name + ".\n")
             type_print_effect("The remaining Shield Bubble of " + enemy.name + " is "
                               + str(enemy.shield_bubble) + ".\n")
@@ -697,7 +704,9 @@ class Player(Character):
     Subclass of Character and it has all the commands that the player can do
     """
 
-    # initial stats of the player TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE
+    # initial stats of the player 
+    # TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE, and double damage
+    # 
     def __init__(self):
         super().__init__()
 
@@ -706,7 +715,7 @@ class Player(Character):
         self.health = 50
         self.health_max = 50
         self.attack = 10
-        self.double_damage = 0.05
+        self.double_damage = 50
         self.leeching = 11
         self.defense = 7
         self.shield_bubble = 20
@@ -1213,7 +1222,8 @@ class Player(Character):
                     # prints the stats first
                     print("Health: " + str(common_enemy_dict['deformed_mutated_human'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['deformed_mutated_human'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict['deformed_mutated_human'].double_damage_percentage)
+                          "Double Damage: "
+                          + common_enemy_dict['deformed_mutated_human'].double_damage_percentage_for_stats)
 
                     print("Leeching: " + str(common_enemy_dict['deformed_mutated_human'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['deformed_mutated_human'].defense) + "   |   " +
@@ -1246,7 +1256,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['mutated_human'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['mutated_human'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict['mutated_human'].double_damage_percentage)
+                          "Double Damage: " + common_enemy_dict['mutated_human'].double_damage_percentage_for_stats)
 
                     print("Leeching: " + str(common_enemy_dict['mutated_human'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['mutated_human'].defense) + "   |   " +
@@ -1276,7 +1286,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['lost_wanderer'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['lost_wanderer'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict['lost_wanderer'].double_damage_percentage)
+                          "Double Damage: " + common_enemy_dict['lost_wanderer'].double_damage_percentage_for_stats)
 
                     print("Leeching: " + str(common_enemy_dict['lost_wanderer'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['lost_wanderer'].defense) + "   |   " +
@@ -1308,7 +1318,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['chaser'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['chaser'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict['chaser'].double_damage_percentage)
+                          "Double Damage: " + common_enemy_dict['chaser'].double_damage_percentage_for_stats)
 
                     print("Leeching: " + str(common_enemy_dict['chaser'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['chaser'].defense) + "   |   " +
