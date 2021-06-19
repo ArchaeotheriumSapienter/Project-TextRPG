@@ -39,6 +39,8 @@ RANDOM_ENEMY_INTEGER = 1  # used for debugging in the random_enemy_occurance. Ea
 NUMBER_OF_MOVES = 10  # used to determine the number of steps possible for the player to do
 BREAK_DEFENSE_CHANCE = 1  # constant used in the .do_damage function in which there is a one in an integer possibility
 # that an attack can break a defense
+DOUBLE_DAMAGE_LIMIT = 50  # constant to determine the limit that a character can have the double damage percentage
+# to prevent godlike skills
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
@@ -57,6 +59,7 @@ HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference how
 # Used when the player attacks
 PLAYER_TURN_BANNER = '=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES
 ENEMY_TURN_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES
+
 
 # for the help section after the stats of the enemy have been revealed
 
@@ -274,16 +277,29 @@ class Character:
         self.levelup_per_defeated_enemy = 0
 
         #  double damage converted to percentage for the user to see in the status command
-        self.double_damage_percentage = "{0:.2%}".format(self.double_damage)
+        self.double_damage_percentage_for_stats = "{0:.2%}".format(self.double_damage)
 
-    def double_damage_percentage_generator(self):
+    def double_damage_and_damage_generator(self):
         """
         This is a function used for getting the percentage that will determine if the damage dealt by the character
-        will do a double damage
-        :return: 
+        will do a double damage plus the generating damage that the character will do
+        :return:
         """
-        
-        
+        # damage of the character
+        damage = random.randint(0, self.attack)
+        print('DEBUGGING: DAMAGE IS ', damage, "OF", self.name)
+
+        # percent chance that the character will get a
+        double_damage_chance = random.uniform(0, DOUBLE_DAMAGE_LIMIT)
+
+        # if statement to determine if the player will have a double damage by computing if the double_damage_chance
+        # is within the range of the double_damage attribute of the character
+        if double_damage_chance <= self.double_damage:
+            # the damage is multiplied to two as a double damage
+            damage *= 2
+            print('DOUBLE DAMAGE IS', damage)
+
+        return damage
 
     def do_damage_with_shield_bubble(self, enemy):
         """
@@ -294,8 +310,7 @@ class Character:
         :return enemy.health: To be analyzed inside the attack function in an if statement
         """
         # damage of the character
-        damage = random.randint(0, self.attack)
-        print('DEBUGGING: DAMAGE IS ', damage, "OF", self.name)
+        damage = self.double_damage_and_damage_generator()
 
         # computes the shield bubble of the enemy to the damage done by the character
         enemy.shield_bubble = enemy.shield_bubble - damage
@@ -329,8 +344,6 @@ class Character:
         """
         # utilizing the defense, one in three chance that the defense will break
         break_defense_chance = random.randint(1, BREAK_DEFENSE_CHANCE)
-
-        
 
         # checks to see if the class that called the method is the player
         if self.__class__ == Player:
@@ -891,7 +904,7 @@ class Player(Character):
         """
         print("Health: " + str(self.health) + "   |   " +
               "Attack: " + str(self.attack) + "   |   " +
-              "Double Damage: " + self.double_damage_percentage)
+              "Double Damage: " + self.double_damage_percentage_for_stats)
 
         print("Leeching: " + str(self.leeching) + "  |   " +
               "Defense: " + str(self.defense) + "   |   " +
@@ -1075,7 +1088,7 @@ class Player(Character):
                     print('')  # space for terminal
 
                     # chosen enemy help will go inside prompting a new if statement to be executed inside help_enemies
-                    self.help_enemies(chosen_enemy_help,  common_enemy, random_enemy, common_enemy_dict, who_called_me)
+                    self.help_enemies(chosen_enemy_help, common_enemy, random_enemy, common_enemy_dict, who_called_me)
 
                     print('')  # space terminal
                     print('=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES)
@@ -1171,7 +1184,7 @@ class Player(Character):
             print('')
             self.help_game(common_enemy_dict, random_enemy, who_called_me)
 
-    def help_enemies(self, chosen_enemy_help,  common_enemy, random_enemy, common_enemy_dict, who_called_me):
+    def help_enemies(self, chosen_enemy_help, common_enemy, random_enemy, common_enemy_dict, who_called_me):
         """
         Sub function of help that has the information for all the enemies so the help function is not overcrowded
         with lines of code
