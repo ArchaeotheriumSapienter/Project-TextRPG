@@ -29,21 +29,25 @@ import sys  # used for the text effect
 import time  # used to delay the texts for a few miliseconds
 
 BOSS_NAME = '⊑⟒⍀?'
-# TODO: Change the constants later after debugging: enemy possibility, random enemy integer, break defense chance, flee
+# TODO: Change the constants later after debugging: enemy possibility, break defense chance
 # ======================= POSSIBILITY CONSTANTS ======================= #
-ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
-# spawning
-FLEE_POSSIBILITY = 2  # constant for flee function based from 1 to an integer for the possibility of the character
-# fleeing
-RANDOM_ENEMY_INTEGER = 1  # used for debugging in the random_enemy_occurance. Each integer
-NUMBER_OF_MOVES = 10  # used to determine the number of steps possible for the player to do
-BREAK_DEFENSE_CHANCE = 1  # constant used in the .do_damage function in which there is a one in an integer possibility
-# that an attack can break a defense
+FLEE_POSSIBILITY = 3  # constant for flee function based from 1 to an integer for the possibility of the character
+# fleeing. 3 is original
+NUMBER_OF_MOVES = 10  # used to determine the number of steps possible for the player to do. 10 is original
+BREAK_DEFENSE_CHANCE = 3  # constant used in the .do_damage function in which there is a one in an integer possibility
+# that an attack can break a defense. 3 is the original
+
+# ====================== CHARACTER STATS CONSTANTS ====================== #
 DOUBLE_DAMAGE_LIMIT = 50  # constant to determine the limit that a character can have the double damage percentage
 # to prevent godlike skills
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
+ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
+# spawning. each number represents a particular enemy. 3 is original value
+RANDOM_ENEMY_INTEGER = 4  # used for DEBUGGING in the random_enemy_occurance. Each integer represents the
+# particular enemy to showup. 4 is the original value to represent chaser
+
 DEFORMED_MUTATED_HUMAN = 1  # dedicated number for the monster deformed mutated human
 MUTATED_HUMAN = 2  # dedicated number for the monster mutated human
 LOST_WANDERER = 3  # dedicated number for the lost wanderer
@@ -52,13 +56,11 @@ CHASER = 4  # dedicated number for the chaser
 # ======================= TEXT EFFECT CONSTANTS ======================= #
 NEXT_TEXT_DURATION = 0.1  # constant used for having a gap in between text that have the typing effect
 INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
-
-# ========================= AESTHETIC CONSTANTS ======================= #
-NUMBER_OF_DASHES = 25  # used for the breakers found in the terminal when the user plays
 HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference however is this is used
 # Used when the player attacks
 
 # ========================== BANNER CONSTANTS ======================== #
+NUMBER_OF_DASHES = 25  # used for the breakers found in the terminal when the user plays
 PLAYER_TURN_BANNER = '=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES
 ENEMY_TURN_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES
 
@@ -82,11 +84,6 @@ COMMAND_END_HELP_BANNER = '=' * NUMBER_OF_DASHES + " END OF COMMAND SECTION " + 
 ENEMY_STATS_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_DASHES
 ENEMY_BACK_STORY_BANNER = '=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES
 ENEMY_END_HELP_SECTION = '=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES
-
-
-
-# for the help section after the stats of the enemy have been revealed
-
 
 # =========================================================
 # MAIN FUNCTION
@@ -118,8 +115,8 @@ def main():
     debug_attack = input('Just Press Enter ')
 
     while debug_attack == '':
-        p.double_damage_and_damage_generator()
-        # p.player_commands(common_enemy_dict)
+        # p.double_damage_and_damage_generator()
+        p.player_commands(common_enemy_dict)
         debug_attack = input('Just Press Enter  ')
 
     # first_chapter()
@@ -325,6 +322,7 @@ class Character:
             print('DEBUGGING: DOUBLE DAMAGE IS', damage)
             print(DOUBLE_DAMAGE_BANNER)
             type_print_effect('DOUBLE DAMAGE HAS BEEN ACTIVATED!\n')
+            print('')  # for terminal
 
         return damage
 
@@ -339,7 +337,9 @@ class Character:
         # damage of the character
         damage = self.double_damage_and_damage_generator()
 
+        print('DEBUGGING: PRIOR SHIELD OF', enemy.name, 'is ' + str(enemy.shield_bubble))
         # computes the shield bubble of the enemy to the damage done by the character
+        #  TODO: FIX DAMAGE SO IT REPRESENTS SHIELD BUBBLE
         enemy.shield_bubble = enemy.shield_bubble - damage
         print("DEBUGGING: THE SHIELD BUBBLE OF " + enemy.name + " IS " + str(enemy.shield_bubble))
 
@@ -360,7 +360,7 @@ class Character:
                 # for aesthetics purposes
 
             # message saying that the shield bubble is still intact
-            type_print_effect(enemy.name + " 's Shield Bubble has withstand the attack of " + self.name + ".\n")
+            type_print_effect(enemy.name + "'s Shield Bubble has withstand the attack of " + self.name + ".\n")
             type_print_effect("The remaining Shield Bubble of " + enemy.name + " is "
                               + str(enemy.shield_bubble) + ".\n")
             print('')  # for terminal
@@ -600,7 +600,7 @@ class Character:
         self.shield_bubble_max = self.shield_bubble_max + 0.5
 
         # debugging
-        self.__repr__()
+        #self.__repr__()
 
     def __repr__(self):
         """
@@ -644,7 +644,7 @@ class DeformedMutatedHuman(Character):
         self.double_damage = 0
         self.leeching = 0
         self.defense = 5
-        self.shield_bubble = 5
+        self.shield_bubble = 5  # TODO: CHANGE THIS SHIT
         self.shield_bubble_max = 5
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
