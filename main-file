@@ -41,6 +41,34 @@ BREAK_DEFENSE_CHANCE = 3  # constant used in the .do_damage function in which th
 DOUBLE_DAMAGE_LIMIT = 50  # constant to determine the limit that a character can have the double damage percentage
 # to prevent godlike skills
 
+# =================== CHARACTER LEVELUP STATS CONSTANTS =================== #
+# these are constants to determine the upper limit when a player upgrade
+HEALTH_MAX_LIMIT = 50  # constant to determine the limit that a character can have the double damage percentage
+# to prevent godlike skills
+
+
+self.health = 1
+        self.health_max = 1
+        self.attack = 10
+        self.double_damage = 0
+        self.leeching = 0
+        self.defense = 0
+        self.shield_bubble = 0
+        self.shield_bubble_max = 0
+
+        # stats for levelling up to gain your ultimate
+        self.ultimate_levelup_bar = 0
+        self.ultimate_levelup_bar_per_attack = 0
+
+        # stats for levelling up your character
+        self.levelup_bar = 0
+        self.levelup_bar_max = 0
+        self.levelup_per_defeated_enemy = 0
+
+
+
+
+
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
 ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
@@ -296,6 +324,7 @@ class Character:
 
         # stats for levelling up your character
         self.levelup_bar = 0
+        self.levelup_bar_max = 0
         self.levelup_per_defeated_enemy = 0
 
         #  double damage converted to percentage for the user to see in the status command
@@ -544,6 +573,7 @@ class Character:
         Function that gets two characters and determine if they die. If an enemy dies, the player gains additional stats
         If the player dies, game over
         :param enemy: for the function to get the enemy attributes
+        :return self.levelup_bar: used to indicate when the player will level up
         """
         # if the enemy of the instance caller dies
         if enemy.health <= 0:
@@ -554,6 +584,11 @@ class Character:
                 print(ENEMY_DEFEAT_BANNER)
 
                 type_print_effect(enemy.name + " has been slain by " + self.name + '!\n')
+
+                #  used to increase the level up bar by counting whenever the player defeats an enemy
+                self.levelup_bar += self.levelup_per_defeated_enemy
+
+                return self.levelup_bar
 
             # when the player dies by various enemies
             else:
@@ -600,7 +635,7 @@ class Character:
         self.shield_bubble_max = self.shield_bubble_max + 0.5
 
         # debugging
-        #self.__repr__()
+        self.__repr__()
 
     def __repr__(self):
         """
@@ -644,11 +679,12 @@ class DeformedMutatedHuman(Character):
         self.double_damage = 0
         self.leeching = 0
         self.defense = 5
-        self.shield_bubble = 5  # TODO: CHANGE THIS SHIT
-        self.shield_bubble_max = 5
+        self.shield_bubble = 0
+        self.shield_bubble_max = 0
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
+        self.levelup_bar_max = 0
         self.levelup_per_defeated_enemy = 0
 
 
@@ -672,6 +708,7 @@ class MutatedHuman(Character):
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
+        self.levelup_bar_max = 0
         self.levelup_per_defeated_enemy = 0
 
 
@@ -695,6 +732,7 @@ class LostWanderer(Character):
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
+        self.levelup_bar_max = 0
         self.levelup_per_defeated_enemy = 0
 
 
@@ -718,6 +756,7 @@ class Chaser(Character):
         self.ultimate_levelup_bar = 0
         self.ultimate_levelup_bar_per_attack = 0
         self.levelup_bar = 0
+        self.levelup_bar_max = 0
         self.levelup_per_defeated_enemy = 0
 
 
@@ -731,7 +770,7 @@ class Player(Character):
     """
 
     # initial stats of the player
-    # TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE, and double damage
+    # TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE, and double damage, levelup_defeated_enemy, attack
     #
     def __init__(self):
         super().__init__()
@@ -740,7 +779,7 @@ class Player(Character):
         self.name = ''
         self.health = 50
         self.health_max = 50
-        self.attack = 10
+        self.attack = 50
         self.double_damage = 50
         self.leeching = 11
         self.defense = 7
@@ -748,8 +787,9 @@ class Player(Character):
         self.shield_bubble_max = 20
         self.ultimate_levelup_bar = 20
         self.ultimate_levelup_bar_per_attack = 4
-        self.levelup_bar = 30
-        self.levelup_per_defeated_enemy = 5
+        self.levelup_bar = 0
+        self.levelup_bar_max = 30
+        self.levelup_per_defeated_enemy = 10
 
     def random_enemy_encounter(self, common_enemy_dict):
         """
@@ -799,11 +839,11 @@ class Player(Character):
 
             # if the enemy dies when their health is zero
             if enemy_health <= 0:
-                # message prompt about death of enemy
-                self.character_death(common_enemy_dict['deformed_mutated_human'])
+                # count the added level up points to the player by the levelup_bar
+                self.levelup_bar = self.character_death(common_enemy_dict['deformed_mutated_human'])
 
                 # lets the enemy revive themselves and player to level up themselves
-                self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
+                self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict, self.levelup_bar)
 
                 # to cut the loop of still going into attack mode when the enemy dies
                 self.player_commands(common_enemy_dict)
@@ -817,8 +857,8 @@ class Player(Character):
         elif random_enemy == MUTATED_HUMAN:
             enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['mutated_human'])
             if enemy_health <= 0:
-                self.character_death(common_enemy_dict['mutated_human'])
-                self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
+                self.levelup_bar = self.character_death(common_enemy_dict['mutated_human'])
+                self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict, self.levelup_bar)
                 self.player_commands(common_enemy_dict)
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
@@ -826,9 +866,8 @@ class Player(Character):
         elif random_enemy == LOST_WANDERER:
             enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
-                self.character_death(common_enemy_dict['lost_wanderer'])
-                # lets the enemy revive themselves and player to level up themselves
-                self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
+                self.levelup_bar = self.character_death(common_enemy_dict['lost_wanderer'])
+                self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict, self.levelup_bar)
                 self.player_commands(common_enemy_dict)
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
@@ -836,9 +875,8 @@ class Player(Character):
         elif random_enemy == CHASER:
             enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['chaser'])
             if enemy_health <= 0:
-                self.character_death(common_enemy_dict['chaser'])
-                # lets the enemy revive themselves and player to level up themselves
-                self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict)
+                self.levelup_bar = self.character_death(common_enemy_dict['chaser'])
+                self.revive_enemy_and_level_them_up_alongside_player(common_enemy_dict, self.levelup_bar)
                 self.player_commands(common_enemy_dict)
             else:
                 self.enemy_attack(random_enemy, common_enemy_dict)
@@ -878,20 +916,26 @@ class Player(Character):
             common_enemy_dict['chaser'].character_death(self)
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
-    def revive_enemy_and_level_them_up_alongside_player(self, common_enemy_dict):
+    def revive_enemy_and_level_them_up_alongside_player(self, common_enemy_dict, levelup_bar):
         """
         This activates when the player defeats a common enemy. It lets all of the enemies level up all of their stats
         for a harder game in the long run. It also levels up the player
+        :parameter - common_enemy_dict: to let the enemies level up with their respectful stats
+        :parameter - levelup_bar: to check if the levelup_bar is the right digit for levelup_bar_max to activate
+        level up
         :return:
         """
-        # let the user level up
-        self.level_up()
+        # if the levelup_bar reaches the max levelup_bar it will level up the player alongside the enemies
+        print('LEVEL UP PRINT CURRENT BAR IS', levelup_bar)
+        if levelup_bar >= self.levelup_bar_max:
+            # let the user level up
+            self.level_up()
 
-        # let all common enemies level up
-        common_enemy_dict['deformed_mutated_human'].enemy_level_up()
-        common_enemy_dict['mutated_human'].enemy_level_up()
-        common_enemy_dict['lost_wanderer'].enemy_level_up()
-        common_enemy_dict['chaser'].enemy_level_up()
+            # let all common enemies level up
+            common_enemy_dict['deformed_mutated_human'].enemy_level_up()
+            common_enemy_dict['mutated_human'].enemy_level_up()
+            common_enemy_dict['lost_wanderer'].enemy_level_up()
+            common_enemy_dict['chaser'].enemy_level_up()
 
     def move(self, common_enemy_dict):
         """
@@ -1401,6 +1445,7 @@ class Player(Character):
                     'Thank you for playing my game! I hope you enjoyed my first ever Programming Project.')
                 sys.exit()
             elif ask_player_again == 'n':
+                # TODO: BUG HELP
                 print('')  # for spacing in the terminal
                 # used when the player is in the middle of fighting a mob and chose quit, it will go automatically to
                 # attack mode to not let the player escape the loop
