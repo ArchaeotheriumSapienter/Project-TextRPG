@@ -42,32 +42,13 @@ DOUBLE_DAMAGE_LIMIT = 50  # constant to determine the limit that a character can
 # to prevent godlike skills
 
 # =================== CHARACTER LEVELUP STATS CONSTANTS =================== #
-# these are constants to determine the upper limit when a player upgrade
-HEALTH_MAX_LIMIT = 50  # constant to determine the limit that a character can have the double damage percentage
-# to prevent godlike skills
-
-
-self.health = 1
-        self.health_max = 1
-        self.attack = 10
-        self.double_damage = 0
-        self.leeching = 0
-        self.defense = 0
-        self.shield_bubble = 0
-        self.shield_bubble_max = 0
-
-        # stats for levelling up to gain your ultimate
-        self.ultimate_levelup_bar = 0
-        self.ultimate_levelup_bar_per_attack = 0
-
-        # stats for levelling up your character
-        self.levelup_bar = 0
-        self.levelup_bar_max = 0
-        self.levelup_per_defeated_enemy = 0
-
-
-
-
+# these are constants to determine the upper limit of the random integer upgrade when a player level up
+HEALTH_MAX_UPGRADE_LIMIT = 10  # up to 10 health only per level up
+ATTACK_UPGRADE_LIMIT = 10  # up to 10 attack per level up
+DOUBLE_DAMAGE_UPGRADE_LIMIT = 0.1  # up to 10% double damage chance per level up
+LEECHING_UPGRADE_LIMIT = 5  # up to 5 leech per level up
+DEFENSE_UPGRADE_LIMIT = 5  # up to 5 defense per level up
+SHIELD_BUBBLE_MAX_UPGRADE_LIMIT = 5  # up to 10 shield bubble per level up
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
@@ -607,6 +588,21 @@ class Character:
         Function for the player to level up, letting them choose what they can upgrade from. This will also let
         the enemy revive themselves with upgraded stats.
         """
+        # variables to determine
+        health_upgrade = random.randint(1, HEALTH_MAX_UPGRADE_LIMIT)
+        attack_upgrade = random.randint(1, ATTACK_UPGRADE_LIMIT)
+
+        # for floats
+        double_damage_upgrade = random.uniform(0.01, DOUBLE_DAMAGE_UPGRADE_LIMIT)
+
+        leeching_upgrade = random.randint(1, LEECHING_UPGRADE_LIMIT)
+        defense_upgrade = random.randint(1, DEFENSE_UPGRADE_LIMIT)
+        shield_bubble_upgrade = random.randint(1, SHIELD_BUBBLE_MAX_UPGRADE_LIMIT)
+
+        player_upgrade = {
+
+        }
+
         # first check if the caller is the player, to give messages about upgrading
         if self.__class__ == Player:
             # for levelling up the character and gaining plus stats
