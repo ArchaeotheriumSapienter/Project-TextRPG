@@ -50,6 +50,9 @@ LEECHING_UPGRADE_LIMIT = 5  # up to 5 leech per level up
 DEFENSE_UPGRADE_LIMIT = 5  # up to 5 defense per level up
 SHIELD_BUBBLE_MAX_UPGRADE_LIMIT = 5  # up to 10 shield bubble per level up
 
+UPGRADE_ROSTER_LIMIT = 6  # based on the number of stats that the player can upgrade for the level up section
+# in which there are only 3 upgrades choices that a player can do each time they level up
+
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
 ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
@@ -94,6 +97,7 @@ ENEMY_STATS_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY STATS " + '=' * NUMBER_OF_
 ENEMY_BACK_STORY_BANNER = '=' * NUMBER_OF_DASHES + " BACK STORY " + '=' * NUMBER_OF_DASHES
 ENEMY_END_HELP_SECTION = '=' * NUMBER_OF_DASHES + " END OF ENEMY SECTION " + '=' * NUMBER_OF_DASHES
 
+
 # =========================================================
 # MAIN FUNCTION
 # =========================================================
@@ -124,8 +128,9 @@ def main():
     debug_attack = input('Just Press Enter ')
 
     while debug_attack == '':
+        p.level_up()
         # p.double_damage_and_damage_generator()
-        p.player_commands(common_enemy_dict)
+        # p.player_commands(common_enemy_dict)
         debug_attack = input('Just Press Enter  ')
 
     # first_chapter()
@@ -598,6 +603,18 @@ class Character:
         leeching_upgrade = random.randint(1, LEECHING_UPGRADE_LIMIT)
         defense_upgrade = random.randint(1, DEFENSE_UPGRADE_LIMIT)
         shield_bubble_upgrade = random.randint(1, SHIELD_BUBBLE_MAX_UPGRADE_LIMIT)
+
+        upgrade_roster_choices = {}
+        # based on what upgrade a player can choose when they level up. each number represents the type of upgrade
+        # they can do
+        for i in range(3):
+            upgrade_roster = random.randint(1, UPGRADE_ROSTER_LIMIT)
+            upgrade_roster_choices[i] += upgrade_roster
+            print(upgrade_roster_choices)
+
+
+
+        print(upgrade_roster_choices)
 
         player_upgrade = {
 
