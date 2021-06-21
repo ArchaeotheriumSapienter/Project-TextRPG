@@ -52,6 +52,8 @@ SHIELD_BUBBLE_MAX_UPGRADE_LIMIT = 5  # up to 10 shield bubble per level up
 
 UPGRADE_ROSTER_LIMIT = 6  # based on the number of stats that the player can upgrade for the level up section
 # in which there are only 3 upgrades choices that a player can do each time they level up
+NUMBER_OF_UPGRADE_LIMIT = 3 # constant to determine the number of upgrades that can be available for the player
+# to upgrade
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
@@ -604,13 +606,21 @@ class Character:
         defense_upgrade = random.randint(1, DEFENSE_UPGRADE_LIMIT)
         shield_bubble_upgrade = random.randint(1, SHIELD_BUBBLE_MAX_UPGRADE_LIMIT)
 
+        # empty list, the random upgrade will be added here
         upgrade_roster_choices = {}
-        # based on what upgrade a player can choose when they level up. each number represents the type of upgrade
-        # they can do
-        for i in range(3):
+
+        # based on what upgrade a player can choose when they level up. each value represents the type of upgrade
+        # they can do. range is 1 to the constant, +1 for the inclusion of the constant
+        for i in range(1, NUMBER_OF_UPGRADE_LIMIT + 1):
             upgrade_roster = random.randint(1, UPGRADE_ROSTER_LIMIT)
             upgrade_roster_choices[i] = upgrade_roster
-            print(upgrade_roster_choices)
+        
+        # prints the potential upgrades
+        print(upgrade_roster_choices)
+
+        for key in upgrade_roster_choices.keys():
+            print(key, "upgrade?")
+
 
         player_upgrade = {
 
