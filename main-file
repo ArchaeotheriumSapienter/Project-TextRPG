@@ -50,10 +50,10 @@ LEECHING_UPGRADE_LIMIT = 5  # up to 5 leech per level up
 DEFENSE_UPGRADE_LIMIT = 5  # up to 5 defense per level up
 SHIELD_BUBBLE_MAX_UPGRADE_LIMIT = 5  # up to 10 shield bubble per level up
 
-UPGRADE_ROSTER_LIMIT = 3  # based on the number of stats that the player can upgrade for the level up section
-# in which there are only 3 upgrades choices that a player can do each time they level up
-NUMBER_OF_UPGRADES_AVAILABLE = 6  # constant to determine the number of upgrades that are available for the
+UPGRADE_ROSTER_LIMIT = 6  # constant to determine the number of upgrades that are available for the
 # player to upgrade.
+NUMBER_OF_UPGRADES_AVAILABLE = 3  # based on the number of stats that the player can upgrade for the level up section
+# in which there are only 3 upgrades choices that a player can do each time they level up
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
@@ -623,48 +623,60 @@ class Character:
         # they can do. range is 1 to the number of ugrade limit which states each separate upgrades
         # available to the player, +1 for the inclusion of the constant
         for i in range(1, NUMBER_OF_UPGRADES_AVAILABLE + 1):
-            # upgrade roster is the variable to determine whichrandom  upgrade will be given to the player
-            # upgrade roster limit is the constant to determine how many choices the player will be presented
+            # upgrade roster is the variable to determine which random upgrade will be given to the player
+            # upgrade roster limit is the constant of how many available upgrades there is
             upgrade_roster = random.randint(0, UPGRADE_ROSTER_LIMIT)
             # empty dictionary will have the added random upgrades to be shown to the player
             upgrade_roster_choices[i] = upgrade_roster
-        print(upgrade_roster_choices)
+        print(upgrade_roster_choices.values())
         print('')
+        print(player_upgrade.keys())
 
-        # compares the keys of the player upgrade to the roster choices
-        for key in player_upgrade.keys() and upgrade_roster_choices.keys():
-            # if the key corresponds to 1, upgrade health
-            if key == 1:
-                self.health = self.health_max + health_upgrade
-                self.health_max = self.health_max + health_upgrade
-                print('ADDED HEALTH TO PLAYER', health_upgrade, 'TOTAL HEALTH IS', self.health_max, self.health)
+        # compares the keys of the player upgrade to the roster choices values
+        for key in upgrade_roster_choices.values() and player_upgrade.keys():
+            key = key
+            print(key)
+            self.level_up_assigning(key, player_upgrade)
 
-            # for attacking
-            if key == 2:
-                self.attack += attack_upgrade
-                print(self.name + " has attained " + str(self.attack) + ' attack points!')
+    def level_up_assigning(self, key, player_upgrade):
+        """
+        Function that takes the key from level up and compares that
+        :param key:
+        :param player_upgrade:
+        :return:
+        """
+        # if the key corresponds to 1, upgrade health
+        if key == 1:
+            self.health = self.health_max + player_upgrade[1]
+            self.health_max = self.health_max + player_upgrade[1]
+            print('ADDED HEALTH TO PLAYER', player_upgrade[1], 'TOTAL HEALTH IS', self.health_max, self.health)
 
-            # for double damage
-            if key == 3:
-                self.double_damage += double_damage_upgrade
-                print(self.name + ' upgraded their Double Damage. Its value is now: '
-                      + str(self.double_damage_percentage_for_stats))
+        # for attacking
+        elif key == 2:
+            self.attack += player_upgrade[2]
+            print(self.name + " has attained " + str(self.attack) + ' attack points!')
 
-            # for leeching
-            if key == 4:
-                self.leeching += leeching_upgrade
-                print(self.name + "'s leeching is growing stronger with " + str(self.leeching) + ' points!')
+        # for double damage
+        elif key == 3:
+            self.double_damage += player_upgrade[3]
+            print(self.name + ' upgraded their Double Damage with ' + str(player_upgrade[3]) +
+                  ' points. Its value is now: ' + str(self.double_damage))
 
-            # for defense
-            if key == 5:
-                self.defense += defense_upgrade
-                print(self.name + " can defend more with defense upgraded to " + str(self.defense) + '!')
+        # for leeching
+        elif key == 4:
+            self.leeching += player_upgrade[4]
+            print(self.name + "'s leeching is growing stronger with " + str(self.leeching) + ' points!')
 
-            # for shield bubble
-            if key == 6:
-                self.shield_bubble = self.shield_bubble_max + shield_bubble_upgrade
-                self.shield_bubble_max = self.shield_bubble_max + shield_bubble_upgrade
-                print('Shield bubble upgraded! ' + str(shield_bubble_upgrade) + ' points added!')
+        # for defense
+        elif key == 5:
+            self.defense += player_upgrade[5]
+            print(self.name + " can defend more with defense upgraded to " + str(self.defense) + '!')
+
+        # for shield bubble
+        elif key == 6:
+            self.shield_bubble = self.shield_bubble_max + player_upgrade[6]
+            self.shield_bubble_max = self.shield_bubble_max + player_upgrade[6]
+            print('Shield bubble upgraded! ' + str(player_upgrade[6]) + ' points added!')
 
     def enemy_level_up(self):
         """
