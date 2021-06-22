@@ -50,10 +50,10 @@ LEECHING_UPGRADE_LIMIT = 5  # up to 5 leech per level up
 DEFENSE_UPGRADE_LIMIT = 5  # up to 5 defense per level up
 SHIELD_BUBBLE_MAX_UPGRADE_LIMIT = 5  # up to 10 shield bubble per level up
 
-UPGRADE_ROSTER_LIMIT = 6  # based on the number of stats that the player can upgrade for the level up section
+UPGRADE_ROSTER_LIMIT = 3  # based on the number of stats that the player can upgrade for the level up section
 # in which there are only 3 upgrades choices that a player can do each time they level up
-NUMBER_OF_UPGRADE_LIMIT = 3  # constant to determine the number of upgrades that can be available for the player
-# to upgrade
+NUMBER_OF_UPGRADES_AVAILABLE = 6  # constant to determine the number of upgrades that are available for the
+# player to upgrade.
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
 # constants used for the random enemy function
@@ -622,12 +622,14 @@ class Character:
         # based on what upgrade a player can choose when they level up. each value represents the type of upgrade
         # they can do. range is 1 to the number of ugrade limit which states each separate upgrades
         # available to the player, +1 for the inclusion of the constant
-        for i in range(1, 2):
+        for i in range(1, NUMBER_OF_UPGRADES_AVAILABLE + 1):
             # upgrade roster is the variable to determine whichrandom  upgrade will be given to the player
             # upgrade roster limit is the constant to determine how many choices the player will be presented
-            upgrade_roster = random.randint(1, UPGRADE_ROSTER_LIMIT)
+            upgrade_roster = random.randint(0, UPGRADE_ROSTER_LIMIT)
             # empty dictionary will have the added random upgrades to be shown to the player
             upgrade_roster_choices[i] = upgrade_roster
+        print(upgrade_roster_choices)
+        print('')
 
         # compares the keys of the player upgrade to the roster choices
         for key in player_upgrade.keys() and upgrade_roster_choices.keys():
@@ -640,7 +642,7 @@ class Character:
             # for attacking
             if key == 2:
                 self.attack += attack_upgrade
-                print(self.name + " has attained " + str(self.attack) + ' points!')
+                print(self.name + " has attained " + str(self.attack) + ' attack points!')
 
             # for double damage
             if key == 3:
@@ -656,13 +658,13 @@ class Character:
             # for defense
             if key == 5:
                 self.defense += defense_upgrade
-                print(self.name + " can defend more with defense upgraded to " + str(self.defense) + ' points!')
+                print(self.name + " can defend more with defense upgraded to " + str(self.defense) + '!')
 
             # for shield bubble
             if key == 6:
                 self.shield_bubble = self.shield_bubble_max + shield_bubble_upgrade
                 self.shield_bubble_max = self.shield_bubble_max + shield_bubble_upgrade
-                print('Shield bubble upgraded! ' + str(shield_bubble_upgrade) + 'points added!')
+                print('Shield bubble upgraded! ' + str(shield_bubble_upgrade) + ' points added!')
 
     def enemy_level_up(self):
         """
