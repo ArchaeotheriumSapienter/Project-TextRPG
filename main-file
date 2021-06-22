@@ -606,34 +606,50 @@ class Character:
         defense_upgrade = random.randint(1, DEFENSE_UPGRADE_LIMIT)
         shield_bubble_upgrade = random.randint(1, SHIELD_BUBBLE_MAX_UPGRADE_LIMIT)
 
-        # empty list, the random upgrade will be added here
-        upgrade_roster_choices = {}
-
-        # based on what upgrade a player can choose when they level up. each value represents the type of upgrade
-        # they can do. range is 1 to the constant, +1 for the inclusion of the constant
-        for i in range(1, NUMBER_OF_UPGRADE_LIMIT + 1):
-            upgrade_roster = random.randint(1, UPGRADE_ROSTER_LIMIT)
-            upgrade_roster_choices[i] = upgrade_roster
-
-        for value in upgrade_roster_choices.values():
-            print(value, "upgrade?")
-
-
         player_upgrade = {
+            1: health_upgrade,
+            2: attack_upgrade,
+            3: double_damage_upgrade,
+            4: leeching_upgrade,
+            5: defense_upgrade,
+            6: shield_bubble_upgrade
 
         }
 
-        # first check if the caller is the player, to give messages about upgrading
-        if self.__class__ == Player:
-            # for levelling up the character and gaining plus stats
-            self.health = self.health_max + 1
-            self.health_max = self.health_max + 1
-            self.shield_bubble = self.shield_bubble_max + 1
-            self.shield_bubble_max = self.shield_bubble_max + 1
+        # empty list that determine which random upgrade will be available for the plaeyr to choose from
+        upgrade_roster_choices = {}
 
-            type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
-            type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
-            print('')  # space for terminal
+        # based on what upgrade a player can choose when they level up. each value represents the type of upgrade
+        # they can do. range is 1 to the number of ugrade limit which states each separate upgrades
+        # available to the player, +1 for the inclusion of the constant
+        for i in range(1, 2):
+            # upgrade roster is the variable to determine whichrandom  upgrade will be given to the player
+            # upgrade roster limit is the constant to determine how many choices the player will be presented
+            upgrade_roster = random.randint(1, UPGRADE_ROSTER_LIMIT)
+            # empty dictionary will have the added random upgrades to be shown to the player
+            upgrade_roster_choices[i] = upgrade_roster
+        print(upgrade_roster_choices)
+        print(upgrade_roster_choices.keys())
+        print(player_upgrade[1])
+
+        for key in player_upgrade.keys() and upgrade_roster_choices.keys():
+            if key == 1:
+                self.health = self.health_max + health_upgrade
+                self.health_max = self.health_max + health_upgrade
+                print('ADDED HEALTH TO PLAYER', health_upgrade, 'TOTAL HEALTH IS', self.health_max, self.health)
+
+
+        # first check if the caller is the player, to give messages about upgrading
+        # if self.__class__ == Player:
+        #     # for levelling up the character and gaining plus stats
+        #     self.health = self.health_max + 1
+        #     self.health_max = self.health_max + 1
+        #     self.shield_bubble = self.shield_bubble_max + 1
+        #     self.shield_bubble_max = self.shield_bubble_max + 1
+        #
+        #     type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
+        #     type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
+        #     print('')  # space for terminal
 
     def enemy_level_up(self):
         """
