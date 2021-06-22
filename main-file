@@ -628,28 +628,45 @@ class Character:
             upgrade_roster = random.randint(1, UPGRADE_ROSTER_LIMIT)
             # empty dictionary will have the added random upgrades to be shown to the player
             upgrade_roster_choices[i] = upgrade_roster
-        print(upgrade_roster_choices)
-        print(upgrade_roster_choices.keys())
-        print(player_upgrade[1])
 
+        #  double damage converted to percentage for the user to see in the status command
+        self.double_damage_percentage_for_stats = "{0:.2%}".format(self.double_damage)
+
+        # compares the keys of the player upgrade to the roster choices
         for key in player_upgrade.keys() and upgrade_roster_choices.keys():
+            # if the key corresponds to 1, upgrade health
             if key == 1:
                 self.health = self.health_max + health_upgrade
                 self.health_max = self.health_max + health_upgrade
                 print('ADDED HEALTH TO PLAYER', health_upgrade, 'TOTAL HEALTH IS', self.health_max, self.health)
 
+            # for attacking
+            if key == 2:
+                self.attack += attack_upgrade
+                print(self.name + " has attained " + str(self.attack) + ' points!')
 
-        # first check if the caller is the player, to give messages about upgrading
-        # if self.__class__ == Player:
-        #     # for levelling up the character and gaining plus stats
-        #     self.health = self.health_max + 1
-        #     self.health_max = self.health_max + 1
-        #     self.shield_bubble = self.shield_bubble_max + 1
-        #     self.shield_bubble_max = self.shield_bubble_max + 1
-        #
-        #     type_print_effect(self.name + " has levelled up! " + self.name + "'s health has increased to 1.\n")
-        #     type_print_effect(self.name + " total health is: " + str(self.health) + "!\n")
-        #     print('')  # space for terminal
+            # for double damage
+            if key == 3:
+                self.double_damage += double_damage_upgrade
+                print(self.name + ' upgraded their Double Damage. Its value is now: '
+                      + str(self.double_damage_percentage_for_stats))
+
+            # for leeching
+            if key == 4:
+                self.leeching += leeching_upgrade
+                print(self.name + "'s leeching is growing stronger with " + str(self.leeching) + ' points!')
+
+            # for defense
+            if key == 5:
+                self.defense += defense_upgrade
+                print(self.name + " can defend more with defense upgraded to " + str(self.defense) + ' points!')
+            
+            # for shield bubble
+            if key == 6:
+                self.shield_bubble = self.shield_bubble_max + shield_bubble_upgrade
+                self.shield_bubble_max = self.shield_bubble_max + shield_bubble_upgrade
+
+
 
     def enemy_level_up(self):
         """
