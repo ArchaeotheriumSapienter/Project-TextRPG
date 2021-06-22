@@ -52,7 +52,7 @@ SHIELD_BUBBLE_MAX_UPGRADE_LIMIT = 5  # up to 10 shield bubble per level up
 
 UPGRADE_ROSTER_LIMIT = 6  # based on the number of stats that the player can upgrade for the level up section
 # in which there are only 3 upgrades choices that a player can do each time they level up
-NUMBER_OF_UPGRADE_LIMIT = 3 # constant to determine the number of upgrades that can be available for the player
+NUMBER_OF_UPGRADE_LIMIT = 3  # constant to determine the number of upgrades that can be available for the player
 # to upgrade
 
 # ======================= RANDOM ENEMY CONSTANTS ======================= #
@@ -629,9 +629,6 @@ class Character:
             # empty dictionary will have the added random upgrades to be shown to the player
             upgrade_roster_choices[i] = upgrade_roster
 
-        #  double damage converted to percentage for the user to see in the status command
-        self.double_damage_percentage_for_stats = "{0:.2%}".format(self.double_damage)
-
         # compares the keys of the player upgrade to the roster choices
         for key in player_upgrade.keys() and upgrade_roster_choices.keys():
             # if the key corresponds to 1, upgrade health
@@ -660,13 +657,12 @@ class Character:
             if key == 5:
                 self.defense += defense_upgrade
                 print(self.name + " can defend more with defense upgraded to " + str(self.defense) + ' points!')
-            
+
             # for shield bubble
             if key == 6:
                 self.shield_bubble = self.shield_bubble_max + shield_bubble_upgrade
                 self.shield_bubble_max = self.shield_bubble_max + shield_bubble_upgrade
-
-
+                print('Shield bubble upgraded! ' + str(shield_bubble_upgrade) + 'points added!')
 
     def enemy_level_up(self):
         """
@@ -819,8 +815,8 @@ class Player(Character):
     """
 
     # initial stats of the player
-    # TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE, and double damage, levelup_defeated_enemy, attack
-    #
+    # TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE, and double damage,
+    #  levelup_defeated_enemy, attack
     def __init__(self):
         super().__init__()
 
