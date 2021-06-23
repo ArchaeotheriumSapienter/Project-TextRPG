@@ -616,21 +616,27 @@ class Character:
 
         }
 
+        # empty list for appending the values of the upgrade roster. Which is then transferred to the dictionary
+        # upgrade_roster_choices
+        temporary_upgrade_roster_choices = []
+
         # empty list that determine which random upgrade will be available for the plaeyr to choose from
         upgrade_roster_choices = {}
 
-        # based on what upgrade a player can choose when they level up. each value represents the type of upgrade
-        # they can do. range is 1 to the number of ugrade limit which states each separate upgrades
-        # available to the player, +1 for the inclusion of the constant
+        # for loop for how many upgrades can be available to the player to choose from.
+        # constant +1 to include the constant in the counting of the for loop
         for i in range(1, NUMBER_OF_UPGRADES_AVAILABLE + 1):
-            # upgrade roster is the variable to determine which random upgrade will be given to the player
-            # upgrade roster limit is the constant of how many available upgrades there is
+            # variable to determine which random upgrade will be given to the player
+            # based on the integers of 0 to the constant. each integer is unique to an upgrade
             upgrade_roster = random.randint(0, UPGRADE_ROSTER_LIMIT)
-            # empty dictionary will have the added random upgrades to be shown to the player
-            upgrade_roster_choices[i] = upgrade_roster
-        print(upgrade_roster_choices.values())
-        print('')
-        print(player_upgrade.keys())
+
+            # to check if the upgrade_roster is not yet in the dictionary, it will add it to the temporary list
+            # which is then added to the dictionary
+            if upgrade_roster not in upgrade_roster_choices:
+                # temporary list to use the append function
+                temporary_upgrade_roster_choices.append(upgrade_roster)
+                # empty dictionary will have the added random upgrades to be shown to the player
+                upgrade_roster_choices[i] = upgrade_roster
 
         # compares the keys of the player upgrade to the roster choices values
         # for key in upgrade_roster_choices.values() and player_upgrade.keys():
@@ -639,6 +645,8 @@ class Character:
         print(key_of_roster)
         key_of_player_upgrade = list(player_upgrade.keys())
         print(key_of_player_upgrade)
+        same_value = set(key_of_roster) & set(key_of_player_upgrade)
+        print(same_value)
         self.level_up_assigning(key_of_roster, key_of_player_upgrade, player_upgrade)
 
     def level_up_assigning(self, key_of_roster, key_of_player_upgrade, player_upgrade):
