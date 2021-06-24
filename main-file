@@ -684,49 +684,57 @@ class Character:
                 player_upgrade_choosing_time[key] = 'Shield Bubble Upgrade'
 
         print(player_upgrade_choosing_time)
-        chosen_upgrade = input_print_effect("You've levelled up! Choose the appropriate "
-                                            "number in which you want to upgrade\n")
+        chosen_upgrade = int(input_print_effect("You've levelled up! Choose the appropriate "
+                                                "number in which you want to upgrade \n"))
 
-        self.level_up_choosing(chosen_upgrade, player_upgrade)
+        self.level_up_choosing(chosen_upgrade, player_upgrade_choosing_time, player_upgrade)
 
-    def level_up_choosing(self, chosen_upgrade, player_upgrade):
+    def level_up_choosing(self, chosen_upgrade, player_upgrade_choosing_time, player_upgrade):
         """
         Function that takes the choice of the character to be finally upgraded
         :return:
         """
-
-        print('hi')
-        if 1 in value_of_roster and 1 in key_of_player_upgrade:
+        if chosen_upgrade == 1 and 1 in player_upgrade_choosing_time:
             self.health = self.health_max + player_upgrade[1]
             self.health_max = self.health_max + player_upgrade[1]
             print('ADDED HEALTH TO PLAYER', player_upgrade[1], 'TOTAL HEALTH IS', self.health_max, self.health)
+        else:
+            print('Upgrade is not available at this time.')
 
         # for attacking
-        if 2 in value_of_roster and 2 in key_of_player_upgrade:
+        if chosen_upgrade == 2 and 2 in player_upgrade_choosing_time:
             self.attack += player_upgrade[2]
             print(self.name + " has attained " + str(self.attack) + ' attack points!')
 
         # for double damage
-        if 3 in value_of_roster and 3 in key_of_player_upgrade:
+        if chosen_upgrade == 3 and 3 in player_upgrade_choosing_time:
             self.double_damage += player_upgrade[3]
             print(self.name + ' upgraded their Double Damage with ' + str(player_upgrade[3]) +
                   ' points. Its value is now: ' + str(self.double_damage))
+        else:
+            print('Upgrade is not available at this time.')
 
         # for leeching
-        if 4 in value_of_roster and 4 in key_of_player_upgrade:
+        if chosen_upgrade == 4 and 4 in player_upgrade_choosing_time:
             self.leeching += player_upgrade[4]
             print(self.name + "'s leeching is growing stronger with " + str(self.leeching) + ' points!')
+        else:
+            print('Upgrade is not available at this time.')
 
         # for defense
-        if 5 in value_of_roster and 5 in key_of_player_upgrade:
+        if chosen_upgrade == 5 and 5 in player_upgrade_choosing_time:
             self.defense += player_upgrade[5]
             print(self.name + " can defend more with defense upgraded to " + str(self.defense) + '!')
+        else:
+            print('Upgrade is not available at this time.')
 
         # for shield bubble
-        if 6 in value_of_roster and 6 in key_of_player_upgrade:
+        if chosen_upgrade == 6 and 6 in player_upgrade_choosing_time:
             self.shield_bubble = self.shield_bubble_max + player_upgrade[6]
             self.shield_bubble_max = self.shield_bubble_max + player_upgrade[6]
             print('Shield bubble upgraded! ' + str(player_upgrade[6]) + ' points added!')
+        else:
+            print('Upgrade is not available at this time.')
 
     def enemy_level_up(self):
         """
