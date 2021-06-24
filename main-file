@@ -600,7 +600,7 @@ class Character:
         attack_upgrade = random.randint(1, ATTACK_UPGRADE_LIMIT)
 
         # for floats
-        double_damage_upgrade = random.uniform(0.01, DOUBLE_DAMAGE_UPGRADE_LIMIT)
+        double_damage_upgrade = random.uniform(0.1, DOUBLE_DAMAGE_UPGRADE_LIMIT)
 
         leeching_upgrade = random.randint(1, LEECHING_UPGRADE_LIMIT)
         defense_upgrade = random.randint(1, DEFENSE_UPGRADE_LIMIT)
@@ -624,19 +624,24 @@ class Character:
 
         # for loop for how many upgrades can be available to the player to choose from.
         # constant +1 to include the constant in the counting of the for loop
-        # counter = NUMBER_OF_UPGRADES_AVAILABLE
-        # while len(upgrade_roster_choices) < counter:
-        for i in range(1, NUMBER_OF_UPGRADES_AVAILABLE + 1):
+        counter = NUMBER_OF_UPGRADES_AVAILABLE
+        while len(upgrade_roster_choices) <= counter:
+        # for i in range(1, NUMBER_OF_UPGRADES_AVAILABLE + 1):
             # variable to determine which random upgrade will be given to the player
             # based on the integers of 0 to the constant. each integer is unique to an upgrade
             upgrade_roster = random.randint(0, UPGRADE_ROSTER_LIMIT)
+            key = frozenset(player_upgrade)
             # to check if the upgrade_roster is not yet in the dictionary, it will add it to the temporary list
             # which is then added to the dictionary
             if upgrade_roster not in upgrade_roster_choices:
                 # temporary list to use the append function
                 temporary_upgrade_roster_choices.append(upgrade_roster)
                 # empty dictionary will have the added random upgrades to be shown to the player
-                upgrade_roster_choices[i] = upgrade_roster
+                upgrade_roster_choices[key] = upgrade_roster
+                len_upgrade = len(upgrade_roster_choices)
+                print(len_upgrade)
+                counter += 1
+                print(counter)
         print(upgrade_roster_choices)
 
         # compares the keys of the player upgrade to the roster choices values
