@@ -592,8 +592,8 @@ class Character:
 
     def level_up(self):
         """
-        Function for the player to level up, letting them choose what they can upgrade from. This will also let
-        the enemy revive themselves with upgraded stats.
+        Function for the character to level up. It takes a random integer and let the character choose which
+        upgradde to get
         """
         # variables to determine
         health_upgrade = random.randint(1, HEALTH_MAX_UPGRADE_LIMIT)
@@ -615,84 +615,83 @@ class Character:
             6: shield_bubble_upgrade
         }
 
-        # empty list for appending the values of the upgrade roster. Which is then transferred to the dictionary
-        # upgrade_roster_choices
-        temporary_upgrade_roster_choices = []
-
-        # empty list that determine which random upgrade will be available for the plaeyr to choose from
+        # this dictionary will be used for the player to choose which upgrade they want to have
         upgrade_roster_choices = {}
 
-        # for loop for how many upgrades can be available to the player to choose from.
-        # constant +1 to include the constant in the counting of the for loop
-        counter = NUMBER_OF_UPGRADES_AVAILABLE
-        while len(upgrade_roster_choices) <= counter:
-        # for i in range(1, NUMBER_OF_UPGRADES_AVAILABLE + 1):
-            # variable to determine which random upgrade will be given to the player
-            # based on the integers of 0 to the constant. each integer is unique to an upgrade
-            upgrade_roster = random.randint(0, UPGRADE_ROSTER_LIMIT)
-            key = frozenset(player_upgrade)
-            # to check if the upgrade_roster is not yet in the dictionary, it will add it to the temporary list
-            # which is then added to the dictionary
-            if upgrade_roster not in upgrade_roster_choices:
-                # temporary list to use the append function
-                temporary_upgrade_roster_choices.append(upgrade_roster)
-                # empty dictionary will have the added random upgrades to be shown to the player
+        # this counter is used to check if the limit of how many upgrades presented to the player has been set
+        counter = 0
+
+        key_for_upgrade_roster_choices = (1, 2, 3)
+
+        while counter < 3:
+            for key in key_for_upgrade_roster_choices:
+                # this will determine which upgrade will the player have based on the integers provided. Each integer
+                # determines a unique upgrade based on the keys of player_upgrade
+                upgrade_roster = random.randint(1, 6)
+                print(upgrade_roster, 'is upgrade roster')
+
                 upgrade_roster_choices[key] = upgrade_roster
-                len_upgrade = len(upgrade_roster_choices)
-                print(len_upgrade)
+                print(upgrade_roster_choices)
+
+                # counter add 1 to stop it when it reaches the limit
                 counter += 1
                 print(counter)
-        print(upgrade_roster_choices)
 
-        # compares the keys of the player upgrade to the roster choices values
-        # for key in upgrade_roster_choices.values() and player_upgrade.keys():
-        #     print(key)
-        key_of_roster = list(upgrade_roster_choices.values())
-        print(key_of_roster)
+        #  gets the values of the upgrade_roster_choices to be compared to the keys of the player_upgrade
+        # to let the character choose which to upgrade
+        value_of_roster = list(upgrade_roster_choices.values())
         key_of_player_upgrade = list(player_upgrade.keys())
-        print(key_of_player_upgrade)
-        same_value = set(key_of_roster) & set(key_of_player_upgrade)
-        same_value = list(same_value)
-        print(same_value)
-        self.level_up_assigning(same_value, player_upgrade)
 
-    def level_up_assigning(self, same_value, player_upgrade):
+        # lets the keys and values of the two variables be put in a new integer to let character choose
+        self.level_up_assigning(value_of_roster, key_of_player_upgrade, player_upgrade)
+
+    def level_up_assigning(self, value_of_roster, key_of_player_upgrade, player_upgrade):
         """
-        Function that takes the key from level up and checks its membership to the same_value variable
-        :param same_value:
+        Function that takes the key from the player upgrades and the value from the randomized upgrade and puts it
+        on a dictionary for the character to choose from
+        :param value_of_roster: value from the randomized player upgrades
+        :param key_of_player_upgrade: key from the player_upgrade
         :param player_upgrade:
         :return:
         """
+        # final dictionary to be presented to the layer for them to choose from
+        player_upgrade_choosing_time = {}
         # if the key corresponds to 1, upgrade health
         print('hi')
-        if 1 in same_value:
+        if 1 in value_of_roster and 1 in key_of_player_upgrade:
+            player_upgrade_choosing_time[key_of_player_upgrade] = player_upgrade[1]
             self.health = self.health_max + player_upgrade[1]
             self.health_max = self.health_max + player_upgrade[1]
             print('ADDED HEALTH TO PLAYER', player_upgrade[1], 'TOTAL HEALTH IS', self.health_max, self.health)
 
         # for attacking
-        if 2 in same_value:
+        if 2 in value_of_roster and 2 in key_of_player_upgrade:
+            player_upgrade_choosing_time[key_of_player_upgrade] = player_upgrade[2]
             self.attack += player_upgrade[2]
             print(self.name + " has attained " + str(self.attack) + ' attack points!')
 
         # for double damage
-        if 3 in same_value:
+        if 3 in value_of_roster and 3 in key_of_player_upgrade:
+            player_upgrade_choosing_time[key_of_player_upgrade] = player_upgrade[3]
             self.double_damage += player_upgrade[3]
             print(self.name + ' upgraded their Double Damage with ' + str(player_upgrade[3]) +
                   ' points. Its value is now: ' + str(self.double_damage))
 
         # for leeching
-        if 4 in same_value:
+        if 4 in value_of_roster and 4 in key_of_player_upgrade:
+            player_upgrade_choosing_time[key_of_player_upgrade] = player_upgrade[4]
             self.leeching += player_upgrade[4]
             print(self.name + "'s leeching is growing stronger with " + str(self.leeching) + ' points!')
 
         # for defense
-        if 5 in same_value:
+        if 5 in value_of_roster and 5 in key_of_player_upgrade:
+            player_upgrade_choosing_time[key_of_player_upgrade] = player_upgrade[5]
             self.defense += player_upgrade[5]
             print(self.name + " can defend more with defense upgraded to " + str(self.defense) + '!')
 
         # for shield bubble
-        if 6 in same_value:
+        if 6 in value_of_roster and 6 in key_of_player_upgrade:
+            player_upgrade_choosing_time[key_of_player_upgrade] = player_upgrade[1]
             self.shield_bubble = self.shield_bubble_max + player_upgrade[6]
             self.shield_bubble_max = self.shield_bubble_max + player_upgrade[6]
             print('Shield bubble upgraded! ' + str(player_upgrade[6]) + ' points added!')
