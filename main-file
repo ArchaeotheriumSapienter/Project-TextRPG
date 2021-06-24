@@ -687,7 +687,10 @@ class Character:
 
     def level_up_choosing(self, player_upgrade_choosing_time, player_upgrade):
         """
-        Function that takes the choice of the character to be finally upgraded
+        Function that takes the choice of the character to be finally upgraded and let them choose.
+        Player will upgrade if they chose right and if it is within the choices
+        :param: player_upgrade_choosing_time: used to check if the choice of the player is within the selection
+        :param: player_upgrade: used so the player can upgrade themselves
         :return:
         """
         print(player_upgrade_choosing_time)
@@ -728,17 +731,10 @@ class Character:
 
             else:
                 type_print_effect("Invalid Input. Please press the available upgrade shown.\n")
+                print('')  # for terminal
                 print(player_upgrade_choosing_time)
                 chosen_upgrade = int(input_print_effect("You've levelled up! Choose the appropriate "
                                                         "number in which you want to upgrade \n"))
-
-        # if the chosen upgrade did not put appropriate answer
-        type_print_effect("Invalid Input. Please press the available upgrade shown.\n")
-        print(player_upgrade_choosing_time)
-        self.level_up_choosing(player_upgrade_choosing_time, player_upgrade)
-
-
-
 
     def enemy_level_up(self):
         """
