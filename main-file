@@ -341,6 +341,7 @@ class Character:
             type_print_effect('DOUBLE DAMAGE HAS BEEN ACTIVATED!\n')
             print('')  # for terminal
 
+        # returns damage to be used by the other functions
         return damage
 
     def do_damage_with_shield_bubble(self, enemy):
@@ -362,6 +363,11 @@ class Character:
 
         # if statement if the shield bubble stat is non existent or if the shield bubble has broke
         if enemy.shield_bubble <= 0:
+            # sets shield bubble to zero to avoid negative values
+            enemy.shield_bubble = 0
+
+            print("DEBUGGING: THE NEWWWWWW SHIELD BUBBLE OF " + enemy.name + " IS " + str(enemy.shield_bubble))
+
             # it will go straight to attacking the character directly
             self.do_damage(enemy, damage)
 
@@ -915,7 +921,7 @@ class Player(Character):
         """
 
         # each integer is equivalent to one type of enemy
-        random_enemy = random.randint(4, RANDOM_ENEMY_INTEGER)
+        random_enemy = random.randint(1, RANDOM_ENEMY_INTEGER)
 
         # the if statement messages are here for organization so that these messages should appear first
         # before the player commands attack mode
@@ -981,7 +987,6 @@ class Player(Character):
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
         elif random_enemy == LOST_WANDERER:
-            print('hello')
             enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['lost_wanderer'])
             if enemy_health <= 0:
                 self.levelup_bar = self.character_death(common_enemy_dict['lost_wanderer'])
@@ -991,7 +996,6 @@ class Player(Character):
                 self.enemy_attack(random_enemy, common_enemy_dict)
 
         elif random_enemy == CHASER:
-            print('CHASER')
             enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['chaser'])
             if enemy_health <= 0:
                 self.levelup_bar = self.character_death(common_enemy_dict['chaser'])
