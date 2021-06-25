@@ -316,7 +316,7 @@ class Character:
         self.levelup_per_defeated_enemy = 0
 
         #  double damage converted to percentage for the user to see in the status command
-        self.double_damage_percentage_for_stats = "{0:.2%}".format(self.double_damage)
+        self.double_damage_percentage_for_stats = "{0:.3%}".format(self.double_damage)
 
     def double_damage_and_damage_generator(self):
         """
@@ -362,7 +362,6 @@ class Character:
 
         # if statement if the shield bubble stat is non existent or if the shield bubble has broke
         if enemy.shield_bubble <= 0:
-            print('DEBUGGING: MY SHIELD BUBBLE BROKE OH NO WTF IS THISSSSSSS')
             # it will go straight to attacking the character directly
             self.do_damage(enemy, damage)
 
@@ -628,30 +627,26 @@ class Character:
                 # this will determine which upgrade will the player have based on the integers provided. Each integer
                 # determines a unique upgrade based on the keys of player_upgrade
                 upgrade_roster = random.randint(1, 6)
-                print(upgrade_roster, 'is upgrade roster')
 
+                # puts the value of the upgrade_roster to the empty dictionary
                 upgrade_roster_choices[key] = upgrade_roster
-                print(upgrade_roster_choices)
 
                 # counter add 1 to stop it when it reaches the limit
                 counter += 1
-                print(counter)
 
         #  gets the values of the upgrade_roster_choices to be compared to the keys of the player_upgrade
         # to let the character choose which to upgrade
         value_of_roster = list(upgrade_roster_choices.values())
-        key_of_player_upgrade = tuple(player_upgrade.keys())
 
         # lets the keys and values of the two variables be put in a new integer to let character choose
-        self.level_up_assigning(value_of_roster, key_of_player_upgrade, player_upgrade)
+        self.level_up_assigning(value_of_roster, player_upgrade)
 
-    def level_up_assigning(self, value_of_roster, key_of_player_upgrade, player_upgrade):
+    def level_up_assigning(self, value_of_roster, player_upgrade):
         """
         Function that takes the key from the player upgrades and the value from the randomized upgrade and puts it
         on a dictionary for the character to choose from
         :param value_of_roster: value from the randomized player upgrades
-        :param key_of_player_upgrade: key from the player_upgrade
-        :param player_upgrade:
+        :param player_upgrade: used to upgrade the player
         :return:
         """
         # final dictionary to be presented to the layer for them to choose from
@@ -701,13 +696,13 @@ class Character:
                 self.health = self.health_max + player_upgrade[1]
                 self.health_max = self.health_max + player_upgrade[1]
                 type_print_effect(str(player_upgrade[1]) + ' Health Points has been added. ' + self.name +
-                                  ' total health is: ' + str(self.health_max))
+                                  ' total health is: ' + str(self.health_max) + '\n')
 
             # for attacking
             elif chosen_upgrade == 2 and 2 in player_upgrade_choosing_time:
                 self.attack += player_upgrade[2]
                 type_print_effect(self.name + " has attained " + str(player_upgrade[2]) + ' Attack Points!'
-                                  + 'total attack is ' + str(self.attack) + 'Points!')
+                                  + 'total attack is ' + str(self.attack) + 'Points!\n')
 
             # for double damage
             elif chosen_upgrade == 3 and 3 in player_upgrade_choosing_time:
@@ -952,7 +947,6 @@ class Player(Character):
         if random_enemy == DEFORMED_MUTATED_HUMAN:
 
             # lets the player attack first and .do_damage returns health to be analyzed here
-            print("HEALTH OF ENEMY IN ENCOUNTER IS ", common_enemy_dict['deformed_mutated_human'].health)
             enemy_health = self.do_damage_with_shield_bubble(common_enemy_dict['deformed_mutated_human'])
 
             # if the enemy dies when their health is zero
