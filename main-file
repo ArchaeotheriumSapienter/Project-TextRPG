@@ -959,6 +959,8 @@ class Player(Character):
     def random_enemy_encounter(self, common_enemy_dict):
         """
         Function for random enemies to fight the player
+
+        :param: common_enemy_dict - used to determine what enemy the player will fight
         """
 
         # each integer is equivalent to one type of enemy
@@ -984,15 +986,15 @@ class Player(Character):
                                                         "towards your direction!\n")
             print('')  # space for terminal
 
+        # automatically goes to attack mode after encounter with an enemy
         self.player_commands_attack_mode(random_enemy, common_enemy_dict)
 
     def attack(self, random_enemy, common_enemy_dict):
         """
         Player attack using the .do_damage then if the player has leeching, call upon .leeching
+
         :parameter - random_enemy = for the function to see what enemy the player will face
         :parameter - common_enemy_dict = for the function to get the enemy attributes
-        :parameter - flee_chance = an integer from the flee function that will let the player escape, but if they failed
-        it will activate attack here
         """
 
         # if statement stating what enemy the player will encounter
@@ -1084,8 +1086,9 @@ class Player(Character):
         """
         This activates when the player defeats a common enemy. It lets all of the enemies level up all of their stats
         for a harder game in the long run. It also levels up the player
-        :parameter - common_enemy_dict: to let the enemies level up with their respectful stats
-        :parameter - levelup_bar: to check if the levelup_bar is the right digit for levelup_bar_max to activate
+        
+        :param - common_enemy_dict: to let the enemies level up with their respectful stats
+        :param - levelup_bar: to check if the levelup_bar is the right digit for levelup_bar_max to activate
         level up
         """
         # if the levelup_bar reaches the max levelup_bar it will level up the player alongside the enemies
@@ -1104,6 +1107,8 @@ class Player(Character):
         """
         Function when a player moves, uses random integer to determine the number of steps the player takes
         One out of an integer chance that the player will encounter an enemy while moving
+        
+        :param common_enemy_dict: used for the random enemy encounter
         """
         # probablity for enemy to show up while moving based on the constant
         enemy_possibility = random.randint(1, ENEMY_POSSIBILITY)
@@ -1130,6 +1135,9 @@ class Player(Character):
         """
         A function only found while attack mode is one, a one in integer chance for the character to flee to prevent
         them from dying
+        
+        :param random_enemy: used if the flee failed, the particular enemy will attack
+        :param common_enemy_dict: for the usage of the commands as well as the fighting of the enemy
         """
         flee_chance = random.randint(1, FLEE_POSSIBILITY)
 
@@ -1144,6 +1152,10 @@ class Player(Character):
     def status(self, random_enemy, common_enemy_dict, who_called_me):
         """
         Function that shows the current status (health, attack damage, etc) of the user's character
+        
+        :param random_enemy: for the player_attack_mode
+        :param common_enemy_dict: for the player_attack_mode
+        :param who_called_me: to check if status will execute attack mode or passive mode commands 
         """
         print("Health: " + str(self.health) + "   |   " +
               "Attack: " + str(self.attack) + "   |   " +
@@ -1171,6 +1183,10 @@ class Player(Character):
     def help_game(self, common_enemy_dict, random_enemy, who_called_me):
         """
         Function about all the information that the player wants to know
+        
+        :param common_enemy_dict: to determine the enemy stats as well as for the player_command and attack mode
+        :param random_enemy: for the player command and attack mode
+        :param who_called_me: for tjhe execution of attack mode or passive mode after utilizing the this function
         """
         # list for all the commands that the player can do
         commands = [
@@ -1376,6 +1392,14 @@ class Player(Character):
         print('')  # space terminal
 
     def help_commands(self, chosen_help_specific_command, random_enemy, common_enemy_dict, who_called_me):
+        """
+        Functions particular for the commands. used to determine what the commands do
+        
+        :param chosen_help_specific_command: to execute particular command chosen by the player 
+        :param random_enemy: for the player commands and attack mode
+        :param common_enemy_dict: for the player commands and attack mode
+        :param who_called_me: to determine if it will go to passive or attack mode after this function
+        """
         # for attack
         if chosen_help_specific_command == 'a':
             print('')  # space terminal
@@ -1432,6 +1456,12 @@ class Player(Character):
         """
         Sub function of help that has the information for all the enemies so the help function is not overcrowded
         with lines of code
+        
+        :param chosen_enemy_help: to execute particular enemy information chosen by the player
+        :param common_enemy: to check the particular common enemy that the player wants to know 
+        :param random_enemy: for the player commands and attack mode
+        :param common_enemy_dict: for the player commands and attack mode
+        :param who_called_me: to determine if it will go to passive or attack mode after this function
         """
         # for the common enemies
         if chosen_enemy_help == 'a':
@@ -1599,7 +1629,12 @@ class Player(Character):
     def quit_game(self, common_enemy_dict, random_enemy, who_called_me='attack_mode'):
         """
         Command that will quit the game when the player wants to
+        
+        :param common_enemy_dict: for the player commands or attack mode  
+        :param random_enemy: for the player command or attack mode
+        :param who_called_me: used to determine if it will go to passive or attack mode after this function  
         """
+        
         #  Asks the player if they want to quit for a second time to make sure it was not a mistake and lowercase
         # for sanitation
         ask_player_again = input_print_effect("Are you sure you want to exit? (Type y for yes, n for no) ").lower()
@@ -1633,6 +1668,8 @@ class Player(Character):
     def player_commands(self, common_enemy_dict):
         """
         All commands that the player can do when there are no enemies
+        
+        :param common_enemy_dict: used for the random enemy encounter as well as the stats of the enemies in help. 
         """
         print('What action do you want to do? We have the following.')
 
@@ -1680,6 +1717,10 @@ class Player(Character):
     def player_commands_attack_mode(self, random_enemy, common_enemy_dict):
         """
         All commands that the player can do when the player encounters an enemy
+        
+        :param random_enemy: used to determine the specific enemy that the player will attack when they encounter one
+        in random enemy encounter
+        :param common_enemy_dict: used for the classes of the enemy for the enemy to attack and other commands
         """
         print('What action do you want to do? We have the following.')
 
