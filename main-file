@@ -35,8 +35,8 @@ BOSS_NAME = '⊑⟒⍀?'
 FLEE_POSSIBILITY = 3  # constant for flee function based from 1 to an integer for the possibility of the character
 # fleeing. 3 is original
 NUMBER_OF_MOVES = 10  # used to determine the number of steps possible for the player to do. 10 is original
-BREAK_DEFENSE_CHANCE = 3  # constant used in the .do_damage function in which there is a one in an integer possibility
-# that an attack can break a defense. 3 is the original
+BREAK_DEFENSE_CHANCE = 2  # constant used in the .do_damage function in which there is a one in an integer possibility
+# that an attack can break a defense. 2 is the original
 
 # ====================== CHARACTER STATS CONSTANTS ====================== #
 DOUBLE_DAMAGE_LIMIT = 50  # constant to determine the limit that a character can have the double damage percentage
@@ -128,13 +128,11 @@ def main():
     }
 
     # welcome_message_and_introduction(p.name)
-    debug_attack = input('Just Press Enter ')
 
-    while debug_attack == '':
+    while True:
         #  p.level_up()
         # p.double_damage_and_damage_generator()
         p.player_commands(common_enemy_dict)
-        debug_attack = input('Just Press Enter  ')
 
     # first_chapter()
 
@@ -163,14 +161,21 @@ def welcome_message_and_introduction(user_name):
     # be taken as a sign to end the game, and y will prompt to start the introduction function
     while start_game != '':
         if start_game == 'y':
+            # starts the game by going into the introduction
             introduction(user_name)
+
+            # to prevent looping of the while loop after introduction
             break
+
         elif start_game == 'n':
             print('')  # space for terminal
             type_print_effect('Thank you for taking the time to check out my first Python Project.\n')
             time.sleep(NEXT_TEXT_DURATION)
             type_print_effect('This means a lot to me. Have a great day! :)')
+
+            # ends the code
             sys.exit()
+
         else:
             print('')  # space for terminal
             print('Invalid input. Please press the appropriate letter.')
@@ -246,6 +251,8 @@ def introduction(user_name):
     time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("Before you go! I'll give you this to defend yourself.\n")
     time.sleep(NEXT_TEXT_DURATION)
+    type_print_effect("You've acquired a KNIFE.\n")  # TODO: add weapons in the future
+    time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("It's no longer safe ever since we've left Earth.\n")
     time.sleep(NEXT_TEXT_DURATION)
     type_print_effect("Goodluck out there " + user_name + "\n")
@@ -316,21 +323,11 @@ class Character:
         self.levelup_bar_max = 0
         self.levelup_per_defeated_enemy = 0
 
-        #  double damage converted to percentage for the user to see in the status command
-        self.double_damage_percentage_for_stats = self.__str__()
-
-    def __str__(self):
-        """
-        Function used to convert the value of the double damage into percentage
-        :return: double damage converted to percentage
-        """
-        double_damage_percentage = "{:.1%}".format(self.double_damage / 100)
-        return double_damage_percentage
-
     def double_damage_and_damage_generator(self):
         """
         This is a function used for getting the percentage that will determine if the damage dealt by the character
         will do a double damage plus the generating damage that the character will do
+
         :return: damage: so that it will be used by the characters
         """
         # damage of the character
@@ -358,6 +355,7 @@ class Character:
         Function for when the player or enemy attacks, parent function of do_damage_player and do_damage_enemy.
         It first computes the shield bubble of the characters then if the shield bubble pops it will commence to
         the normal kinds of attacks with defense
+
         :param enemy: To lower the health of the enemy
         :return enemy.health: To be analyzed inside the attack function in an if statement
         """
@@ -405,6 +403,7 @@ class Character:
     def do_damage(self, enemy, damage):
         """
         Function when the shield bubble burst, it will attack the health directly
+
         :param enemy: to determine which will give damage to
         :param damage: amount of damage that will be given
         :return enemy_health: to be analyzed in an if statement in the attack function in the Player class
@@ -431,14 +430,15 @@ class Character:
         """
         Subfunction of the do_damage, for cutting down code inside the do_damage function.
         This function gives the messages of damage to the user as the player
+
         :param enemy: for the enemy to lose health and give name in terminal
         :param damage: to determine damage given to the enemy
         :param break_defense_chance: to determine if the enemy will break its defense
         :return: self.health: so that it will check whether or not the enemy or player will die
         """
-
         # for aesthetics in terminal
         print(PLAYER_TURN_BANNER)
+
         # if the defenses break
         if break_defense_chance == 1:
             # when the damage is equals to zero
@@ -487,6 +487,7 @@ class Character:
         """
         Function just like the do_damage_player but it is used instead for the enemy and gives message to the player
         on what damage they dealt and if they defeat the player
+
         :param enemy: enemy is the player
         :param damage: damage given to the player
         :param break_defense_chance: if the defense of the player broke
@@ -541,7 +542,10 @@ class Character:
         Function for the leeching power in which the damage given by the character is transformed into the
         character's health. But if the leeching is higher than the damage, only the damage is transformed into the
         health
-        Return: self.health
+
+        :param: damage: to determine how much leeching the character will do
+        :param: enemy: to determine where the character will get the health from
+        :return: self.health: to check if the character will be alive after the attack
         """
         # calculates the missing health to prevent over health in a character
         health_missing = self.health_max - self.health
@@ -577,6 +581,7 @@ class Character:
         """
         Function that gets two characters and determine if they die. If an enemy dies, the player gains additional stats
         If the player dies, game over
+
         :param enemy: for the function to get the enemy attributes
         :return self.levelup_bar: used to indicate when the player will level up
         """
@@ -610,9 +615,9 @@ class Character:
     def level_up(self):
         """
         Function for the character to level up. It takes a random integer and let the character choose which
-        upgradde to get
+        upgrade to get. Parent function of level_up_assigning and level_up_choosing
         """
-        # variables to determine
+        # variables to determine the upgradable stats the player can have
         health_upgrade = random.randint(1, HEALTH_MAX_UPGRADE_LIMIT)
         attack_upgrade = random.randint(1, ATTACK_UPGRADE_LIMIT)
 
@@ -623,6 +628,7 @@ class Character:
         defense_upgrade = random.randint(1, DEFENSE_UPGRADE_LIMIT)
         shield_bubble_upgrade = random.randint(1, SHIELD_BUBBLE_MAX_UPGRADE_LIMIT)
 
+        # dictionary storing all of the upgrade
         player_upgrade = {
             1: health_upgrade,
             2: attack_upgrade,
@@ -638,12 +644,17 @@ class Character:
         # this counter is used to check if the limit of how many upgrades presented to the player has been set
         counter = 0
 
+        # key used for the roster of the random upgrades
         key_for_upgrade_roster_choices = (1, 2, 3)
 
-        while counter < 3:
+        # while loop determined by the counter to check if the dictionary have the right amount of upgrades available
+        # for the player
+        while counter < NUMBER_OF_UPGRADES_AVAILABLE:
+            # iteration of the tuple variable to be used as keys
             for key in key_for_upgrade_roster_choices:
                 # this will determine which upgrade will the player have based on the integers provided. Each integer
-                # determines a unique upgrade based on the keys of player_upgrade
+                # determines a unique upgrade based on the keys of player_upgrade. they will be the value for the
+                # new dict
                 upgrade_roster = random.randint(1, 6)
 
                 # puts the value of the upgrade_roster to the empty dictionary
@@ -656,17 +667,19 @@ class Character:
         # to let the character choose which to upgrade
         value_of_roster = list(upgrade_roster_choices.values())
 
-        # lets the keys and values of the two variables be put in a new integer to let character choose
+        # calling of the assigning to put the random variables into a new dictionary for the player
+        # to ultimately choose in the end
         player_upgrade_choosing_time = self.level_up_assigning(value_of_roster)
 
-        # gets the dictionary of compiled available upgrade and lets the player choose one from them
+        # gets the dictionary of compiled available upgrades and lets the player choose one from them
         self.level_up_choosing(player_upgrade_choosing_time, player_upgrade)
 
-    @ staticmethod
+    @staticmethod
     def level_up_assigning(value_of_roster):
         """
         Function that takes the key from the player upgrades and the value from the randomized upgrade and puts it
-        on a dictionary for the character to choose from
+        on a dictionary for the character to choose from. Subclass of level_up
+
         :param value_of_roster: value from the randomized player upgrades
         :return: player_upgrade_choosing_time: dictionary to let the player choose what they want ot upgrade
         """
@@ -704,16 +717,19 @@ class Character:
     def level_up_choosing(self, player_upgrade_choosing_time, player_upgrade):
         """
         Function that takes the choice of the character to be finally upgraded and let them choose.
-        Player will upgrade if they chose right and if it is within the choices
+        Player will upgrade if they chose right and if it is within the choices. Subclass of level_up
+
         :param: player_upgrade_choosing_time: used to check if the choice of the player is within the selection
         :param: player_upgrade: used so the player can upgrade themselves
-        :return:
         """
+        # to be seen by the player
         print(player_upgrade_choosing_time)
-        chosen_upgrade = int(input_print_effect("You've levelled up! Choose the appropriate "
-                                                "number in which you want to upgrade "))
+
+        # input for the user to let them choose what upgrade they want
+        chosen_upgrade = (input_print_effect("You've levelled up! Choose the appropriate "
+                                             "number in which you want to upgrade "))
         if chosen_upgrade != '':
-            if chosen_upgrade == 1 and 1 in player_upgrade_choosing_time:
+            if chosen_upgrade == '1' and 1 in player_upgrade_choosing_time:
                 self.health = self.health_max + player_upgrade[1]
                 self.health_max = self.health_max + player_upgrade[1]
                 print('')  # for terminal
@@ -722,7 +738,7 @@ class Character:
                 print('')  # for terminal
 
             # for attacking
-            elif chosen_upgrade == 2 and 2 in player_upgrade_choosing_time:
+            elif chosen_upgrade == '2' and 2 in player_upgrade_choosing_time:
                 self.attack += player_upgrade[2]
                 print('')  # for terminal
                 type_print_effect(self.name + " has attained " + str(player_upgrade[2]) + ' Attack Points!'
@@ -730,15 +746,15 @@ class Character:
                 print('')  # for terminal
 
             # for double damage
-            elif chosen_upgrade == 3 and 3 in player_upgrade_choosing_time:
+            elif chosen_upgrade == '3' and 3 in player_upgrade_choosing_time:
                 self.double_damage += player_upgrade[3]
                 print('')  # for terminal
                 type_print_effect(self.name + ' upgraded their Double Damage with ' + str(player_upgrade[3]) +
-                                  ' points. Its value is now: ' + str(self.double_damage_percentage_for_stats) + '.\n')
+                                  ' points. Its value is now: ' + "{:.1%}".format(self.double_damage / 100) + '.\n')
                 print('')  # for terminal
 
             # for leeching
-            elif chosen_upgrade == 4 and 4 in player_upgrade_choosing_time:
+            elif chosen_upgrade == '4' and 4 in player_upgrade_choosing_time:
                 self.leeching += player_upgrade[4]
                 print('')  # for terminal
                 type_print_effect(self.name + "'s Leeching is growing stronger with an additional "
@@ -746,14 +762,14 @@ class Character:
                 print('')  # for terminal
 
             # for defense
-            elif chosen_upgrade == 5 and 5 in player_upgrade_choosing_time:
+            elif chosen_upgrade == '5' and 5 in player_upgrade_choosing_time:
                 self.defense += player_upgrade[5]
                 print('')  # for terminal
                 type_print_effect(self.name + " can defend more with Defense upgraded to " + str(self.defense) + '!\n')
                 print('')  # for terminal
 
             # for shield bubble
-            elif chosen_upgrade == 6 and 6 in player_upgrade_choosing_time:
+            elif chosen_upgrade == '6' and 6 in player_upgrade_choosing_time:
                 self.shield_bubble = self.shield_bubble_max + player_upgrade[6]
                 self.shield_bubble_max = self.shield_bubble_max + player_upgrade[6]
                 print('')  # for terminal
@@ -775,7 +791,6 @@ class Character:
         """
         Function specifically for levelling up the enemy. It will level up all of their necessary stats for
         a harder battle with the player
-        :return:
         """
         # for levelling up the enemy
         self.health = self.health_max + 1
@@ -922,7 +937,6 @@ class Player(Character):
     """
 
     # initial stats of the player
-    # TODO: CHANGE SHIELD BUBBLE TO ZERO AFTER DEBUGGING
     def __init__(self):
         super().__init__()
 
@@ -931,11 +945,11 @@ class Player(Character):
         self.health = 50
         self.health_max = 50
         self.attack = 15
-        self.double_damage = 3.456
+        self.double_damage = 0.0
         self.leeching = 0
         self.defense = 7
-        self.shield_bubble = 5
-        self.shield_bubble_max = 5
+        self.shield_bubble = 0
+        self.shield_bubble_max = 0
         self.ultimate_levelup_bar = 20
         self.ultimate_levelup_bar_per_attack = 4
         self.levelup_bar = 0
@@ -1073,7 +1087,6 @@ class Player(Character):
         :parameter - common_enemy_dict: to let the enemies level up with their respectful stats
         :parameter - levelup_bar: to check if the levelup_bar is the right digit for levelup_bar_max to activate
         level up
-        :return:
         """
         # if the levelup_bar reaches the max levelup_bar it will level up the player alongside the enemies
 
@@ -1110,6 +1123,7 @@ class Player(Character):
                               + " steps away from a monster.\n")
         else:
             type_print_effect(self.name + " has moved " + str(number_of_moves) + " steps.\n")
+
         print('')  # for spacing in the terminal
 
     def flee(self, random_enemy, common_enemy_dict):
@@ -1133,7 +1147,7 @@ class Player(Character):
         """
         print("Health: " + str(self.health) + "   |   " +
               "Attack: " + str(self.attack) + "   |   " +
-              "Double Damage: "+"{:.1%}".format(self.double_damage / 100))
+              "Double Damage: " + "{:.1%}".format(self.double_damage / 100))
 
         print("Leeching: " + str(self.leeching) + "  |   " +
               "Defense: " + str(self.defense) + "   |   " +
@@ -1604,6 +1618,7 @@ class Player(Character):
                     self.player_commands_attack_mode(random_enemy, common_enemy_dict)
                     print('')  # for spacing in the terminal
 
+                #  to prevent endless loop
                 else:
                     self.player_commands(common_enemy_dict)
 
@@ -1630,21 +1645,32 @@ class Player(Character):
                                "for the command that you want to do. ").lower()
         print('')  # for spacing in the terminal
 
+        # for attack
         if player_actions == 'a':
             # player can't fight anybody in player_command mode, has to be in attack mode
             type_print_effect('There are no enemies in sight...so far.\n')
             # bug fix, to not let the player go into attack mode after the print statement above
             print('')  # for terminal
             self.player_commands(common_enemy_dict)
+
+        # for move
         elif player_actions == 'b':
             self.move(common_enemy_dict)
+
+        # for status
         elif player_actions == 'c':
-            # to differentiate player_command_attack_mode from the normal player command
+            # to differentiate player_command_attack_mode from the normal player_command
             # calls None for positional arguments because in passive mode there are no random enemies
             self.status(random_enemy=None, common_enemy_dict=None, who_called_me='passive_mode')
+
+        # for help
         elif player_actions == 'd':
+            # same idea with status
             self.help_game(common_enemy_dict, random_enemy=None, who_called_me='passive_mode')
+
+        # for quit
         elif player_actions == 'e':
+            # as well as this one
             self.quit_game(common_enemy_dict, random_enemy=None, who_called_me='passive_mode')
         else:
             type_print_effect("Invalid input.\n")
@@ -1664,19 +1690,29 @@ class Player(Character):
         # asks player for the command that they want to do plus lowercase for sanitation
         player_actions = input("Please press the appropriate letter "
                                "for the command that you want to do. ").lower()
+
         print('')  # for spacing in the terminal
 
+        # for attack
         if player_actions == 'a':
             Player.attack(self, random_enemy, common_enemy_dict)
+
+        # for flee
         elif player_actions == 'b':
             # an updated command that the player can do ONLY if they are in attack mode.
             # possibility for the player to run away
             self.flee(random_enemy, common_enemy_dict)
+
+        # for status
         elif player_actions == 'c':
             # to differentiate player_command_attack_mode from the normal player command
             self.status(random_enemy, common_enemy_dict, who_called_me='attack_mode')
+
+        # for help
         elif player_actions == 'd':
             self.help_game(common_enemy_dict, random_enemy, who_called_me='attack_mode')
+
+        # for quit
         elif player_actions == 'e':
             self.quit_game(common_enemy_dict, random_enemy, who_called_me='attack_mode')
         else:
