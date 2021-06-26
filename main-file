@@ -16,10 +16,11 @@ Milestone:
         - status - done
         - help - done
         - flee - done
-        - leech - almost
+        - leech - done
 5. Make an enemy - done
 6. Random occurence of enemy when player is walking - done
 6. Make enemy fight the character - done
+7. Do level up - done
 8. Make a scripted enemy
 9. continue storyline
 """
@@ -354,19 +355,22 @@ class Character:
         """
         # damage of the character
         damage = self.double_damage_and_damage_generator()
-
-        print('DEBUGGING: PRIOR SHIELD OF', enemy.name, 'is ' + str(enemy.shield_bubble))
+        
         # computes the shield bubble of the enemy to the damage done by the character
-        #  TODO: FIX DAMAGE SO IT REPRESENTS SHIELD BUBBLE
+        # to update damage to reflect shield bubble if the enemy has one
+        damage = damage - enemy.shield_bubble
+
+        # so it will not go negative and enemy shield bubble will increase due to it
+        if damage <= 0:
+            damage = 0
+
+        # updating shield to input the damage
         enemy.shield_bubble = enemy.shield_bubble - damage
-        print("DEBUGGING: THE SHIELD BUBBLE OF " + enemy.name + " IS " + str(enemy.shield_bubble))
 
         # if statement if the shield bubble stat is non existent or if the shield bubble has broke
         if enemy.shield_bubble <= 0:
             # sets shield bubble to zero to avoid negative values
             enemy.shield_bubble = 0
-
-            print("DEBUGGING: THE NEWWWWWW SHIELD BUBBLE OF " + enemy.name + " IS " + str(enemy.shield_bubble))
 
             # it will go straight to attacking the character directly
             self.do_damage(enemy, damage)
@@ -701,47 +705,61 @@ class Character:
             if chosen_upgrade == 1 and 1 in player_upgrade_choosing_time:
                 self.health = self.health_max + player_upgrade[1]
                 self.health_max = self.health_max + player_upgrade[1]
+                print('')  # for terminal
                 type_print_effect(str(player_upgrade[1]) + ' Health Points has been added. ' + self.name +
                                   "'s total health is: " + str(self.health_max) + '\n')
+                print('')  # for terminal
 
             # for attacking
             elif chosen_upgrade == 2 and 2 in player_upgrade_choosing_time:
                 self.attack += player_upgrade[2]
+                print('')  # for terminal
                 type_print_effect(self.name + " has attained " + str(player_upgrade[2]) + ' Attack Points!'
                                   + ' Total attack is ' + str(self.attack) + ' points!\n')
+                print('')  # for terminal
 
             # for double damage
             elif chosen_upgrade == 3 and 3 in player_upgrade_choosing_time:
                 self.double_damage += player_upgrade[3]
+                print('')  # for terminal
                 type_print_effect(self.name + ' upgraded their Double Damage with ' + str(player_upgrade[3]) +
                                   ' points. Its value is now: ' + str(self.double_damage_percentage_for_stats) + '.\n')
+                print('')  # for terminal
 
             # for leeching
             elif chosen_upgrade == 4 and 4 in player_upgrade_choosing_time:
                 self.leeching += player_upgrade[4]
+                print('')  # for terminal
                 type_print_effect(self.name + "'s Leeching is growing stronger with an additional "
                                   + str(player_upgrade[4]) + ' points!\n')
+                print('')  # for terminal
 
             # for defense
             elif chosen_upgrade == 5 and 5 in player_upgrade_choosing_time:
                 self.defense += player_upgrade[5]
+                print('')  # for terminal
                 type_print_effect(self.name + " can defend more with Defense upgraded to " + str(self.defense) + '!\n')
+                print('')  # for terminal
 
             # for shield bubble
             elif chosen_upgrade == 6 and 6 in player_upgrade_choosing_time:
                 self.shield_bubble = self.shield_bubble_max + player_upgrade[6]
                 self.shield_bubble_max = self.shield_bubble_max + player_upgrade[6]
+                print('')  # for terminal
                 type_print_effect('Shield Bubble upgraded! ' + str(player_upgrade[6]) + ' points added!\n')
+                print('')  # for terminal
 
             else:
                 type_print_effect("Invalid Input. Please press the available upgrade shown.\n")
                 print('')  # for terminal
                 self.level_up_choosing(player_upgrade_choosing_time, player_upgrade)
+                print('')  # for terminal
 
         else:
             type_print_effect("Invalid Input. Please press the available upgrade shown.\n")
             print('')  # for terminal
             self.level_up_choosing(player_upgrade_choosing_time, player_upgrade)
+
 
     def enemy_level_up(self):
         """
@@ -894,8 +912,7 @@ class Player(Character):
     """
 
     # initial stats of the player
-    # TODO: CHANGE LEECHING VALUE TO ZERO AFTER DEBUGGING, AS WELL AS SHIELD BUBBLE, and double damage,
-    #  levelup_defeated_enemy, attack
+    # TODO: CHANGE SHIELD BUBBLE TO ZERO AFTER DEBUGGING
     def __init__(self):
         super().__init__()
 
@@ -907,8 +924,8 @@ class Player(Character):
         self.double_damage = 0.0
         self.leeching = 0
         self.defense = 7
-        self.shield_bubble = 0
-        self.shield_bubble_max = 0
+        self.shield_bubble = 5
+        self.shield_bubble_max = 5
         self.ultimate_levelup_bar = 20
         self.ultimate_levelup_bar_per_attack = 4
         self.levelup_bar = 0
