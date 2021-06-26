@@ -317,7 +317,15 @@ class Character:
         self.levelup_per_defeated_enemy = 0
 
         #  double damage converted to percentage for the user to see in the status command
-        self.double_damage_percentage_for_stats = "{0:.3%}".format(self.double_damage)
+        self.double_damage_percentage_for_stats = self.__str__()
+
+    def __str__(self):
+        """
+        Function used to convert the value of the double damage into percentage
+        :return: double damage converted to percentage
+        """
+        double_damage_percentage = "{:.1%}".format(self.double_damage / 100)
+        return double_damage_percentage
 
     def double_damage_and_damage_generator(self):
         """
@@ -355,7 +363,7 @@ class Character:
         """
         # damage of the character
         damage = self.double_damage_and_damage_generator()
-        
+
         # computes the shield bubble of the enemy to the damage done by the character
         # to update damage to reflect shield bubble if the enemy has one
         damage = damage - enemy.shield_bubble
@@ -921,7 +929,7 @@ class Player(Character):
         self.health = 50
         self.health_max = 50
         self.attack = 15
-        self.double_damage = 0.0
+        self.double_damage = 3.456
         self.leeching = 0
         self.defense = 7
         self.shield_bubble = 5
@@ -1123,15 +1131,16 @@ class Player(Character):
         """
         print("Health: " + str(self.health) + "   |   " +
               "Attack: " + str(self.attack) + "   |   " +
-              "Double Damage: " + self.double_damage_percentage_for_stats)
+              "Double Damage: "+"{:.1%}".format(self.double_damage / 100))
 
         print("Leeching: " + str(self.leeching) + "  |   " +
               "Defense: " + str(self.defense) + "   |   " +
               "Shield Bubble: " + str(self.shield_bubble))
 
-        print("Ultimate Level Up Bar: " + str(self.ultimate_levelup_bar))
-        print("Ultimate Level Up Bar Per Attack: " + str(self.ultimate_levelup_bar_per_attack))
-        print("Level Up Bar: " + str(self.levelup_bar))
+        # TODO: utilize these stats in the future
+        # print("Ultimate Level Up Bar: " + str(self.ultimate_levelup_bar))
+        # print("Ultimate Level Up Bar Per Attack: " + str(self.ultimate_levelup_bar_per_attack))
+        # print("Level Up Bar: " + str(self.levelup_bar))
         print('')  # space for terminal
 
         # used when the player is in the middle of fighting a mob and chose status, it will go automatically to
@@ -1433,7 +1442,7 @@ class Player(Character):
                     print("Health: " + str(common_enemy_dict['deformed_mutated_human'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['deformed_mutated_human'].attack) + "   |   " +
                           "Double Damage: "
-                          + common_enemy_dict['deformed_mutated_human'].double_damage_percentage_for_stats)
+                          + "{:.1%}".format(self.double_damage / 100))
 
                     print("Leeching: " + str(common_enemy_dict['deformed_mutated_human'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['deformed_mutated_human'].defense) + "   |   " +
@@ -1466,7 +1475,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['mutated_human'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['mutated_human'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict['mutated_human'].double_damage_percentage_for_stats)
+                          "Double Damage: " + "{:.1%}".format(self.double_damage / 100))
 
                     print("Leeching: " + str(common_enemy_dict['mutated_human'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['mutated_human'].defense) + "   |   " +
@@ -1496,7 +1505,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['lost_wanderer'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['lost_wanderer'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict['lost_wanderer'].double_damage_percentage_for_stats)
+                          "Double Damage: " + "{:.1%}".format(self.double_damage / 100))
 
                     print("Leeching: " + str(common_enemy_dict['lost_wanderer'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['lost_wanderer'].defense) + "   |   " +
@@ -1528,7 +1537,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['chaser'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['chaser'].attack) + "   |   " +
-                          "Double Damage: " + common_enemy_dict['chaser'].double_damage_percentage_for_stats)
+                          "Double Damage: " + "{:.1%}".format(self.double_damage / 100))
 
                     print("Leeching: " + str(common_enemy_dict['chaser'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['chaser'].defense) + "   |   " +
@@ -1562,9 +1571,9 @@ class Player(Character):
                                                                   'to learn more? ').lower()
                     print('')  # space for terminal
 
-        # TODO: add uncommon enemies later
-        elif chosen_enemy_help == 'b':
-            print('not yet done')
+        # TODO: add uncommon enemies and allies later
+        elif chosen_enemy_help == 'b' or chosen_enemy_help == 'c':
+            print('Coming Soon!')
 
         else:  #
             print('Invalid input. Please press the appropriate letter.')
