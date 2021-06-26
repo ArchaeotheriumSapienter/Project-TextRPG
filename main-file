@@ -657,15 +657,18 @@ class Character:
         value_of_roster = list(upgrade_roster_choices.values())
 
         # lets the keys and values of the two variables be put in a new integer to let character choose
-        self.level_up_assigning(value_of_roster, player_upgrade)
+        player_upgrade_choosing_time = self.level_up_assigning(value_of_roster)
 
-    def level_up_assigning(self, value_of_roster, player_upgrade):
+        # gets the dictionary of compiled available upgrade and lets the player choose one from them
+        self.level_up_choosing(player_upgrade_choosing_time, player_upgrade)
+
+    @ staticmethod
+    def level_up_assigning(value_of_roster):
         """
         Function that takes the key from the player upgrades and the value from the randomized upgrade and puts it
         on a dictionary for the character to choose from
         :param value_of_roster: value from the randomized player upgrades
-        :param player_upgrade: used to upgrade the player
-        :return:
+        :return: player_upgrade_choosing_time: dictionary to let the player choose what they want ot upgrade
         """
         # final dictionary to be presented to the layer for them to choose from
         player_upgrade_choosing_time = {}
@@ -696,7 +699,7 @@ class Character:
             if key == 6:
                 player_upgrade_choosing_time[key] = 'Shield Bubble Upgrade'
 
-        self.level_up_choosing(player_upgrade_choosing_time, player_upgrade)
+        return player_upgrade_choosing_time
 
     def level_up_choosing(self, player_upgrade_choosing_time, player_upgrade):
         """
@@ -768,7 +771,6 @@ class Character:
             print('')  # for terminal
             self.level_up_choosing(player_upgrade_choosing_time, player_upgrade)
 
-
     def enemy_level_up(self):
         """
         Function specifically for levelling up the enemy. It will level up all of their necessary stats for
@@ -780,9 +782,9 @@ class Character:
         self.health_max = self.health_max + 1
         self.attack += 1
         self.leeching += 0.1
-        self.defense += 0.5
-        self.shield_bubble = self.shield_bubble_max + 0.5
-        self.shield_bubble_max = self.shield_bubble_max + 0.5
+        self.defense += 0.2
+        self.shield_bubble = self.shield_bubble_max + 0.2
+        self.shield_bubble_max = self.shield_bubble_max + 0.2
 
         # debugging
         #  self.__repr__()
@@ -1074,8 +1076,8 @@ class Player(Character):
         :return:
         """
         # if the levelup_bar reaches the max levelup_bar it will level up the player alongside the enemies
-        print('LEVEL UP PRINT CURRENT BAR IS', levelup_bar)
-        #  if levelup_bar >= self.levelup_bar_max: #  TODO: REMOVE LEVEL UP BAR
+
+        #  if levelup_bar >= self.levelup_bar_max: #  TODO: utilize level up bar in the future
         # let the user level up
         self.level_up()
 
@@ -1442,7 +1444,7 @@ class Player(Character):
                     print("Health: " + str(common_enemy_dict['deformed_mutated_human'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['deformed_mutated_human'].attack) + "   |   " +
                           "Double Damage: "
-                          + "{:.1%}".format(self.double_damage / 100))
+                          + "{:.1%}".format(common_enemy_dict['deformed_mutated_human'].double_damage / 100))
 
                     print("Leeching: " + str(common_enemy_dict['deformed_mutated_human'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['deformed_mutated_human'].defense) + "   |   " +
@@ -1475,7 +1477,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['mutated_human'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['mutated_human'].attack) + "   |   " +
-                          "Double Damage: " + "{:.1%}".format(self.double_damage / 100))
+                          "Double Damage: " + "{:.1%}".format(common_enemy_dict['mutated_human'].double_damage / 100))
 
                     print("Leeching: " + str(common_enemy_dict['mutated_human'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['mutated_human'].defense) + "   |   " +
@@ -1505,7 +1507,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['lost_wanderer'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['lost_wanderer'].attack) + "   |   " +
-                          "Double Damage: " + "{:.1%}".format(self.double_damage / 100))
+                          "Double Damage: " + "{:.1%}".format(common_enemy_dict['lost_wanderer'].double_damage / 100))
 
                     print("Leeching: " + str(common_enemy_dict['lost_wanderer'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['lost_wanderer'].defense) + "   |   " +
@@ -1537,7 +1539,7 @@ class Player(Character):
                     time.sleep(HELP_BACKSTORY_NEXT_TEXT)
                     print("Health: " + str(common_enemy_dict['chaser'].health) + "    |   " +
                           "Attack: " + str(common_enemy_dict['chaser'].attack) + "   |   " +
-                          "Double Damage: " + "{:.1%}".format(self.double_damage / 100))
+                          "Double Damage: " + "{:.1%}".format(common_enemy_dict['chaser'].double_damage / 100))
 
                     print("Leeching: " + str(common_enemy_dict['chaser'].leeching) + "  |   " +
                           "Defense: " + str(common_enemy_dict['chaser'].defense) + "   |   " +
@@ -1602,6 +1604,9 @@ class Player(Character):
                     self.player_commands_attack_mode(random_enemy, common_enemy_dict)
                     print('')  # for spacing in the terminal
 
+                else:
+                    self.player_commands(common_enemy_dict)
+
             else:
                 type_print_effect("Invalid input\n")
                 print('')  # for spacing in the terminal
@@ -1628,6 +1633,9 @@ class Player(Character):
         if player_actions == 'a':
             # player can't fight anybody in player_command mode, has to be in attack mode
             type_print_effect('There are no enemies in sight...so far.\n')
+            # bug fix, to not let the player go into attack mode after the print statement above
+            print('')  # for terminal
+            self.player_commands(common_enemy_dict)
         elif player_actions == 'b':
             self.move(common_enemy_dict)
         elif player_actions == 'c':
