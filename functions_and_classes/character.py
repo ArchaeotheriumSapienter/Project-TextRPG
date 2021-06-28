@@ -590,6 +590,7 @@ class Chaser(common_enemies.Chaser, Character):
     def __init__(self):
         super().__init__()
 
+
 # =========================================================
 # SUB-CLASS: PLAYER
 # =========================================================
