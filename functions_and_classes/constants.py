@@ -22,7 +22,7 @@ DOUBLE_DAMAGE_LIMIT = 50  # constant to determine the limit that a character can
 # these are constants to determine the upper limit of the random integer upgrade when a player level up
 HEALTH_MAX_UPGRADE_LIMIT = 10  # up to 10 health only per level up
 ATTACK_UPGRADE_LIMIT = 10  # up to 10 attack per level up
-DOUBLE_DAMAGE_UPGRADE_LIMIT = 1.0  # up to 10% double damage chance per level up
+DOUBLE_DAMAGE_UPGRADE_LIMIT = 10.0  # up to 10% double damage chance per level up
 LEECHING_UPGRADE_LIMIT = 5  # up to 5 leech per level up
 DEFENSE_UPGRADE_LIMIT = 5  # up to 5 defense per level up
 SHIELD_BUBBLE_MAX_UPGRADE_LIMIT = 5  # up to 10 shield bubble per level up
@@ -45,16 +45,20 @@ LOST_WANDERER = 3  # dedicated number for the lost wanderer
 CHASER = 4  # dedicated number for the chaser
 
 # ======================= TEXT EFFECT CONSTANTS ======================= #
-NEXT_TEXT_DURATION = 0.1  # constant used for having a gap in between text that have the typing effect
-INPUT_AND_TEXT_EFFECT_DURATION = 0.001  # 0.05 normal speed
+NEXT_TEXT_DURATION = 0.1  # constant used for having a gap after a line of text for a delayed effect
+INPUT_AND_TEXT_EFFECT_DURATION = 0.05  # 0.05 normal speed  # used for typing effect using the functions
+# inside the text_effect_and_exit_function.py
 HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference however is this is used
 # Used when the player attacks
 
 # ========================== BANNER CONSTANTS ======================== #
 NUMBER_OF_DASHES = 25  # used for the breakers found in the terminal when the user plays
+
+# for player and enemy turn
 PLAYER_TURN_BANNER = '=' * NUMBER_OF_DASHES + " PLAYER'S TURN " + '=' * NUMBER_OF_DASHES
 ENEMY_TURN_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY'S TURN " + '=' * NUMBER_OF_DASHES
 
+# when the player or the enemy gets defeated
 PLAYER_DEFEAT_BANNER = '=' * NUMBER_OF_DASHES + " PLAYER DEFEAT " + '=' * NUMBER_OF_DASHES
 ENEMY_DEFEAT_BANNER = '=' * NUMBER_OF_DASHES + " ENEMY DEFEAT " + '=' * NUMBER_OF_DASHES
 
