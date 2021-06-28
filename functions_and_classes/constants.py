@@ -46,7 +46,7 @@ CHASER = 4  # dedicated number for the chaser
 
 # ======================= TEXT EFFECT CONSTANTS ======================= #
 NEXT_TEXT_DURATION = 0.1  # constant used for having a gap after a line of text for a delayed effect
-INPUT_AND_TEXT_EFFECT_DURATION = 0.05  # 0.05 normal speed  # used for typing effect using the functions
+INPUT_AND_TEXT_EFFECT_DURATION = 0.01  # 0.05 normal speed  # used for typing effect using the functions
 # inside the text_effect_and_exit_function.py
 HELP_BACKSTORY_NEXT_TEXT = 0.2  # similar with NEXT_TEXT_DURATION difference however is this is used
 # Used when the player attacks
