@@ -1,5 +1,6 @@
 """
 File: character.py
+----------------------------------------------------------------------
 
 This file is the parent class of all the enemies. It has all the functions that each character can do
 with their initial stats via __init__ of the class Character. This also has all of the enemy instances
