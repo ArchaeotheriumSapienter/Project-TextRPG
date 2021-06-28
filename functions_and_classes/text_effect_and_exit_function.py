@@ -1,5 +1,8 @@
 """
+File: text_effect_and_exit_function.py
 
+File that holds the function used to have effects on the text when the user is engaged in the terminal.
+It also has functions for system exit as well as delay of text.
 """
 import sys  # used for flushing and system exit
 import time  # used for sleep method
