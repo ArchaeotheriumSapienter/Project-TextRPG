@@ -1,5 +1,6 @@
 """
 File: constants.py
+----------------------------------------------------------------------
 
 This file is the compilation of all the constants that the game uses.
 """
