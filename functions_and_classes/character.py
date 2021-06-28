@@ -1,9 +1,8 @@
 """
 File: character.py
 
-This file is the parent class of all the enemies and the player. It has all the functions that each character can do
-with their initial stats via __init__ of the class Character. This also has all of the enemy instances as well as
-the player commands
+This file is the parent class of all the enemies. It has all the functions that each character can do
+with their initial stats via __init__ of the class Character. This also has all of the enemy instances
 """
 
 import random  # used for the probability of enemies as well as the upgrading of stats and abilities
