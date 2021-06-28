@@ -2,18 +2,24 @@
 File: character.py
 
 This file is the parent class of all the enemies and the player. It has all the functions that each character can do
-with their initial stats via __init__ of the class Character.
+with their initial stats via __init__ of the class Character. This also has all of the enemy instances as well as
+the player commands
 """
+
 import random  # used for the probability of enemies as well as the upgrading of stats and abilities
-import constants  # used for the various constants such as the probability of enemies and text designs like banners
-import text_effect_and_exit_function  # used for the system exit and text delay
-from text_effect_and_exit_function import type_print_effect, input_print_effect  # used for the text effects
+from functions_and_classes import constants  # used for the various constants such as the probability of
+# enemies and text designs like banners
+from functions_and_classes import common_enemies
+from functions_and_classes import text_effect_and_exit_function  # used for the system exit and text delay
+
+# putting the effects into a variable for easier readability
+type_print_effect = text_effect_and_exit_function.type_print_effect
+input_print_effect = text_effect_and_exit_function.input_print_effect
 
 
 # =========================================================
 # PARENT CLASS
 # =========================================================
-
 
 class Character:
     """
@@ -549,7 +555,7 @@ class Character:
 # SUB-CLASS: COMMON ENEMY
 # =========================================================
 
-class DeformedMutatedHuman(Character):
+class DeformedMutatedHuman(common_enemies.DeformedMutatedHuman, Character):
     """
     Subclass of characters, a common enemy
     """
@@ -557,23 +563,8 @@ class DeformedMutatedHuman(Character):
     def __init__(self):
         super().__init__()
 
-        self.name = 'Deformed Mutated Human'
-        self.health = 10
-        self.health_max = 10
-        self.attack = 20
-        self.double_damage = 0
-        self.leeching = 0
-        self.defense = 5
-        self.shield_bubble = 0
-        self.shield_bubble_max = 0
-        self.ultimate_levelup_bar = 0
-        self.ultimate_levelup_bar_per_attack = 0
-        self.levelup_bar = 0
-        self.levelup_bar_max = 0
-        self.levelup_per_defeated_enemy = 0
 
-
-class MutatedHuman(Character):
+class MutatedHuman(common_enemies.MutatedHuman, Character):
     """
     Subclass of character, a common enemy
     """
@@ -581,23 +572,8 @@ class MutatedHuman(Character):
     def __init__(self):
         super().__init__()
 
-        self.name = 'Mutated Human'
-        self.health = 20
-        self.health_max = 20
-        self.attack = 10
-        self.double_damage = 0
-        self.leeching = 0
-        self.defense = 7
-        self.shield_bubble = 0
-        self.shield_bubble_max = 0
-        self.ultimate_levelup_bar = 0
-        self.ultimate_levelup_bar_per_attack = 0
-        self.levelup_bar = 0
-        self.levelup_bar_max = 0
-        self.levelup_per_defeated_enemy = 0
 
-
-class LostWanderer(Character):
+class LostWanderer(common_enemies.LostWanderer, Character):
     """
     Subclass of character, a common enemy
     """
@@ -605,45 +581,14 @@ class LostWanderer(Character):
     def __init__(self):
         super().__init__()
 
-        self.name = 'Lost Wanderer'
-        self.health = 5
-        self.health_max = 5
-        self.attack = 20
-        self.double_damage = 0
-        self.leeching = 5
-        self.defense = 7
-        self.shield_bubble = 0
-        self.shield_bubble_max = 0
-        self.ultimate_levelup_bar = 0
-        self.ultimate_levelup_bar_per_attack = 0
-        self.levelup_bar = 0
-        self.levelup_bar_max = 0
-        self.levelup_per_defeated_enemy = 0
 
-
-class Chaser(Character):
+class Chaser(common_enemies.Chaser, Character):
     """
     Subclass of character, a common enemy
     """
 
     def __init__(self):
         super().__init__()
-
-        self.name = 'Chaser'
-        self.health = 15
-        self.health_max = 15
-        self.attack = 15
-        self.double_damage = 0
-        self.leeching = 2
-        self.defense = 10
-        self.shield_bubble = 0
-        self.shield_bubble_max = 0
-        self.ultimate_levelup_bar = 0
-        self.ultimate_levelup_bar_per_attack = 0
-        self.levelup_bar = 0
-        self.levelup_bar_max = 0
-        self.levelup_per_defeated_enemy = 0
-
 
 # =========================================================
 # SUB-CLASS: PLAYER
