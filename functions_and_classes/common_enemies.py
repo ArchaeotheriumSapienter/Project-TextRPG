@@ -1,5 +1,6 @@
 """
 File: common_enemies.py
+----------------------------------------------------------------------
 
 This file has all of the __init__ attributes of the common enemies
 """
