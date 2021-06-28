@@ -32,7 +32,7 @@ Milestone:
 # text_effect_and_exit_function: for effects
 
 from functions_and_classes import character, text_effect_and_exit_function
-from story_line import first_chapter_arc_1_welcome_message
+from story_line import chapter_1_arc_1_welcome_message
 
 # putting the effects into a variable for easier readability
 type_print_effect = text_effect_and_exit_function.type_print_effect
@@ -40,7 +40,7 @@ input_print_effect = text_effect_and_exit_function.input_print_effect
 text_delay_via_time_sleep = text_effect_and_exit_function.text_delay_via_time_sleep
 
 # putting the storyline function into a variable for easier readability
-welcome_message = first_chapter_arc_1_welcome_message.welcome_message
+welcome_message = chapter_1_arc_1_welcome_message.welcome_message
 
 # =========================================================
 # MAIN FUNCTION
