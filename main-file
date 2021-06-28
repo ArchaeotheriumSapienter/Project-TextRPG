@@ -44,7 +44,7 @@ text_delay_via_time_sleep = text_effect_and_exit_function.text_delay_via_time_sl
 def main():
     """
     Main function used to execute the whole program of the rpgameV3
-    :return: 
+    :return:
     """
     #  handler for the character parent class and the minimum value of each stats that a character can have
     p = character.Player()
