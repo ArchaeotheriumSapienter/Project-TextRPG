@@ -4,10 +4,10 @@ File: character.py
 This file is the parent class of all the enemies and the player. It has all the functions that each character can do
 with their initial stats via __init__ of the class Character.
 """
-import random
-import constants
-import text_effect_and_exit_function
-from text_effect_and_exit_function import type_print_effect, input_print_effect
+import random  # used for the probability of enemies as well as the upgrading of stats and abilities
+import constants  # used for the various constants such as the probability of enemies and text designs like banners
+import text_effect_and_exit_function  # used for the system exit and text delay
+from text_effect_and_exit_function import type_print_effect, input_print_effect  # used for the text effects
 
 
 # =========================================================
