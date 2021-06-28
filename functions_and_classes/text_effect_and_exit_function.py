@@ -1,5 +1,6 @@
 """
 File: text_effect_and_exit_function.py
+----------------------------------------------------------------------
 
 File that holds the function used to have effects on the text when the user is engaged in the terminal.
 It also has functions for system exit as well as delay of text.
@@ -12,7 +13,7 @@ from functions_and_classes.constants import \
 
 
 # =========================================================
-# SUB-HELPER FUNCTIONS
+# TEXT EFFECT FUNCTIONS
 # =========================================================
 
 def type_print_effect(text):
@@ -52,6 +53,10 @@ def text_delay_via_time_sleep(constant):
     """
     time.sleep(constant)
 
+
+# =========================================================
+# SYSTEM FUNCTIONS
+# =========================================================
 
 def system_exit():
     """
