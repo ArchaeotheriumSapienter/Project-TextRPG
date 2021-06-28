@@ -36,7 +36,7 @@ NUMBER_OF_UPGRADES_AVAILABLE = 3  # based on the number of stats that the player
 # constants used for the random enemy function
 ENEMY_POSSIBILITY = 1  # constant for random_enemy_occurance based from 1 to an integer for the possibility of an enemy
 # spawning. each number represents a particular enemy. 3 is original value
-RANDOM_ENEMY_INTEGER = 1  # used for DEBUGGING in the random_enemy_occurance. Each integer represents the
+RANDOM_ENEMY_INTEGER = 4  # used for DEBUGGING in the random_enemy_occurance. Each integer represents the
 # particular enemy to showup. 4 is the original value to represent chaser
 
 DEFORMED_MUTATED_HUMAN = 1  # dedicated number for the monster deformed mutated human
