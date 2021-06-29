@@ -840,6 +840,9 @@ class Player(Character):
         if who_called_me == 'attack_mode':
             self.player_commands_attack_mode(random_enemy, common_enemy_dict)
             print('')  # for spacing in the terminal
+        else:
+            self.player_commands(common_enemy_dict)
+            print('')  # for spacing in the terminal
 
         print('')  # for spacing in the terminal
 
